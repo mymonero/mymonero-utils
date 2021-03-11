@@ -11,5 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/devinpearson/mymonero-utils.git"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  }
 }
