@@ -28,8 +28,6 @@
 //
 "use strict";
 //
-const JSBigInt = require("../cryptonote_utils/biginteger").BigInteger;
-//
 function _mixinToRingsize(mixin) {
 	return mixin + 1;
 }

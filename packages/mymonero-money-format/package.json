@@ -14,5 +14,8 @@
   "license": "ISC",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@mymonero/mymonero-bigint": "^1.0.1"
   }
 }
