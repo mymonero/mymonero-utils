@@ -1,11 +1,15 @@
 {
-  "name": "mymonero-paymentid-utils",
+  "name": "@mymonero/mymonero-paymentid-utils",
   "version": "1.0.0",
   "description": "Used to validate Monero payment ids",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Tekkzbadger",
+  "author": "MyMonero <info@mymonero,com>",
+  "repository": {
+    "type" : "git",
+    "url" : "git+https://github.com/devinpearson/mymonero-utils.git"
+  },
   "license": "ISC"
 }
