@@ -22,7 +22,7 @@ This file has been modified by Paul Shapiro:
 
 	Exports:
 
-		<BigInteger>
+		 <BigInteger>
 */
 (function(exports) {
 "use strict";
