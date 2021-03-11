@@ -8,8 +8,8 @@
   },
   "author": "MyMonero <info@mymonero,com>",
   "repository": {
-    "type" : "git",
-    "url" : "git+https://github.com/devinpearson/mymonero-utils.git"
+    "type": "git",
+    "url": "git+https://github.com/devinpearson/mymonero-utils.git"
   },
   "license": "MIT"
 }
