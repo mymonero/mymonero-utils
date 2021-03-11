@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-money-format",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "formatter for crypto values ",
   "main": "index.js",
   "scripts": {
