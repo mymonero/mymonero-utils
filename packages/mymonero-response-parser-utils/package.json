@@ -1,7 +1,7 @@
 {
-  "name": "@mymonero/mymonero-paymentid-utils",
-  "version": "1.0.2",
-  "description": "Used to validate Monero payment ids",
+  "name": "@mymonero/mymonero-response-parser-utils",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,9 +14,5 @@
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/devinpearson/mymonero-utils/issues"
-  },
-  "homepage": "https://github.com/devinpearson/mymonero-utils#readme"
+  }
 }
