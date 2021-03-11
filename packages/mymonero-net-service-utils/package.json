@@ -14,5 +14,5 @@
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  },
+  }
 }
