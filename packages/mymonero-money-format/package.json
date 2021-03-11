@@ -1,0 +1,11 @@
+{
+  "name": "mymonero-money-format",
+  "version": "1.0.0",
+  "description": "formatter for crypto values ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tekkzbadger",
+  "license": "ISC"
+}

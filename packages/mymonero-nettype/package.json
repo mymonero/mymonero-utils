@@ -1,0 +1,11 @@
+{
+  "name": "mymonero-nettype",
+  "version": "1.0.0",
+  "description": "Definitions of the monero network types used in mymonero",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tekkzbadger",
+  "license": "ISC"
+}

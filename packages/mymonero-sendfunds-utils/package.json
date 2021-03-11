@@ -1,0 +1,11 @@
+{
+  "name": "mymonero-sendfunds-utils",
+  "version": "1.0.0",
+  "description": "Utils for managing the send fund process for mymonero",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tekkzbadger",
+  "license": "ISC"
+}
