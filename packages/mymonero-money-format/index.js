@@ -26,10 +26,10 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-"use strict";
+'use strict'
 //
-const monero_config = require("./monero_config")
+const monero_config = require('./monero_config')
 const money_format_utils = require('./crypto_formatter')
 const instance = money_format_utils(monero_config)
 //
-module.exports = instance;
+module.exports = instance

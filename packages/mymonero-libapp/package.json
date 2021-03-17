@@ -1,10 +1,10 @@
 {
-  "name": "@mymonero/mymonero-locales",
+  "name": "@mymonero/mymonero-libapp",
   "version": "1.0.2",
-  "description": "List of supported locales",
+  "description": "Package to contain the wasm's",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MyMonero <info@mymonero,com>",
   "repository": {
@@ -16,6 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "mocha": "^8.3.2"
+    "@mymonero/mymonero-bigint": "^1.0.2",
+    "@mymonero/mymonero-nettype": "^1.0.2"
   }
 }

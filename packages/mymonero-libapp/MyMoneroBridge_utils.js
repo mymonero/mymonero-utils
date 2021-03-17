@@ -1,4 +1,31 @@
-
+// Copyright (c) 2014-2019, MyMonero.com
+//
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification, are
+// permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice, this list of
+//	conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list
+//	of conditions and the following disclaimer in the documentation and/or other
+//	materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its contributors may be
+//	used to endorse or promote products derived from this software without specific
+//	prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+// THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
 function ret_val_boolstring_to_bool (boolstring) {
   if (typeof boolstring !== 'string') {
     throw 'ret_val_boolstring_to_bool expected string input'
@@ -11,7 +38,7 @@ function ret_val_boolstring_to_bool (boolstring) {
   throw 'ret_val_boolstring_to_bool given illegal input'
 }
 exports.ret_val_boolstring_to_bool = ret_val_boolstring_to_bool
-
+//
 function api_safe_wordset_name (wordset_name) {
   // convert all lowercase, legacy values to core-cpp compatible
   if (wordset_name == 'english') {
@@ -26,7 +53,7 @@ function api_safe_wordset_name (wordset_name) {
   return wordset_name // must be a value returned by core-cpp
 }
 exports.api_safe_wordset_name = api_safe_wordset_name
-
+//
 function detect_platform () {
   const ENVIRONMENT_IS_WEB = typeof window === 'object'
   const ENVIRONMENT_IS_WORKER = typeof importScripts === 'function'
@@ -40,7 +67,7 @@ function detect_platform () {
   }
 }
 exports.detect_platform = detect_platform
-
+//
 function update_options_for_fallback_to_asmjs (options) {
   const platform_info = detect_platform()
   const ENVIRONMENT_IS_WEB = platform_info.ENVIRONMENT_IS_WEB
