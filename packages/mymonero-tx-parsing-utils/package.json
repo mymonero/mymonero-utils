@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-tx-parsing-utils",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "@mymonero/mymonero-bigint": "^1.0.5",
     "@mymonero/mymonero-keyimage-cache": "^1.0.5",
-    "@mymonero/mymonero-monero-config": "^1.0.5",
+    "@mymonero/mymonero-monero-config": "^1.0.6",
     "@mymonero/mymonero-money-format": "^1.0.5",
     "moment": "^2.29.1"
   }
