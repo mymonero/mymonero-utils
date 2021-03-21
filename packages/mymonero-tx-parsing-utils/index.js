@@ -1,7 +1,7 @@
 'use strict'
 
 const JSBigInt = require('@mymonero/mymonero-bigint').BigInteger
-const monero_config = import './monero_config'
+const monero_config = require('@mymonero/mymonero-monero-config')
 const moment = require('moment')
 const monero_keyImage_cache_utils = require('@mymonero/mymonero-keyimage-cache')
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
