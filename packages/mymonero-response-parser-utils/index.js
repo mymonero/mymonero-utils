@@ -29,7 +29,7 @@
 'use strict'
 //
 const JSBigInt = require('@mymonero/mymonero-bigint').BigInteger
-const monero_amount_format_utils = require('../monero_utils/monero_amount_format_utils')
+const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 const monero_keyImage_cache_utils = require('@mymonero/mymonero-keyimage-cache')
 //
 function Parsed_AddressInfo__sync (
