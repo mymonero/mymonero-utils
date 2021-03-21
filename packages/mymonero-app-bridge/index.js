@@ -1,5 +1,5 @@
 const MyMoneroLibAppBridgeClass = require('./MyMoneroLibAppBridgeClass')
-const MyMoneroBridge_utils = require('@mymonero-bridge-utils')
+const MyMoneroBridge_utils = require('@mymonero/mymonero-bridge-utils')
 //
 // This function is copied here for now so that the parent directory / path discovery stuff happens from the right directory - in the future it may be worthwhile to generalize it so that it can work from any directory
 module.exports = function(options)
@@ -12,8 +12,7 @@ module.exports = function(options)
 	const ENVIRONMENT_IS_WEB = platform_info.ENVIRONMENT_IS_WEB;
 	const ENVIRONMENT_IS_WORKER = platform_info.ENVIRONMENT_IS_WORKER;
 	const ENVIRONMENT_IS_NODE = platform_info.ENVIRONMENT_IS_NODE;
-	const ENVIRONMENT_IS_SHELL = platform_info.ENVIRONMENT_IS_SHELL;
-	//
+	
 	function locateFile(filename, scriptDirectory)
 	{
 		// if (options["locateFile"]) {
@@ -43,7 +42,7 @@ module.exports = function(options)
 				// have to check != "/" b/c webpack (I think) replaces __dirname
 				pathTo_cryptonoteUtilsDir = "file://" + __dirname + "/" // prepending "file://" because it's going to try to stream it
 			} else { // actual web browser
-				pathTo_cryptonoteUtilsDir = this_scriptDirectory + `/mymonero_libapp_js/libapp_js/` // this works for the MyMonero browser build, and is quite general, at least
+				pathTo_cryptonoteUtilsDir = `/assets/` // this works for the MyMonero browser build, and is quite general, at least
 			}
 			fullPath = pathTo_cryptonoteUtilsDir + filename
 		}
@@ -57,7 +56,6 @@ module.exports = function(options)
 		var Module_template = {}
 		
 			console.log("Using wasm: ", true)
-			//
 			Module_template["locateFile"] = locateFile
 			//
 			// NOTE: This requires src/module-post.js to be included as post-js in CMakeLists.txt under a wasm build
