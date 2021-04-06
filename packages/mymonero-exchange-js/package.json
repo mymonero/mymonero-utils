@@ -26,6 +26,6 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "axios": "^0.21.0"
+    "axios": "^0.21.1"
   }
 }
