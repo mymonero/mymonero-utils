@@ -17,7 +17,7 @@
   "author": "MyMonero",
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/mymonero/mymonero-utils.git"
+    "url" : "git+https://github.com/mymonero/mymonero-utils.git"
   },
   "homepage": "https://mymonero.com",
   "bugs" : { 
