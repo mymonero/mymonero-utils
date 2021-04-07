@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-response-parser-utils",
-  "version": "1.0.6",
+  "version": "1.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {

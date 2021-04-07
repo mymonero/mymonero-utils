@@ -1,5 +1,5 @@
 {
-  "name": "@mymonero/mymonero-monero-config",
+  "name": "@mymonero/mymonero-currencies",
   "version": "1.0.12",
   "description": "",
   "main": "index.js",
@@ -16,6 +16,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^1.0.12"
+    "@mymonero/mymonero-bigint": "^1.0.12",
+    "@mymonero/mymonero-monero-config": "^1.0.12",
+    "@mymonero/mymonero-money-format": "^1.0.12"
   }
 }
