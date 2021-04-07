@@ -12,7 +12,7 @@
     "url": "git+https://github.com/mymonero/mymonero-utils.git"
   },
   "license": "MIT",
-  "gitHead": "1ed1ca2ad72ebb405b3833affbb40bd095ab9a24",
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc",
   "publishConfig": {
     "access": "public"
   }

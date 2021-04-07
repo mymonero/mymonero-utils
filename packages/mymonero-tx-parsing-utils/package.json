@@ -21,5 +21,6 @@
     "@mymonero/mymonero-monero-config": "^1.0.12",
     "@mymonero/mymonero-money-format": "^1.0.12",
     "moment": "^2.29.1"
-  }
+  },
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }

@@ -18,5 +18,6 @@
   "bugs": {
     "url": "https://github.com/mymonero/mymonero-utils/issues"
   },
-  "homepage": "https://github.com/mymonero/mymonero-utils#readme"
+  "homepage": "https://github.com/mymonero/mymonero-utils#readme",
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }

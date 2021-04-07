@@ -18,5 +18,6 @@
   "dependencies": {
     "@mymonero/mymonero-bigint": "^1.0.12",
     "@mymonero/mymonero-nettype": "^1.0.12"
-  }
+  },
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }
