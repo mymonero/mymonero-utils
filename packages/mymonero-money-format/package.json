@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-money-format",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "formatter for crypto values ",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^1.0.5"
+    "@mymonero/mymonero-bigint": "^1.1.0"
   }
 }
