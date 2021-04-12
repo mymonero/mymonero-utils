@@ -19,5 +19,6 @@
     "@mymonero/mymonero-bigint": "^1.1.0",
     "@mymonero/mymonero-bridge-utils": "^1.1.0",
     "@mymonero/mymonero-nettype": "^1.1.0"
-  }
+  },
+  "gitHead": "1f02bb5f1c4956b2c74cd5f92f4b0173df5badd3"
 }

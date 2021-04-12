@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Karl Buys (MyMonero Pty Ltd)",
-  "license": "ISC"
+  "license": "ISC",
+  "gitHead": "1f02bb5f1c4956b2c74cd5f92f4b0173df5badd3",
+  "publishConfig": {
+    "access": "public"
+  }
 }
