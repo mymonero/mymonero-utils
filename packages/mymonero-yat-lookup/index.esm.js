@@ -50,6 +50,13 @@ function isValidYatHandle(handle) {
     if (handle.length > 10 || handle.length < 1) {
         return false;
     }
+    
+    // Iterate through all characters to ensure they're valid emojis 
+    for (const c of handle) {
+        if (/\p{Extended_Pictographic}/u.test(c) == false) {
+            return false
+        }
+    }
 
     // Iterate through all known valid Yat characters and check that they are members of 
     // This is commented out until it's possible for us to get a full list of emoji mapping
