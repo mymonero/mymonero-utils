@@ -1,5 +1,7 @@
 const HtmlHelper = require("./HtmlHelper");
+const WalletHelper = require("./WalletHelper")
 const html = require("./HtmlHelper")
+const EventListeners = require("./EventListeners")
 //const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 
 class ExchangeHelper {
@@ -25,6 +27,8 @@ class ExchangeHelper {
         // Fetch form we'll insert into the content view's innerHTML
         this.htmlHelper = new HtmlHelper();
         this.baseForm = this.htmlHelper.getBaseForm();
+        this.eventListeners = EventListeners;
+        console.log(this.eventListeners);
     }
 
     walletSelectorElement(walletContextObject) {
@@ -42,6 +46,7 @@ class ExchangeHelper {
     get inCurrencySelector() {
         let selectList = document.createElement('select');
         selectList.id = "inCurrencySelectList";
+        selectList.classList.add('currencySelect');
         for (var i = 0; i < this.supportedInCurrencies.length; i++) {
             var option = document.createElement("option");
             option.value = this.supportedInCurrencies[i];
@@ -55,6 +60,7 @@ class ExchangeHelper {
     get outCurrencySelector() {
         let selectList = document.createElement('select');
         selectList.id = "outCurrencySelectList";
+        selectList.classList.add('currencySelect');
         for (var i = 0; i < this.supportedOutCurrencies.length; i++) {
             var option = document.createElement("option");
             option.value = this.supportedOutCurrencies[i];
@@ -105,7 +111,7 @@ class ExchangeHelper {
             let selectorInt = parseInt(selectorOffset);
             let wallet = self.context.wallets[selectorInt];
             //let walletBalance = document.getElementById('selected-wallet-balance'); 
-            //walletBalance.innerText = `${self.UnlockedBalance_FormattedString(context.walletsListController.records[selectorOffset])} XMR   `;
+            walletBalance.innerText = `${self.UnlockedBalance_FormattedString(context.walletsListController.records[selectorOffset])} XMR   `;
         } else {
             console.log(context.walletsListController);
             let walletOptions = ``;
@@ -143,7 +149,7 @@ class ExchangeHelper {
             `;
             //walletDiv.innerHTML = walletSelectOptions;
         }
-        return walletSelectOptions;
+        return walletDiv;
     }
 
     htmlFormTemplate() {
@@ -162,6 +168,40 @@ class ExchangeHelper {
         //return this.baseForm;
         //return this.htmlForm;
     }    
+
+    validationStatusCallback (str) {
+        const monerodUpdates = document.getElementById('monerod-updates')
+        monerodUpdates.innerText = str
+    }
+
+    handleSendResponseCallback(err, mockedTransaction) {
+        let str
+        const monerodUpdates = document.getElementById('monerod-updates')
+        if (err) {
+          str = typeof err === 'string' ? err : err.message
+          monerodUpdates.innerText = str
+          return
+        }
+        str = 'Sent successfully.'
+        monerodUpdates.innerText = str
+    }
+
+    // TODO: Pass this function parameters, use those parameters, determine runtime context, open based on runtime context (shell.openExternal for Electron, window.location for web, etc)
+    openClickableLink() {
+        const self = this;
+        let referrer_id = self.getAttribute("referrer_id");
+        let url = self.getAttribute("url");
+        let paramStr = self.getAttribute("param_str");
+        if (referrer_id.length > 0) {
+            console.log("Got a referrer -- generate custom URL");
+            let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+            shell.openExternal(urlToOpen);
+        } else {
+            console.log("No referrer");
+            shell.openExternal("https://localmonero.co");
+        }
+    }
+
 }
 
 module.exports = ExchangeHelper
