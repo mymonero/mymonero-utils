@@ -6,7 +6,25 @@ const EventListeners = require("./EventListeners")
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
-    supportedOutCurrencies = ["BTC", "ETH", "BCH", "XRP"]
+    currencyMetadata = {
+        "ETH": {
+            fullName: "Ethereum",
+            precision: 18
+        },
+        "LTC": {
+            fullName: "Litecoin",
+            precision: 8
+        },
+        "BTC": {
+            fullName: "Bitcoin",
+            precision: 8
+        },
+        "XMR": {
+            fullName: "Monero",
+            precision: 12
+        }
+    }
+    supportedOutCurrencies = ["BTC", "ETH", "LTC"]
     supportedInCurrencies = ["XMR"];
     //htmlForm = ""; // init blank string for now
     baseForm = "";
@@ -31,8 +49,34 @@ class ExchangeHelper {
         console.log(this.eventListeners);
     }
 
+    
+
     walletSelectorElement(walletContextObject) {
 
+    }
+
+    // This function is invoked to update the order status page
+    renderOrderStatus (order) {
+        const idArr = [
+          'in_amount_remaining',
+          'out_amount',
+          'status',
+          'expires_at',
+          'provider_order_id',
+          'in_address',
+          'in_amount'
+        ]
+
+        const test = document.getElementById('exchangePage')
+        if (!(test == null)) {
+            idArr.forEach((item, index) => {
+            if (item == 'in_address') {
+                document.getElementById('receiving_subaddress').innerHTML = order[item]
+            } else {
+                document.getElementById(item).innerHTML = order[item]
+            }
+            })
+        }
     }
 
     get supportedInCurrencies() {
@@ -169,12 +213,12 @@ class ExchangeHelper {
         //return this.htmlForm;
     }    
 
-    validationStatusCallback (str) {
+    sendFundsValidationStatusCallback (str) {
         const monerodUpdates = document.getElementById('monerod-updates')
         monerodUpdates.innerText = str
     }
 
-    handleSendResponseCallback(err, mockedTransaction) {
+    handleSendFundsResponseCallback(err, mockedTransaction) {
         let str
         const monerodUpdates = document.getElementById('monerod-updates')
         if (err) {

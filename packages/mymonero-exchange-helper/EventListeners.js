@@ -193,6 +193,7 @@ xmrBalanceChecks = function(exchangeFunctions) {
 
 btcBalanceChecks = function(exchangeFunctions) {    
     let BTCToReceive;
+    console.log(BTCcurrencyInput);
     let BTCbalance = parseFloat(BTCcurrencyInput.value);
     let out_amount = BTCbalance.toFixed(12);
     XMRcurrencyInput.value = "Loading...";
@@ -310,6 +311,33 @@ function clearCurrencies() {
     BTCcurrencyInput.value = "";
 }
 
+orderBtnClickedListener = function(orderStarted, ExchangeFunctions) {
+    console.log("orderbtnclicked");
+    if (validateOrder) {
+        console.log("Order valid");
+    }
+    console.log(orderStarted);
+    console.log(ExchangeFunctions);
+}
+
+validateOrder = function() {
+    let validationError = false;
+    console.log(validationMessages);
+    if (orderStarted == true) {
+        return;
+    } 
+    if (validationMessages.firstChild !== null) {
+        validationMessages.firstChild.style.color = "#ff0000";
+        validationError = true;
+        return;
+    }
+    if (addressValidation.firstChild !== null) {
+        addressValidation.firstChild.style.color = "#ff0000";
+        validationError = true;
+        return;
+    }
+}
+
 // TODO: Finish refactoring this to clean up ExchangeScript.js
 // orderBtnClickListener = function(orderStarted, ExchangeFunctions) {
 //     let validationError = false;
@@ -388,6 +416,6 @@ module.exports = {
     BTCCurrencyKeydownListener,
     walletSelectorClickListener,
     xmrBalanceChecks,
-    btcBalanceChecks
-    // orderBtnClickListener
+    btcBalanceChecks,
+    orderBtnClickedListener
 };

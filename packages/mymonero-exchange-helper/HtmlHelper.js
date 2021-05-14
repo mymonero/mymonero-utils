@@ -43,7 +43,7 @@ class HtmlHelper {
                         <div class="field_title form-field-title">XMR to send
                             <div style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0;">
                                 <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
-                                <input id="XMRcurrencyInput" class="textInput currencyInput" type="text" placeholder="00.00" value="">
+                                <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
                                 <div id="inCurrencySelector"></div>
                             </div>
                         </div>
@@ -52,7 +52,7 @@ class HtmlHelper {
                         <div id="BTCInputDiv" class="field_title form-field-title">BTC you will receive
                             <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                 <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
-                                <input id="BTCcurrencyInput" class="textInput currencyInput" type="text" placeholder="00.00" value="">
+                                <input id="outCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
                                 <div id="outCurrencySelector"></div>
                             </div>
                         </div>
