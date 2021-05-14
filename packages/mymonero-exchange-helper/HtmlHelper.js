@@ -67,10 +67,10 @@ class HtmlHelper {
             
 
             <div class="form_field" id="btc-address">
-                <span class="field_title form-field-title" style="margin-top: 17px;">DESTINATION BITCOIN ADDRESS
+                <span class="field_title form-field-title" style="margin-top: 17px;">DESTINATION <span id="outCurrencyCoinName">BITCOIN</span> ADDRESS
                 </span>
                 <div class="contactPicker" style="position: relative; width: 100%; user-select: none;">
-                    <input id="btcAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
+                    <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
                 </div>
             </div>
             <div id="localmonero"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>

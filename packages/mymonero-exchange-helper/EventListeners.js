@@ -1,5 +1,5 @@
 const Utils = require('./UtilityFunctions.js');
-
+const CurrencyMetadata = require("./CurrencyMetadata");
 const validationMessages = document.getElementById('validation-messages');
 //const addressValidation = document.getElementById('address-messages');
 const serverValidation = document.getElementById('server-messages')
@@ -318,6 +318,7 @@ orderBtnClickedListener = function(orderStarted, ExchangeFunctions) {
     }
     console.log(orderStarted);
     console.log(ExchangeFunctions);
+
 }
 
 validateOrder = function() {
@@ -336,6 +337,13 @@ validateOrder = function() {
         validationError = true;
         return;
     }
+}
+
+updateCurrencyLabels = function(event) {
+    let coinTickerCode = event.srcElement.value;
+    let coinName = CurrencyMetadata[coinTickerCode].fullName.toUpperCase();
+    document.getElementById("outCurrencyCoinName").innerText = coinName;
+    document.getElementById("outAddress").placeholder = `Destination ${coinTickerCode} Address`;    
 }
 
 // TODO: Finish refactoring this to clean up ExchangeScript.js
@@ -417,5 +425,7 @@ module.exports = {
     walletSelectorClickListener,
     xmrBalanceChecks,
     btcBalanceChecks,
-    orderBtnClickedListener
+    orderBtnClickedListener,
+    updateCurrencyLabels,
+    validateOrder
 };

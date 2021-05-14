@@ -6,24 +6,6 @@ const EventListeners = require("./EventListeners")
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
-    currencyMetadata = {
-        "ETH": {
-            fullName: "Ethereum",
-            precision: 18
-        },
-        "LTC": {
-            fullName: "Litecoin",
-            precision: 8
-        },
-        "BTC": {
-            fullName: "Bitcoin",
-            precision: 8
-        },
-        "XMR": {
-            fullName: "Monero",
-            precision: 12
-        }
-    }
     supportedOutCurrencies = ["BTC", "ETH", "LTC"]
     supportedInCurrencies = ["XMR"];
     //htmlForm = ""; // init blank string for now
