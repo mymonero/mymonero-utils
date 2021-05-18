@@ -4,7 +4,8 @@ const html = require("./HtmlHelper")
 const EventListeners = require("./EventListeners")
 const TimerHelper = require('./TimerHelper');
 const CurrencyMetadata = require('./CurrencyMetadata')
-//const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
+const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
+const JSBigInt = require('@mymonero/mymonero-bigint')
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
@@ -107,25 +108,44 @@ class ExchangeHelper {
         
     }
 
-    UnlockedBalance_FormattedString (wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
+    UnlockedBalance_FormattedString = function(wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
         const self = this
         const balance_JSBigInt = self.UnlockedBalance_JSBigInt(wallet)
-        //return monero_amount_format_utils.formatMoney(balance_JSBigInt)
+        return monero_amount_format_utils.formatMoney(balance_JSBigInt)
     }
 
-    UnlockedBalance_JSBigInt (wallet) {
+    UnlockedBalance_JSBigInt = function(wallet) {
         const self = wallet
-        // const difference = self.Balance_JSBigInt().subtract(
-        //   self.locked_balance || new JSBigInt(0)
-        // )
-        // if (difference.compare(0) < 0) {
-        //   return new JSBigInt(0)
-        // }
-        let difference = 5;
+        const difference = self.Balance_JSBigInt().subtract(
+          self.locked_balance || new JSBigInt(0)
+        )
+        console.log("UnlockedBalance:", difference);
+        if (difference.compare(0) < 0) {
+          return new JSBigInt(0)
+        }
         return difference
     }
 
+    Balance_JSBigInt = function(wallet) {
+        const self = this
+        let total_received = wallet.total_received
+        let total_sent = wallet.total_sent
+        if (typeof total_received === 'undefined') {
+          total_received = new JSBigInt(0) // patch up to avoid crash as this doesn't need to be fatal
+        }
+        if (typeof total_sent === 'undefined') {
+          total_sent = new JSBigInt(0) // patch up to avoid crash as this doesn't need to be fatal
+        }
+        const balance_JSBigInt = total_received.subtract(total_sent)
+        if (balance_JSBigInt.compare(0) < 0) {
+          return new JSBigInt(0)
+        }
+        return balance_JSBigInt
+    }
+
+    // we should refactor this to return a template instead of HTML
     walletSelectorTemplate(context) {
+        console.log(this);
         console.log("walletSelectorTemplate invoked");
         let self = this;
         let walletDiv = document.getElementById('wallet-selector');
@@ -134,6 +154,8 @@ class ExchangeHelper {
             
         }
 
+        
+
         // get oldest wallet based on how wallets are inserted into wallets as a zero element, changing indexes backwards
         if (walletDiv !== null && walletDiv.dataset.walletchosen == "true") {
             let selectedWallet = document.getElementById('selected-wallet');
@@ -141,16 +163,21 @@ class ExchangeHelper {
             let selectorInt = parseInt(selectorOffset);
             let wallet = self.context.wallets[selectorInt];
             //let walletBalance = document.getElementById('selected-wallet-balance'); 
+            console.log("Wallet balance a: ");
+            console.log(self.UnlockedBalance_FormattedString(context.walletsListController));
             walletBalance.innerText = `${self.UnlockedBalance_FormattedString(context.walletsListController.records[selectorOffset])} XMR   `;
         } else {
             console.log(context.walletsListController);
             let walletOptions = ``;
             let walletRecords = context.walletsListController.records;
             walletRecords.reverse();
+            
             for (let i = 0; i < walletRecords.length; i++) {
+                console.log("Wallet balance b: ");
                 
                 let wallet = walletRecords[i];
                 let swatch = wallet.swatch.substr(1);
+                    
                 walletOptions = walletOptions + `
                 <div data-walletLabel="${wallet.walletLabel}" data-walletoffset="${i}" data-swatch="${swatch}" data-walletbalance="${self.UnlockedBalance_FormattedString(wallet)}" data-walletid="${wallet._id}" data-walletpublicaddress="${wallet.public_address}" class="hoverable-cell utility optionCell" style="word-break: break-all; height: 66px; position: relative; left: 0px; top: 0px; box-sizing: border-box; width: 100%;">                    
                     <div class="walletIcon medium-32" style="background-image: url('../../../assets/img/wallet-${swatch}@3x.png');"></div>                        
@@ -177,6 +204,7 @@ class ExchangeHelper {
                     </div>
                 </div>
             `;
+            return walletSelectOptions;
             //walletDiv.innerHTML = walletSelectOptions;
         }
         return walletDiv;
