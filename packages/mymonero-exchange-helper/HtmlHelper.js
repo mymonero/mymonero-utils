@@ -128,7 +128,7 @@ class HtmlHelper {
                         </div>
                     </td>
                     <td>
-                        <div class="field_title form-field-title">BTC to be paid out
+                        <div class="field_title form-field-title"><span id="orderStatusPageCurrencyTicker">BTC</span> to be paid out
                             <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                 <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                 <div id="out_amount" class="textInput currencyOutput" type="text">Loading</div>
