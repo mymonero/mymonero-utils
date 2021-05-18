@@ -12,10 +12,13 @@ let XMRcurrencyInput = document.getElementById('XMRcurrencyInput');
 let BTCcurrencyInput = document.getElementById('BTCcurrencyInput');
 let currencyInputTimer;
 
-BTCAddressInputListener = function() {
+outAddressInputListener = function(event) {
+    console.log(event);
+    console.log(this);
+    console.log(event.which)
     let div = document.getElementById('btc-invalid');
-    let btcAddressInput = document.getElementById("btcAddress");
-    if ((Utils.validateBTCAddress(btcAddressInput.value) == false) && div == null) {
+    let outAddressInput = document.getElementById("outAddress");
+    if ((Utils.validateoutAddress(outAddressInput.value) == false) && div == null) {
         let error = document.createElement('div');
         error.classList.add('message-label');
         error.id = 'btc-invalid';
@@ -306,13 +309,13 @@ backButtonClickListener = function() {
     viewOrderBtn.style.display = "block";
 }
 
-function clearCurrencies() {
-    XMRcurrencyInput.value = "";
-    BTCcurrencyInput.value = "";
+function clearCurrencyInputValues() {
+    document.getElementById("inCurrencyValue").value = "";
+    document.getElementById("outCurrencyValue").value = "";
 }
 
-orderBtnClickedListener = function(orderStarted, ExchangeFunctions) {
-    console.log("orderbtnclicked");
+orderButtonClickedListener = function(orderStarted, ExchangeFunctions) {
+    // 1. Do validation
     if (validateOrder) {
         console.log("Order valid");
     }
@@ -325,25 +328,29 @@ validateOrder = function() {
     let validationError = false;
     console.log(validationMessages);
     if (orderStarted == true) {
-        return;
+
+        return false;
     } 
     if (validationMessages.firstChild !== null) {
         validationMessages.firstChild.style.color = "#ff0000";
         validationError = true;
-        return;
+        return false;
     }
     if (addressValidation.firstChild !== null) {
         addressValidation.firstChild.style.color = "#ff0000";
         validationError = true;
-        return;
+        return false;
     }
+
 }
 
 updateCurrencyLabels = function(event) {
     let coinTickerCode = event.srcElement.value;
     let coinName = CurrencyMetadata[coinTickerCode].fullName.toUpperCase();
+    document.getElementById("orderStatusPageCurrencyTicker").innerText = coinName;
     document.getElementById("outCurrencyCoinName").innerText = coinName;
     document.getElementById("outAddress").placeholder = `Destination ${coinTickerCode} Address`;    
+    clearCurrencyInputValues();
 }
 
 // TODO: Finish refactoring this to clean up ExchangeScript.js
@@ -368,7 +375,7 @@ updateCurrencyLabels = function(event) {
 //     loaderPage.classList.add('active');
 //     let amount = document.getElementById('XMRcurrencyInput').value;
 //     let amount_currency = 'XMR';
-//     let btc_dest_address = document.getElementById('btcAddress').value;
+//     let btc_dest_address = document.getElementById('outAddress').value;
 //     let test = ExchangeFunctions.createNewOrder(amount, amount_currency, btc_dest_address).then((response) => {
 //         order = response.data;
 //         orderCreated = true;
@@ -419,13 +426,13 @@ updateCurrencyLabels = function(event) {
 
 
 module.exports = { 
-    BTCAddressInputListener,
+    outAddressInputListener,
     XMRCurrencyInputKeydownListener,
     BTCCurrencyKeydownListener,
     walletSelectorClickListener,
     xmrBalanceChecks,
     btcBalanceChecks,
-    orderBtnClickedListener,
+    orderButtonClickedListener,
     updateCurrencyLabels,
     validateOrder
-};
+};  
