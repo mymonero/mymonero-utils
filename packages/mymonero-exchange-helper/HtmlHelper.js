@@ -8,11 +8,11 @@ class HtmlHelper {
 
     getBaseWalletSelector() {
         return `
-        <div id="wallet-selector" class="WalletSelectView ListCustomSelectView form_field">
-        <div data-walletoffset="0" data-walletpublicaddress="47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9" data-walletlabel="1" data-swatch="6B696B" data-walletbalance="0.00060291" data-walletid="849b2200-991e-11eb-a54c-51789ea8a399" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView" style="">
+        
+        <div data-walletoffset="0" data-walletpublicaddress="47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9" data-walletlabel="1" data-swatch="6B696B" data-walletbalance="0.00011111" data-walletid="849b2200-991e-11eb-a54c-51789ea8a399" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView" style="">
                 <div id="selected-wallet-icon" class="walletIcon medium-32" style="background-image: url('../../../assets/img/wallet-6B696B@3x.png')"></div>
                 <div id="selected-wallet-label" class="walletName">1</div>
-                <div id="selected-wallet-balance" class="description-label">0.00060291 XMR   </div>
+                <div id="selected-wallet-balance" class="description-label">0.00011111 XMR   </div>
             </div>
             <div id="wallet-options" class="options_containerView">
                 <div class="options_cellViews_containerView" style="position: relative; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 20; overflow-y: auto; max-height: 174.9px;">
@@ -25,7 +25,7 @@ class HtmlHelper {
             
                 </div>
             </div>
-        </div>`
+        `
     }
 
     getBaseForm() {
