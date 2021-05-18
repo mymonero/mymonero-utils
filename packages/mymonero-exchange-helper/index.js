@@ -2,6 +2,8 @@ const HtmlHelper = require("./HtmlHelper");
 const WalletHelper = require("./WalletHelper")
 const html = require("./HtmlHelper")
 const EventListeners = require("./EventListeners")
+const TimerHelper = require('./TimerHelper');
+const CurrencyMetadata = require('./CurrencyMetadata')
 //const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 
 class ExchangeHelper {
@@ -28,6 +30,8 @@ class ExchangeHelper {
         this.htmlHelper = new HtmlHelper();
         this.baseForm = this.htmlHelper.getBaseForm();
         this.eventListeners = EventListeners;
+        this.timerHelper = TimerHelper;
+        this.currencyMetadata = CurrencyMetadata;
         console.log(this.eventListeners);
     }
 
