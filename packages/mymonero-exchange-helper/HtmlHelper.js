@@ -84,14 +84,12 @@ class HtmlHelper {
             <div id="validation-messages"></div>
             <div id="address-messages"></div>
             <div id="server-messages"></div>
-            <div id="test">test</div>
         </div>
                 
         </div>
         <div id="order-status">
 
         </div>
-        <div id="wtf">!</div>
     </div>
     <div id="exchangePage">
         <div class="field_title form-field-title">
