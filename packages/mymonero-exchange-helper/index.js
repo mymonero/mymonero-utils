@@ -6,6 +6,7 @@ const TimerHelper = require('./TimerHelper');
 const CurrencyMetadata = require('./CurrencyMetadata')
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 const JSBigInt = require('@mymonero/mymonero-bigint')
+const ErrorHelper = require("./ErrorHelper")
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
@@ -33,6 +34,7 @@ class ExchangeHelper {
         this.eventListeners = EventListeners;
         this.timerHelper = TimerHelper;
         this.currencyMetadata = CurrencyMetadata;
+        this.errorHelper = ErrorHelper;
         console.log(this.eventListeners);
     }
 
