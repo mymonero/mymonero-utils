@@ -64,6 +64,22 @@ async function createOrder() {
     console.log(response)
 }
 
+async function getEstimatedAmount() {
+    let instance = new integration();
+    let response
+    let fromCurrency = 'xmr';
+    let toCurrency = 'btc';
+    let flow = "standard";
+    let fromAmount = "0.5";
+    let toAmount = "";
+    try {
+        response = await instance.getEstimatedAmount(fromCurrency, toCurrency, flow, fromAmount, toAmount);
+    } catch (error) {
+        console.log(error);
+    }
+    console.log(response);
+}
+
 (async() => {
 
     console.log('before start');
@@ -79,6 +95,8 @@ async function createOrder() {
 
     // response = await createOrder()
     // console.log(response);
+    response = await getEstimatedAmount();
+    console.log(response);
 
     console.log('after start');
 })();
