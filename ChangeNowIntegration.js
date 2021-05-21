@@ -7,7 +7,7 @@ class ChangeNowIntegration {
         this.apiUrl = "https://api.changenow.io";
         this.apiVersion = "v2";
         // this.currencyToExchange = "xmr2btc";
-        this.apiKey = apiKey.key;
+        this.apiKey = apiKey;
     }
 
     // For listing whether XMR is available via the fixed flow method
