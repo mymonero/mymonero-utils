@@ -142,6 +142,7 @@ class ChangeNowIntegration {
     }
 
     // This API endpoint returns estimated exchange amount for the exchange and some additional fields. Accepts to and from currencies, currencies' networks, exchange flow, and RateID.
+    // While this works for xmr -> btc, I've seen that in certain cases, the request would fail for something like usdt if a network isn't specified for usdt
     getEstimatedAmount(fromCurrency, toCurrency, flow, fromAmount, toAmount) {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
@@ -183,7 +184,8 @@ class ChangeNowIntegration {
 
     // 
     // Create offer
-    createOfferWithFromAmount(fromCurrency, toCurrency, flow, fromAmount, refundAddress) {
+    // type should be 'reverse' for a fixed toAmount -- say we want 0.3 BTC, we'd set the toAmount to 0.3, and the type to "reverse"
+    createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, address, refundAddress, type = "direct") {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
             /*
@@ -206,7 +208,10 @@ class ChangeNowIntegration {
                 toCurrency,
                 flow,
                 fromAmount,
-                type: "direct"
+                toAmount,
+                type,
+                address,
+                refundAddress
             });
     
             var config = {
@@ -221,6 +226,17 @@ class ChangeNowIntegration {
 
             console.log("Payload for creating offer");
             console.log(data)
+
+            axios(config).then(function (response) {                
+                if (response.data.result == true) {
+                    resolve(response.data);
+                } else {
+                    reject(response.data);
+                }
+            })
+            .catch(function (error) {
+                reject(error)
+            });
 
             /* Returned data
             
@@ -257,7 +273,10 @@ class ChangeNowIntegration {
 
             var config = {
                 method: 'get',
-                url: `${this.getApiPath()}exchange/by-id?id=716bcd0e10728c`,
+                url: `${this.getApiPath()}exchange/by-id`,
+                params: {
+                    id: txId
+                },
                 headers: { 
                     'x-changenow-api-key': `${this.apiKey}`
                 }
