@@ -1,2 +1,2 @@
 let key = "changethistoyourapikeyfromchangenow";
-module.exports = { key }
+module.exports = key
