@@ -10,3 +10,5 @@ If you would like to integrate cryptocurrency exchange in your own software and 
 2. Copy example.apiKey.js to apiKey.js (apiKey.js is in the gitignore file to prevent someone accidentally uploading a sensitive key to source control)
 3. Edit apiKey.js, replacing the `key` variable with your ChangeNow API key
 
+For examples of how to use the module, refer to examples.js
+
