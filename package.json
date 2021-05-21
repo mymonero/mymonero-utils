@@ -2,7 +2,7 @@
   "name": "@mymonero/changenow-exchange-integration",
   "version": "0.1.5",
   "description": "This module is used by the desktop and web versions of the MyMonero wallet to facilitate the exchange of XMR into other cryptocurrencies via ChangeNow.",
-  "main": "index.js",
+  "main": "ChangeNowIntegration.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
