@@ -383,11 +383,7 @@ class ChangeNowIntegration {
             };
 
             axios(config).then(function (response) {                
-                if (response.data.result == true) {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
+                resolve(response.data);
             })
             .catch(function (error) {
                 reject(error)
