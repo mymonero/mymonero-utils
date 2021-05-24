@@ -10,36 +10,113 @@ class ChangeNowIntegration {
         this.apiKey = apiKey;
     }
 
-    // For listing whether XMR is available via the fixed flow method
-
-    // Requires an API key
-    // Works
-    retrieveFixedFlowParameters(options) {
-        // Expect json string
-        var axios = require('axios');
-
-        var config = {
-            method: 'get',
-            url: `${this.getApiPath()}exchange/currencies?active=true&flow=fixed-rate`,
-            headers: {
-                'x-changenow-api-key': `${this.apiKey}`
-            }
-        };
+    /* 
+    For listing whether XMR is available via the fixed flow method
+    While it may seem counter-intuitive, we have two different methods because though each will return an "XMR" object that will always have supportsFixedRate == true, 
+    fixed-rate may be disabled in cases where ChangeNow has server issues
+    */
+    getFixedFlowCurrencies() {
         return new Promise((resolve, reject) => {
+            var config = {
+                method: 'get',
+                url: `${this.getApiPath()}exchange/currencies?active=true&flow=fixed-rate`,
+                headers: {
+                    'x-changenow-api-key': `${this.apiKey}`
+                }
+            };
+
             axios(config)
                 .then(function (response) {
-                    console.log("then");
-                    let newArr = response.data.filter(responseObj => {
-                        if (responseObj.ticker == 'xmr') {
-                            return true
-                        }
-                    })
-                    resolve(newArr);
+                    resolve(response.data);
                 })
                 .catch(function (error) {
                     reject(error);
                 });
         })
+    }
+
+    getStandardFlowCurrencies() {
+        return new Promise((resolve, reject) => {
+            var config = {
+                method: 'get',
+                url: `${this.getApiPath()}exchange/currencies?active=true&flow=standard`,
+                headers: {
+                    'x-changenow-api-key': `${this.apiKey}`
+                }
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    reject(error);
+                });
+        })
+    }
+
+    // returns a single Monero-specific currency object when passed input from retrieveFixedFlowParameters or retrieveStandardFlowParameters
+    filterMoneroCurrencyData(arrayToFilter) {
+        try {
+            let newArr = arrayToFilter.filter(arrayToFilter => {
+                if (arrayToFilter.ticker == 'xmr') {
+                    return true
+                }
+            })
+            return newArr;
+        } catch (Error) {
+            throw Error;
+        }
+    }
+
+    // Requires an API key
+    // Works
+    async retrieveFilteredMoneroCurrencyData(arrayToFilter) {
+        // Expect json string
+        var axios = require('axios');
+        console.log(this);
+        try {
+            console.log("Attempting to retrieve parameters");
+            const parameters = await Promise.allSettled([this.getFixedFlowCurrencies(), this.getStandardFlowParameters()])
+            let parameterObj = {}
+            if (parameters[0].status == "fulfilled") {
+                parameterObj.fixedRateParameters = this.filterMoneroCurrencyData(parameters[0].value);
+            }
+            if (parameters[1].status == "fulfilled") {
+                parameterObj.standardRateParameters = this.filterMoneroCurrencyData(parameters[1].value);
+            }
+            console.log(parameterObj);
+            //let arrayToFilter = await this.getFixedFlowCurrencies();
+            return parameterObj;
+        } catch (error) {
+            throw error;
+        }
+
+        // return new Promise((resolve, reject) => {
+        //     let arrayToFilter = await this.getFixedFlowCurrencies();
+
+        //     let newArr = arrayToFilter.filter(responseObj => {
+        //         if (responseObj.ticker == 'xmr') {
+        //             return true
+        //         }
+        //     })
+
+        //     resolve(newArr);
+
+        //     // axios(config)
+        //     //     .then(function (response) {
+        //     //         console.log("then");
+        //     //         let newArr = response.data.filter(responseObj => {
+        //     //             if (responseObj.ticker == 'xmr') {
+        //     //                 return true
+        //     //             }
+        //     //         })
+        //     //         resolve(newArr);
+        //     //     })
+        //     //     .catch(function (error) {
+        //     //         reject(error);
+        //     //     });
+        // })
     }
 
     getApiPath() {
@@ -49,7 +126,7 @@ class ChangeNowIntegration {
 
     // For listing whether XMR is available via the standard flow method
     // Works
-    retrieveStandardFlowParameters(options) {
+    getStandardFlowParameters() {
         // Expect json string
         var axios = require('axios');
         var url = `${this.getApiPath()}exchange/currencies?active=true&flow=standard`
