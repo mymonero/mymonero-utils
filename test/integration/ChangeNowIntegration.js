@@ -3,18 +3,6 @@ const { it } = require('mocha');
 const ChangeNowIntegration = require('../../ChangeNowIntegration');
 const expect = require("chai").expect;
 var instance = new ChangeNowIntegration();
-// get transaction status
-//estimated exchange amount
-// List of available currencies
-//  -- fixed-rate
-//  -- standard
-// minimal exchange amount
-// exchange range
-// estimated exchange amount
-// create transaction
-// transaction status
-// address validation
-//const request = require("supertest")(instance.getApiPath());
 
 describe('ChangeNow API integration', async function() {
     describe('Validate cryptocurrency addresses', function() {
