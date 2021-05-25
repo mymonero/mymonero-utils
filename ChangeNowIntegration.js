@@ -193,7 +193,7 @@ class ChangeNowIntegration {
     }
 
     // This API endpoint returns estimated exchange amount for the exchange and some additional fields. Accepts to and from currencies, currencies' networks, exchange flow, and RateID.
-    getExchangeRange(fromCurrency, toCurrency) {
+    getExchangeRange(fromCurrency, toCurrency, flow) {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
 
@@ -247,11 +247,7 @@ class ChangeNowIntegration {
             };
             
             axios(config).then(function (response) {                
-                if (response.data.result == true) {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
+                resolve(response.data);
             })
             .catch(function (error) {
                 reject(error)
@@ -305,11 +301,7 @@ class ChangeNowIntegration {
             console.log(data)
 
             axios(config).then(function (response) {                
-                if (response.data.result == true) {
-                    resolve(response.data);
-                } else {
-                    reject(response.data);
-                }
+                resolve(response.data);
             })
             .catch(function (error) {
                 reject(error)
@@ -361,8 +353,9 @@ class ChangeNowIntegration {
 
             axios(config).then(function (response) {
                 console.log(JSON.stringify(response.data));
+                resolve(response.data);
             }).catch(function (error) {
-                console.log(error);
+                reject(error);
             });
         })
     }
