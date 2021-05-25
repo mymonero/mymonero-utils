@@ -1,4 +1,5 @@
 const axios = require("axios");
+const ChangeNowIntegration = require("./ChangeNowIntegration");
 const integration = require("./ChangeNowIntegration")
 
 async function initialise() {
@@ -54,14 +55,6 @@ async function validateAddresses() {
     console.log(response)
     console.log("3 worked")
     return true
-}
-
-async function createOrder() {
-    let instance = new integration();
-    let response
-    // valid BTC address
-    response = await instance.createOrder()
-    console.log(response)
 }
 
 async function getEstimatedAmount() {
@@ -134,8 +127,8 @@ async function getTransactionStatus() {
 
 (async() => {
 
-    console.log('before start');
-    let response;
+    // console.log('before start');
+    // let response;
     // response = await initialise();
     // console.log(response);
 
@@ -154,8 +147,12 @@ async function getTransactionStatus() {
     // response = await createOrder();
     // console.log(response);
 
-    response = await getTransactionStatus();
-    console.log(response);
+    // response = await getTransactionStatus();
+    // console.log(response);
+    let instance = await new ChangeNowIntegration()
+    let meh = await instance.retrieveFilteredMoneroCurrencyData().then(response => {
+        console.log(response);
+    })
 
     console.log('after start');
 })();
