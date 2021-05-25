@@ -46,20 +46,8 @@ describe('ChangeNow API integration', async function() {
             })
         })
     }) 
-    
-/*
-    response = await instance.validateAddress('btc', '3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm')
-    console.log(response)
-    console.log("1 worked")
-    // valid XMR address
-    response = await instance.validateAddress('xmr', '47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9')
-    console.log(response)
-    console.log("2 worked")
-    // invalid XMR address
-    response = await instance.validateAddress('xmr', '3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm')
-    */ 
 
-    describe('list available currencies -- different flow mechanisms', function() {
+    describe('list available currencies -- standard and fixed flow mechanisms', function() {
         
         describe('using fixed-rate flow', function(done) {
             it('should return a JSON array with an object for each currency', () => {
@@ -100,9 +88,30 @@ describe('ChangeNow API integration', async function() {
         })
     })
 
+    describe('create order', function(done) {
+        it('should return a JSON object describing the created order', () => {
+            let fromCurrency = "xmr"
+            let toCurrency = "btc"
+            let flow = "standard"
+            let fromAmount = "0.5"
+            let toAmount = ""
+            let type = "direct"
+            let refundAddress = "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9"
+            let destinationAddress = "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm";
+            return instance.createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, destinationAddress, refundAddress).then(response => {
+                expect(response).to.be.an('object');
+                expect(response).to.have.all.keys(
+                    "fromAmount","toAmount","flow","type",
+                    "payinAddress","payoutAddress","payoutExtraId","fromCurrency",
+                    "toCurrency","refundAddress","refundExtraId","id","fromNetwork","toNetwork"
+                );
+            })
+        })
+    })
+
     describe('get transaction status', function(done) {
         it('should return a JSON array describing the transaction that has the specified transaction id', () => {
-            return instance.getTransactionStatus('').then(response => {
+            return instance.getTransactionStatus('659fc992aa5bfd').then(response => {
                 
             })
         })
@@ -122,3 +131,48 @@ describe('ChangeNow API integration', async function() {
 
 
 });
+
+describe('create order', function(done) {
+    it('should return a JSON object describing the created order', () => {
+        this.timeout(5000)
+        let fromCurrency = "xmr"
+        let toCurrency = "btc"
+        let flow = "standard"
+        let fromAmount = "0.5"
+        let toAmount = ""
+        let type = "direct"
+        let refundAddress = "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9"
+        let destinationAddress = "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm";
+        return instance.createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, destinationAddress, refundAddress).then(response => {
+            expect(response).to.be.an('object');
+            // note -- while the official docs specify payoutExtraId and refundExtraId return, they don't
+            expect(response).to.have.all.keys(
+                "fromAmount","toAmount","flow","type",
+                "payinAddress","payoutAddress","fromCurrency",
+                "toCurrency","refundAddress","id","fromNetwork","toNetwork" /** "payoutExtraId", "refundExtraId"  */
+            );
+        })
+    })
+})
+
+/**
+ * 
+                "payoutExtraId","fromCurrency",
+                "toCurrency","refundAddress","refundExtraId","id","fromNetwork","toNetwork"
+ */
+
+/**
+ * "flow": "standard"
+  "fromAmount": 0.5
+  "fromCurrency": "xmr"
+  "fromNetwork": "xmr"
+  "id": "659fc992aa5bfd"
+  "payinAddress": "4GS1tzCYWTe5BtZoJYrD6mRUMMh2iaA5GjCfBAEcD8kpKsx8eYaFZBdfHJTQMZCRV87cVB1xmKJADhbCnpv61aUSAuwtFz4ryQh1u7hsxm"
+  "payoutAddress": "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm"
+  "refundAddress": "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9"
+  "toAmount": 0.0032083
+  "toCurrency": "btc"
+  "toNetwork": "btc"
+  "type": "direct"
+ * 
+*/
