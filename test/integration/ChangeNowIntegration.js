@@ -1,4 +1,5 @@
 
+const { it } = require('mocha');
 const ChangeNowIntegration = require('../../ChangeNowIntegration');
 const expect = require("chai").expect;
 var instance = new ChangeNowIntegration();
@@ -88,8 +89,72 @@ describe('ChangeNow API integration', async function() {
         })
     })
 
+    describe('get transaction status', function(done) {
+        it('should return a JSON array describing the transaction that has the specified transaction id', () => {
+            return instance.getTransactionStatus('659fc992aa5bfd').then(response => {
+                expect(response).to.be.an('object');
+                expect(response).to.have.all.keys(
+                    "actionsAvailable",
+                    "amountFrom",
+                    "amountTo",
+                    "createdAt",
+                    "depositReceivedAt",
+                    "expectedAmountFrom",
+                    "expectedAmountTo",
+                    "fromCurrency",
+                    "fromLegacyTicker",
+                    "fromNetwork",
+                    "id",
+                    "payinAddress",
+                    "payinExtraId",
+                    "payinHash",
+                    "payoutAddress",
+                    "payoutExtraId",
+                    "payoutHash",
+                    "refundAddress",
+                    "refundExtraId",
+                    "status",
+                    "toCurrency",
+                    "toLegacyTicker",
+                    "toNetwork",
+                    "updatedAt",
+                    "validUntil",
+                );
+
+            })
+        })
+    })
+
+    describe('get estimated exchange amount', function(done) {
+        it('should return a JSON object estimating the exchange amount between a specified fromCurrency and a toCurrency given a from amount', () => {
+            let fromCurrency = 'xmr';
+            let toCurrency = 'btc';
+            let flow = "standard";
+            let fromAmount = "0.5";
+            let toAmount = "";
+            return instance.getEstimatedAmount(fromCurrency, toCurrency, flow, fromAmount, toAmount).then(response => {
+                expect(response).to.have.all.keys(
+                    "fromCurrency",
+                    "fromNetwork",
+                    "toCurrency",
+                    "toNetwork",
+                    "flow",
+                    "type",
+                    "rateId",
+                    "validUntil",
+                    "transactionSpeedForecast",
+                    "warningMessage",
+                    "fromAmount",
+                    "toAmount"
+                );
+            })
+        });
+    })
+
+
     describe('create order', function(done) {
         it('should return a JSON object describing the created order', () => {
+            this.timeout(5000)
             let fromCurrency = "xmr"
             let toCurrency = "btc"
             let flow = "standard"
@@ -100,79 +165,58 @@ describe('ChangeNow API integration', async function() {
             let destinationAddress = "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm";
             return instance.createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, destinationAddress, refundAddress).then(response => {
                 expect(response).to.be.an('object');
+                // note -- while the official docs specify payoutExtraId and refundExtraId return, they don't
                 expect(response).to.have.all.keys(
-                    "fromAmount","toAmount","flow","type",
-                    "payinAddress","payoutAddress","payoutExtraId","fromCurrency",
-                    "toCurrency","refundAddress","refundExtraId","id","fromNetwork","toNetwork"
+                    "fromAmount",
+                    "toAmount",
+                    "flow",
+                    "type",
+                    "payinAddress",
+                    "payoutAddress",
+                    "fromCurrency",
+                    "toCurrency",
+                    "refundAddress",
+                    "id",
+                    "fromNetwork",
+                    "toNetwork" /** "payoutExtraId", "refundExtraId"  */
+                );
+            })
+        })
+    })
+    
+
+    describe('get minimal exchange amount', function(done) {
+        it('should return a JSON object describing the minimum exchange amount between a specified fromCurrency and a toCurrency', () => {
+            return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
+                this.timeout(5000)
+                expect(response).to.have.all.keys(
+                    "fromCurrency",
+                    "fromNetwork",
+                    "toCurrency",
+                    "toNetwork",
+                    "flow",
+                    "minAmount"
+                );
+            })    
+        })
+    })
+
+    describe('get current exchange range for currency', function(done) {
+        it('should return a JSON object describing the current exchange rate between a specified fromCurrency and a toCurrency', () => {
+            return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
+                this.timeout(5000)
+                expect(response).to.have.all.keys(
+                    "fromCurrency",
+                    "fromNetwork",
+                    "toCurrency",
+                    "toNetwork",
+                    "flow",
+                    "maxAmount",
+                    "minAmount",
                 );
             })
         })
     })
 
-    describe('get transaction status', function(done) {
-        it('should return a JSON array describing the transaction that has the specified transaction id', () => {
-            return instance.getTransactionStatus('659fc992aa5bfd').then(response => {
-                
-            })
-        })
-    })
-
-    describe('get estimated exchange amount', function(done) {
-
-    })
-
-    describe('get minimal exchange amount', function(done) {
-        
-    })
-
-    describe('get current exchange range for currency', function(done) {
-        
-    })
-
 
 });
-
-describe('create order', function(done) {
-    it('should return a JSON object describing the created order', () => {
-        this.timeout(5000)
-        let fromCurrency = "xmr"
-        let toCurrency = "btc"
-        let flow = "standard"
-        let fromAmount = "0.5"
-        let toAmount = ""
-        let type = "direct"
-        let refundAddress = "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9"
-        let destinationAddress = "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm";
-        return instance.createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, destinationAddress, refundAddress).then(response => {
-            expect(response).to.be.an('object');
-            // note -- while the official docs specify payoutExtraId and refundExtraId return, they don't
-            expect(response).to.have.all.keys(
-                "fromAmount","toAmount","flow","type",
-                "payinAddress","payoutAddress","fromCurrency",
-                "toCurrency","refundAddress","id","fromNetwork","toNetwork" /** "payoutExtraId", "refundExtraId"  */
-            );
-        })
-    })
-})
-
-/**
- * 
-                "payoutExtraId","fromCurrency",
-                "toCurrency","refundAddress","refundExtraId","id","fromNetwork","toNetwork"
- */
-
-/**
- * "flow": "standard"
-  "fromAmount": 0.5
-  "fromCurrency": "xmr"
-  "fromNetwork": "xmr"
-  "id": "659fc992aa5bfd"
-  "payinAddress": "4GS1tzCYWTe5BtZoJYrD6mRUMMh2iaA5GjCfBAEcD8kpKsx8eYaFZBdfHJTQMZCRV87cVB1xmKJADhbCnpv61aUSAuwtFz4ryQh1u7hsxm"
-  "payoutAddress": "3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm"
-  "refundAddress": "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9"
-  "toAmount": 0.0032083
-  "toCurrency": "btc"
-  "toNetwork": "btc"
-  "type": "direct"
- * 
-*/
