@@ -4,7 +4,7 @@
   "description": "This module is used by the desktop and web versions of the MyMonero wallet to facilitate the exchange of XMR into other cryptocurrencies via ChangeNow.",
   "main": "ChangeNowIntegration.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive --reporter spec"
   },
   "keywords": [
     "cryptocurrency-conversion",
@@ -27,5 +27,9 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0"
   }
 }
