@@ -32,8 +32,7 @@
     "coverage": "nyc report $npm_package_options_coverage | coveralls",
     "lint": "standard --fix $npm_package_options_standard",
     "bootstrap": "lerna bootstrap --hoist --force-local",
-    "test": "run-s test:unit env:integration env:integration:bootup test:integration",
-    "test:unit": "cross-env NODE_ENV=test mocha packages/*/test/unit $npm_package_options_mocha"
+    "test": "cross-env NODE_ENV=test mocha packages/*/test/unit $npm_package_options_mocha"
   },
   "dependencies": {
     "coveralls": "^3.1.0",
