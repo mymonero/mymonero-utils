@@ -3,8 +3,7 @@
 function IsValidPaymentIDOrNoPaymentID (payment_id__orNil) {
   if (
     payment_id__orNil == null ||
-		payment_id__orNil == '' ||
-		typeof payment_id__orNil === 'undefined'
+		payment_id__orNil == ''
   ) {
     return true // no pid
   }
@@ -34,7 +33,7 @@ exports.IsValidLongPaymentID = IsValidLongPaymentID
 
 function IsValidPaymentIDOfLength (payment_id, required_length) {
   if (required_length != 16 && required_length != 64) {
-    throw 'unexpected IsValidPaymentIDOfLength required_length'
+    throw Error('unexpected IsValidPaymentIDOfLength required_length')
   }
   let payment_id_length = payment_id.length
   if (payment_id_length !== required_length) {
@@ -48,5 +47,3 @@ function IsValidPaymentIDOfLength (payment_id, required_length) {
   }
   return true
 }
-
-exports.IsValidShortPaymentID = IsValidShortPaymentID
