@@ -1,4 +1,3 @@
-
 'use strict'
 
 function New_ParametersForWalletRequest (address, view_key__private) {

@@ -35,7 +35,7 @@ exports.default_priority = default_priority
 const SendFunds_ProcessStep_Code = {
   fetchingLatestBalance: 1,
   calculatingFee: 2,
-  fetchingDecoyOutputs: 3, // may get skipped if 0 mixin
+  fetchingDecoyOutputs: 3,
   constructingTransaction: 4, // may go back to .calculatingFee
   submittingTransaction: 5
 }
