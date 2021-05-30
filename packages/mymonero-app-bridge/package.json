@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^1.1.4",
+    "@mymonero/mymonero-bigint": "^1.1.3",
     "@mymonero/mymonero-bridge-utils": "^1.1.3",
     "@mymonero/mymonero-nettype": "^1.1.4"
   },
