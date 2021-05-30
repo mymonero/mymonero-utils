@@ -10,6 +10,9 @@
   <a href="https://github.com/mymonero/mymonero-utils/actions?query=branch%3Amaster+workflow%3Aci"><img alt="CI Status" src="https://github.com/mymonero/mymonero-utils/workflows/ci/badge.svg?branch=master"></a>
   <a href="https://snyk.io/test/github/mymonero/mymonero-utils"><img src="https://snyk.io/test/github/mymonero/mymonero-utils/badge.svg"></a>
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg"></a>
+  <a href="https://codecov.io/gh/mymonero/mymonero-utils">
+    <img src="https://codecov.io/gh/mymonero/mymonero-utils/branch/master/graph/badge.svg?token=YCDBLLJJEP"/>
+  </a>
 </p>
 
 > :warning: This project is under heavy development. Expect bugs & breaking changes.
