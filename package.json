@@ -37,7 +37,7 @@
   "dependencies": {
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.3",
-    "mocha": "^8.3.2",
+    "mocha": "^8.4.0",
     "nyc": "^15.1.0"
   },
   "options": {
