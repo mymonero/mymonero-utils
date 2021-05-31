@@ -1,5 +1,7 @@
 const Utils = require('./UtilityFunctions.js');
 const CurrencyMetadata = require("./CurrencyMetadata");
+const ExchangeLibrary = require('@mymonero/mymonero-exchange')
+const ExchangeFunctions = new ExchangeLibrary()
 const validationMessages = document.getElementById('validation-messages');
 //const addressValidation = document.getElementById('address-messages');
 const serverValidation = document.getElementById('server-messages')
@@ -32,7 +34,57 @@ outAddressInputListener = function(event) {
     }
 }
 
-XMRCurrencyInputKeydownListener = function(event) {
+inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeElements) {
+    console.log(exchangeElements);
+    console.log(inCurrencyDiv.value); console.log(outCurrencyDiv.value);
+    ExchangeFunctions.getOfferWithInAmount(inCurrencyDiv.value, outCurrencyDiv.value, inAmount)
+    .then((response) => {
+        // TODO: Refactor to work with input currency rather than 'BTC'
+        const BTCToReceive = parseFloat(response.out_amount)
+        // console.log("wtf");
+        // const selectedWallet = document.getElementById('selected-wallet')
+        // const tx_feeElem = document.getElementById('tx-fee')
+        // const tx_fee = tx_feeElem.dataset.txFee
+        // const tx_fee_double = parseFloat(tx_fee)
+        // const walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance)
+        // const walletMaxSpend = walletMaxSpendDouble - tx_fee
+        
+        // if ((walletMaxSpend - XMRbalance) < 0) {
+        //   const error = document.createElement('div')
+        //   error.classList.add('message-label')
+        //   error.id = 'xmrexceeded'
+        //   error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`
+        //   validationMessages.appendChild(error)
+        // }
+        // if (BTCToReceive.toFixed(8) > ExchangeFunctions.currentRates.out_max) {
+        //   const error = document.createElement('div')
+        //   error.classList.add('message-label')
+        //   error.id = 'xmrexceeded'
+        //   error.innerHTML = `You cannot exchange more than ${ExchangeFunctions.currentRates.in_max.toFixed(12)} XMR`
+        //   validationMessages.appendChild(error)
+        // }
+        // if (BTCToReceive.toFixed(8) < ExchangeFunctions.currentRates.lower_limit) {
+        //   const error = document.createElement('div')
+        //   error.classList.add('message-label')
+        //   error.id = 'xmrtoolow'
+        //   error.innerHTML = `You cannot exchange less than ${ExchangeFunctions.currentRates.in_min.toFixed(12)} XMR.`
+        //   validationMessages.appendChild(error)
+        // }
+        //let outCurrencyValue = document.getElementById('outCurrencyValue')
+        exchangeElements.outCurrencyValue.value = BTCToReceive.toFixed(8)
+    }).catch((error) => {
+        //handleOfferError(error)
+        console.log(error);
+        let errorDiv = handleOfferError(error);
+        exchangeElements.serverValidation.appendChild(errorDiv);
+        exchangeElements.orderBtn.style.display = 'block'
+        orderStarted = false
+    })
+}
+
+// Let's see if we can make this generic -- we need the value, and the precision of the accompanying currency
+inCurrencyInputKeydownListener = function(event) {
+    console.log(event);
     if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
     return;
 
@@ -47,7 +99,7 @@ XMRCurrencyInputKeydownListener = function(event) {
 
     event.preventDefault();
     return;
- }
+}
 
  walletSelectorClickListener = function(event) {
     let walletElement = document.getElementById('wallet-options');
@@ -97,8 +149,8 @@ BTCCurrencyKeydownListener = function(event) {
     return;
 }
 
-
-xmrBalanceChecks = function(exchangeFunctions) {
+// formerly xmrBalanceChecks
+inBalanceChecks = function(exchangeFunctions) {
     let BTCToReceive;
     let XMRbalance = parseFloat(XMRcurrencyInput.value);
     let in_amount = XMRbalance.toFixed(12);
@@ -194,7 +246,7 @@ xmrBalanceChecks = function(exchangeFunctions) {
     }, 1500);
 }
 
-btcBalanceChecks = function(exchangeFunctions) {    
+outBalanceChecks = function(exchangeFunctions) {    
     let BTCToReceive;
     console.log(BTCcurrencyInput);
     let BTCbalance = parseFloat(BTCcurrencyInput.value);
@@ -426,13 +478,14 @@ updateCurrencyLabels = function(event) {
 
 
 module.exports = { 
-    outAddressInputListener,
-    XMRCurrencyInputKeydownListener,
     BTCCurrencyKeydownListener,
+    outAddressInputListener,
+    inCurrencyInputKeydownListener,
     walletSelectorClickListener,
-    xmrBalanceChecks,
-    btcBalanceChecks,
+    inBalanceChecks,
     orderButtonClickedListener,
     updateCurrencyLabels,
-    validateOrder
+    validateOrder,
+    outBalanceChecks,
+    inCurrencyGetOffer
 };  

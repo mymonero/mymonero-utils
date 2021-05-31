@@ -7,6 +7,9 @@ const CurrencyMetadata = require('./CurrencyMetadata')
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 const JSBigInt = require('@mymonero/mymonero-bigint')
 const ErrorHelper = require("./ErrorHelper")
+const InitialiseExchange = require("./initialiseExchange")
+const ExchangeFunctions = require("@mymonero/mymonero-exchange")
+const exchangeFunctions = new ExchangeFunctions();
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
@@ -29,16 +32,41 @@ class ExchangeHelper {
         // //this.fetch = fetch;
 
         // Fetch form we'll insert into the content view's innerHTML
+        // These declarations make these functions accessible publically
         this.htmlHelper = new HtmlHelper();
         this.baseForm = this.htmlHelper.getBaseForm();
         this.eventListeners = EventListeners;
         this.timerHelper = TimerHelper;
         this.currencyMetadata = CurrencyMetadata;
         this.errorHelper = ErrorHelper;
-        console.log(this.eventListeners);
+        this.openClickableLink = this.openClickableLink;
+        this.isValidKey = this.isValidKey;
+        this.setSendingFee = this.setSendingFee;
+        this.renderWalletSelector = this.renderWalletSelector;
+        this.initialiseExchangeHelper = InitialiseExchange;
+        this.doInit = this.doInit;
+        this.exchangeFunctions = exchangeFunctions;
     }
 
-    
+    doInit(context) {
+        const self = this;
+        console.log(this);
+        console.log(self);
+        InitialiseExchange(context, self);
+    }
+
+    renderWalletSelector(walletRecords, elemToSet) {
+        if (walletRecords.length > 0) {
+          let walletHtml = this.walletSelectorTemplate(walletRecords)
+          let walletSelector = elemToSet;
+          walletSelector.innerHTML = walletHtml;
+        }   
+      }
+
+    setSendingFee(feeString, elemToSet) {
+        elemToSet.dataset.txFee = feeString;
+        elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ ${feeString} XMR EST. FEE</span>`
+    }
 
     walletSelectorElement(walletContextObject) {
 
@@ -104,12 +132,18 @@ class ExchangeHelper {
         return selectList;
     }
 
-
+    // Returns true / false based on key array
+    isValidKey(event, allowableKeyArray) {
+        if (allowableKeyArray.includes(event.which)) {
+            return true
+        }
+        return false
+    }
     
     _setup_walletExchangeOptions(context) {
         
     }
-
+ 
     UnlockedBalance_FormattedString = function(wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
         const self = this
         const balance_JSBigInt = self.UnlockedBalance_JSBigInt(wallet)
@@ -146,7 +180,7 @@ class ExchangeHelper {
     }
 
     // we should refactor this to return a template instead of HTML
-    walletSelectorTemplate(context) {
+    walletSelectorTemplate(walletList) {
         console.log(this);
         console.log("walletSelectorTemplate invoked");
         let self = this;
@@ -166,12 +200,12 @@ class ExchangeHelper {
             let wallet = self.context.wallets[selectorInt];
             //let walletBalance = document.getElementById('selected-wallet-balance'); 
             console.log("Wallet balance a: ");
-            console.log(self.UnlockedBalance_FormattedString(context.walletsListController));
-            walletBalance.innerText = `${self.UnlockedBalance_FormattedString(context.walletsListController.records[selectorOffset])} XMR   `;
+            console.log(self.UnlockedBalance_FormattedString(walletList));
+            walletBalance.innerText = `${self.UnlockedBalance_FormattedString(walletList[selectorOffset])} XMR   `;
         } else {
-            console.log(context.walletsListController);
+            console.log(walletList);
             let walletOptions = ``;
-            let walletRecords = context.walletsListController.records;
+            let walletRecords = walletList;
             walletRecords.reverse();
             
             for (let i = 0; i < walletRecords.length; i++) {
@@ -190,10 +224,10 @@ class ExchangeHelper {
             }         
             //console.log('wallet html ran options '+i)
             // get oldest wallet based on how wallets are inserted into wallets as a zero element, changing indexes backwards
-            let size = context.walletsListController.records.length;
+            let size = walletList.length;
             size = size - 1;
             let defaultOffset = 0;
-            let defaultWallet = context.walletsListController.records[size];
+            let defaultWallet = walletList[size];
             let walletSelectOptions = `
             <div data-walletoffset="0" data-walletpublicaddress="${defaultWallet.public_address}" data-walletLabel="${defaultWallet.walletLabel}" data-swatch="${defaultWallet.swatch.substr(1)}" data-walletbalance="${self.UnlockedBalance_FormattedString(defaultWallet)}" data-walletid="${defaultWallet._id}" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView" style="">
                     <div id="selected-wallet-icon" class="walletIcon medium-32" style="background-image: url('../../../assets/img/wallet-${defaultWallet.swatch.substr(1)}@3x.png')"></div>
@@ -248,6 +282,7 @@ class ExchangeHelper {
 
     // TODO: Pass this function parameters, use those parameters, determine runtime context, open based on runtime context (shell.openExternal for Electron, window.location for web, etc)
     openClickableLink() {
+        // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
         const self = this;
         let referrer_id = self.getAttribute("referrer_id");
         let url = self.getAttribute("url");

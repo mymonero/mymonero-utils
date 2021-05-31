@@ -1,9 +1,11 @@
+const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 class HtmlHelper {
     // This class is designed to return a uniform HTML structure that we can leverage in all JS codebases
     baseForm = "";
     constructor() {
         this.baseForm = this.getBaseForm();
         this.baseWalletSelector = this.getBaseWalletSelector();
+        this.newEstimatedNetworkFeeString = this.newEstimatedNetworkFeeString;
     }
 
     getBaseWalletSelector() {
@@ -27,6 +29,26 @@ class HtmlHelper {
             </div>
         `
     }
+
+    // TODO: fix imports so that we can leverage this function
+    newEstimatedNetworkFeeString(fee_JSBigInt = 0) {
+        const self = this
+        const estimatedTotalFee_JSBigInt = fee_JSBigInt;
+        const estimatedTotalFee_str = monero_amount_format_utils.formatMoney(estimatedTotalFee_JSBigInt)
+        const estimatedTotalFee_moneroAmountDouble = parseFloat(estimatedTotalFee_str)
+      
+        // const estimatedTotalFee_moneroAmountDouble = 0.028
+        // Just hard-coding this to a reasonable estimate for now as the fee estimator algo uses the median blocksize which results in an estimate about twice what it should be
+        //const displayCcySymbol = self.context.settingsController.displayCcySymbol
+        //const finalizable_ccySymbol = displayCcySymbol
+        const finalizable_formattedAmountString = estimatedTotalFee_str// `${estimatedTotalFee_moneroAmountDouble}`
+        const final_formattedAmountString = finalizable_formattedAmountString
+        const final_ccySymbol = 'XMR'
+        const displayString = `${final_formattedAmountString}`
+        //
+        return displayString
+      }
+      
 
     getBaseForm() {
         return `

@@ -1,6 +1,6 @@
 function handleOfferError(error) {
-    validationMessages.innerHTML = "";
-    serverValidation.innerHTML = "";
+    // exchangeElements.validationMessages.innerHTML = "";
+    // exchangeElements.serverValidation.innerHTML = "";
     let errorDiv = document.createElement('div');
     errorDiv.classList.add('message-label');
     let errorMessage = "";
@@ -16,7 +16,8 @@ function handleOfferError(error) {
     }
     errorDiv.id = 'server-invalid';
     errorDiv.innerHTML = `There was a problem communicating with the server. <br>If this problem keeps occurring, please contact support with a screenshot of the following error: <br>` + errorMessage;
-    serverValidation.appendChild(errorDiv);
+    return errorDiv;
+    //serverValidation.appendChild(errorDiv);
 }
 
 module.exports = { handleOfferError }
