@@ -1,8 +1,87 @@
 "use strict"
 
+const { handleOfferError } = require("./ErrorHelper");
 const ExchangeHelper = require("./index")
-console.log(ExchangeHelper);
 
+function checkDecimals (value, decimals) {
+  console.log("checkDecimals:", value, decimals);
+  const str = value.toString()
+  const strArr = str.split('.')
+  if (strArr.length > 1) {
+    if (strArr[1].length >= decimals) {
+      return false
+    }
+  }
+  return true
+}
+
+function outCurrencyValueKeydownListener(event, exchangeHelper) {
+  let outCurrencyValue = document.getElementById('outCurrencyValue');
+
+  // Test whether the key is allowed or not, and abort execution if not allowed
+  let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
+  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    // These are valid keypresses, but we don't need to request an offer from the API
+    return false
+  }
+
+  let currencyTickerCode = document.getElementById("outCurrencySelectList").value;
+  // We need to limit the number of decimals based on the selected currency
+  // checkDecimals returns false if we exceed the second parameter in decimal places
+  if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
+    console.log("Decimal limit reached");
+    event.preventDefault()
+    return false
+  }
+
+  allowableKeyArray = [110, 46, 190] // decimal point, delete, period
+  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    // These are valid keypresses, but we don't need to request an offer from the API
+    return false
+  }
+  
+  // numpad 0-9, numeric 0-9
+  if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
+    // These are valid keypresses. Return true 
+    return true
+  }
+
+  event.preventDefault()
+}
+
+function inCurrencyValueKeydownListener(event, exchangeHelper) {
+  let inCurrencyValue = document.getElementById('inCurrencyValue');
+
+  // Test whether the key is allowed or not, and abort execution if not allowed
+  let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
+  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    // These are valid keypresses, but we don't need to request an offer from the API
+    return false
+  }
+
+  let currencyTickerCode = document.getElementById("inCurrencySelectList").value;
+  // We need to limit the number of decimals based on the selected currency
+  // checkDecimals returns false if we exceed the second parameter in decimal places
+  if (!checkDecimals(inCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
+    console.log("Decimal limit reached");
+    event.preventDefault()
+    return false
+  }
+
+  allowableKeyArray = [110, 46, 190] // decimal point, delete, period
+  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    // These are valid keypresses, but we don't need to request an offer from the API
+    return false
+  }
+  
+  // numpad 0-9, numeric 0-9
+  if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
+    // These are valid keypresses. Return true 
+    return true
+  }
+
+  event.preventDefault()
+}
 
 function initialiseExchangeHelper(context, exchangeHelper) {
     // console.log(tc);
@@ -81,47 +160,41 @@ function initialiseExchangeHelper(context, exchangeHelper) {
     //   event.preventDefault()
     // }
   
+    // Tests whether the keypress is valid, checks currency precision, aborts if either fail
     const outCurrencyValueKeydownListener = function (event) {
       let outCurrencyValue = document.getElementById('outCurrencyValue');
   
       // Test whether the key is allowed or not, and abort execution if not allowed
-      
       let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
       if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
         // These are valid keypresses, but we don't need to request an offer from the API
-        return
+        return false
       }
   
       let currencyTickerCode = document.getElementById("outCurrencySelectList").value;
-      // arrow keys, delete, backspace
-      // if (event.which == 37 || event.which == 39 || event.which == 46 || event.which == 8) {
-      //   return
-      // }
-      
       // We need to limit the number of decimals based on the selected currency
       // checkDecimals returns false if we exceed the second parameter in decimal places
       if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
         console.log("Decimal limit reached");
         event.preventDefault()
-        return
+        return false
       }
   
       allowableKeyArray = [110, 46, 190] // decimal point, delete, period
       if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
         // These are valid keypresses, but we don't need to request an offer from the API
-        return
+        return false
       }
       
       // numpad 0-9, numeric 0-9
       if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
-        // These are valid keypresses. We need to request an offer from the API
-        exchangeHelper.exchangeFunctions.getOfferWithOutAmount()
-        return
+        // These are valid keypresses. Return true 
+        return true
       }
   
       event.preventDefault()
     }
-  
+
     // const outCurrencyValueKeydownListener = function (event) {
     //   let outCurrencyValue = document.getElementById('outCurrencyValue');
   
@@ -165,21 +238,21 @@ function initialiseExchangeHelper(context, exchangeHelper) {
     //   event.preventDefault()
     // }
   
-    let inCurrencyGetOffer = function(inCurrency, outCurrency, inAmount) {
-      exchangeHelper.exchangeFunctions.getOfferWithInAmount(inCurrency, outCurrency, inAmount)
-          .then((response) => {
-            const BTCToReceive = parseFloat(response.out_amount)
-            let outCurrencyValue = document.getElementById('outCurrencyValue')
-            outCurrencyValue.value = BTCToReceive.toFixed(8)
-          }).catch((error) => {
-            //handleOfferError(error)
-            console.log(error);
-            let errorDiv = handleOfferError(error);
-            serverValidation.appendChild(errorDiv);
-            orderBtn.style.display = 'block'
-            orderStarted = false
-          })
-    }
+    // let inCurrencyGetOffer = function(inCurrency, outCurrency, inAmount) {
+    //   exchangeHelper.exchangeFunctions.getOfferWithInAmount(inCurrency, outCurrency, inAmount)
+    //       .then((response) => {
+    //         const BTCToReceive = parseFloat(response.out_amount)
+    //         let outCurrencyValue = document.getElementById('outCurrencyValue')
+    //         outCurrencyValue.value = BTCToReceive.toFixed(8)
+    //       }).catch((error) => {
+    //         //handleOfferError(error)
+    //         console.log(error);
+    //         let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+    //         serverValidation.appendChild(errorDiv);
+    //         orderBtn.style.display = 'block'
+    //         orderStarted = false
+    //       })
+    // }
       // Coordinates the retrieval of a quote given an out currency and a in amount. Returns a value for outCurrencyValue
         // Coordinates the retrieval of a quote given an out currency and a out amount. Returns a value for inCurrencyValue
         let outCurrencyGetOffer = function(inCurrency, outCurrency, outAmount) {
@@ -224,46 +297,12 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               }
               inCurrencyValue.value = XMRtoReceive.toFixed(12)
             }).catch((error) => {
-              handleOfferError(error)
+              exchangeHelper.errorHelper.handleOfferError;(error)
             })
         }
-        
+
         const outputBalanceChecks = exchangeHelper.eventListeners.outBalanceChecks;
-        const xmrBalanceChecks = function (exchangeElements, exchangeFunctions) {
-  
-          exchangeElements.serverValidation.innerHTML = ''
-          let BTCToReceive = exchangeElements.BTCToReceive
-          const XMRbalance = parseFloat(exchangeElements.inCurrencyValue.value)
-          const in_amount = XMRbalance.toFixed(12)
-          exchangeElements.outCurrencyValue.value = 'Loading...'
-          if (currencyInputTimer !== undefined) {
-            clearTimeout(currencyInputTimer)
-          }
-          if (exchangeHelper.exchangeFunctions.currentRates.in_min > XMRbalance) {
-            const error = document.createElement('div')
-            error.classList.add('message-label')
-            error.id = 'xmrexceeded'
-            error.innerHTML = `You cannot exchange less than ${exchangeHelper.exchangeFunctions.currentRates.in_min} XMR`
-            exchangeElements.validationMessages.appendChild(error)
-            return
-          }
-          if (exchangeHelper.exchangeFunctions.currentRates.in_max < XMRbalance) {
-            const error = document.createElement('div')
-            error.classList.add('message-label')
-            error.id = 'xmrexceeded'
-            error.innerHTML = `You cannot exchange more than ${exchangeHelper.exchangeFunctions.currentRates.in_max} XMR`
-            exchangeElements.validationMessages.appendChild(error)
-            return
-          }
-          exchangeElements.validationMessages.innerHTML = ''
-          exchangeElements.serverValidation.innerHTML = ''
-          currencyInputTimer = setTimeout(() => {
-            let inCurrencyDiv = document.getElementById("inCurrencySelectList");
-            let outCurrencyDiv = document.getElementById("outCurrencySelectList");  
-            let inCurrencyValue = document.getElementById("inCurrencyValue").value;
-            inCurrencyGetOffer(inCurrencyDiv, outCurrencyDiv, inCurrencyValue, exchangeElements)
-          }, 1500)
-        }
+        const inBalanceChecks = exchangeHelper.eventListeners.inBalanceChecks;
   
         function getRates() {
           // it's safe to refresh the sending fee here, because we know the HTML exists in the DOM
@@ -308,7 +347,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           }
           
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
-          inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
+          //inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
           //outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
           outCurrencyValue.addEventListener('keydown', outCurrencyValueKeydownListener)
           console.log(orderBtn);
@@ -321,21 +360,43 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             //clearValidationMessages(alertValid);
             validationMessages.innerHTML = ''
             if (outCurrencyValue.value.length > 0) {
-              btcBalanceChecks()
+              exchangeHelper.eventListeners.outBalanceChecks()
             }
           })
   
           //outCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.btcBalanceChecks))
           //inCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.inBalanceChecks))
   
-          inCurrencyValue.addEventListener('change', function (event) {
-            //exchangeHelper.clearValidationMessages();
-  
-            console.log("This event fired");
+          // Add inBalanceChecks listener
+          inCurrencyValue.addEventListener('keydown', function (event) {
             validationMessages.innerHTML = ''
-            if (inCurrencyValue.value.length > 0) {
+            if (inCurrencyValue.value.length > -1) {
+              console.log("keydown check init");
+              if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
+                try {
+                  console.log("Trying here");
+                  console.log(exchangeHelper.eventListeners.inBalanceChecks);
+                  exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                    console.log(response);
+                  }).catch((error) => {
+                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                      serverValidation.appendChild(errorDiv);
+                      console.log("Caught error");
+                  })
+                } catch (error) {
+                  //handleOfferError(error);
+                  console.log(error.message);
+                  console.log("Handled at 301");
+                }
+              } 
+            }
+          })
+
+          outCurrencyValue.addEventListener('change', function (event) {
+            validationMessages.innerHTML = ''
+            if (outCurrencyValue.value.length > 0) {
               //exchangeHelper.eventListeners.inBalanceChecks()
-              xmrBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions)
+              exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions)
             }
           })
           
@@ -412,17 +473,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
   
         
   
-        function checkDecimals (value, decimals) {
-          console.log("checkDecimals:", value, decimals);
-          const str = value.toString()
-          const strArr = str.split('.')
-          if (strArr.length > 1) {
-            if (strArr[1].length >= decimals) {
-              return false
-            }
-          }
-          return true
-        }
+        
   
         function isValidBase10Decimal (number) {
           const str = number.toString()
@@ -532,13 +583,13 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 document.getElementById('orderStatusPage').classList.remove('active')
               }).catch((error) => {
                 //exchangeHelper.ErrorHelper.handleOfferError(error, exchangeElements);
-                let errorDiv = handleOfferError(error);
+                let errorDiv = exchangeHelper.errorHelper.handleOfferError;(error);
                 serverValidation.appendChild(errorDiv);
                 orderBtn.style.display = 'block'
                 orderStarted = false
               })
             }).catch((error) => {
-              let errorDiv = handleOfferError(error);
+              let errorDiv = exchangeHelper.errorHelper.handleOfferError;(error);
               serverValidation.appendChild(errorDiv);
               orderBtn.style.display = 'block'
               orderStarted = false
@@ -564,8 +615,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
   
             getRates()
             // Safe to set fee because the DOM will have rendered
-            console.log(exchangeHelper);
-            console.log(exchangeHelper.htmlHelper);
             
             let estimatedTotalFee_JSBigInt = context.monero_utils.estimated_tx_network_fee(null, 1, '24658');
             let estimatedFeeStr = exchangeHelper.htmlHelper.newEstimatedNetworkFeeString(estimatedTotalFee_JSBigInt);
