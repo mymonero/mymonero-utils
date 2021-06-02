@@ -15,6 +15,11 @@ let inCurrencyInput = document.getElementById('inCurrencyValue');
 let outCurrencyInput = document.getElementById('outCurrencyValue');
 let currencyInputTimer;
 
+clearCurrencies = function() {
+    document.getElementById("inCurrencyValue").value = "";
+    document.getElementById("outCurrencyValue").value = "";
+}
+
 outAddressInputListener = function() {
     console.log(this);
     let div = document.getElementById('btc-invalid');
@@ -56,19 +61,15 @@ inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeE
     })
 }
 
-outCurrencyGetOffer = function(inCurrency, outCurrency, outAmount, exchangeElements) {
-    exchangeFunctions.getOfferWithInAmount(inCurrency, outCurrency, outAmount)
-    .then((response) => {
-        const inCurrencyToReceive = parseFloat(response.out_amount)
-        let inCurrencyValue = document.getElementById('inCurrencyValue')
-        inCurrencyValue.value = BTCToReceive.toFixed(8)
-    }).catch((error) => {
-        //handleOfferError(error)
-        console.log(error);
-        let errorDivToAppend = handleOfferError(error);
-        exchangeElements.serverValidation.appendChild(errorDiv);
-        orderBtn.style.display = 'block'
-        orderStarted = false
+outCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeElements) {
+    return new Promise((resolve, reject) => {
+        exchangeFunctions.getOfferWithOutAmount(inCurrencyDiv.value, outCurrencyDiv.value, inAmount)
+        .then((response) => {
+            resolve(response)
+        }).catch((error) => {
+            console.log("Rejecting with error to bubble up to outCurrencyBalanceChecks")
+            reject(error);
+        })
     })
 }
 
@@ -136,7 +137,10 @@ inCurrencyInputKeydownListener = function(event) {
     return;
 }
 
- walletSelectorClickListener = function(event) {
+ walletSelectorClickListener = function(event, exchangeElements) {
+    console.log(exchangeElements);
+    console.log(event);
+    console.log(this);
     let walletElement = document.getElementById('wallet-options');
     let selectedWallet = document.getElementById('selected-wallet');
     walletElement.classList.add('active');
@@ -188,36 +192,22 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
     return new Promise((resolve, reject) => {
         try {
             exchangeElements.serverValidation.innerHTML = ''
-            let BTCToReceive = exchangeElements.BTCToReceive
+            //let inAmountToReceive = exchangeElements.BTCToReceive
             const inBalance = parseFloat(exchangeElements.inCurrencyValue.value)
             const in_amount = inBalance.toFixed(12)
             exchangeElements.outCurrencyValue.value = 'Loading...'
-            if (currencyInputTimer !== undefined) {
-                clearTimeout(currencyInputTimer)
+            if (exchangeElements.currencyInputTimer !== undefined) {
+                clearTimeout(exchangeElements.currencyInputTimer)
             }
-        // if (exchangeHelper.exchangeFunctions.currentRates.in_min > XMRbalance) {
-        //   const error = document.createElement('div')
-        //   error.classList.add('message-label')
-        //   error.id = 'xmrexceeded'
-        //   error.innerHTML = `You cannot exchange less than ${exchangeHelper.exchangeFunctions.currentRates.in_min} XMR`
-        //   exchangeElements.validationMessages.appendChild(error)
-        //   return
-        // }
-        // if (exchangeHelper.exchangeFunctions.currentRates.in_max < XMRbalance) {
-        //   const error = document.createElement('div')
-        //   error.classList.add('message-label')
-        //   error.id = 'xmrexceeded'
-        //   error.innerHTML = `You cannot exchange more than ${exchangeHelper.exchangeFunctions.currentRates.in_max} XMR`
-        //   exchangeElements.validationMessages.appendChild(error)
-        //   return
-        // }
+        
             exchangeElements.validationMessages.innerHTML = ''
             exchangeElements.serverValidation.innerHTML = ''
-            currencyInputTimer = setTimeout(() => {
+            exchangeElements.currencyInputTimer = setTimeout(() => {
                 let inCurrencyDiv = document.getElementById("inCurrencySelectList");
                 let outCurrencyDiv = document.getElementById("outCurrencySelectList");  
                 let inCurrencyValue = document.getElementById("inCurrencyValue").value;
                 inCurrencyGetOffer(inCurrencyDiv, outCurrencyDiv, inCurrencyValue, exchangeElements).then((response) => {
+                    exchangeElements.outCurrencyValue.value = response.out_amount;
                     resolve(response);
                 }).catch((error) => {
                     console.log("inBalance promise rejection");
@@ -230,6 +220,141 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
         }
     })
 }
+
+// This would have been through key screening and 
+outBalanceChecks = function(exchangeElements) {    
+    return new Promise((resolve, reject) => {
+        try {
+            exchangeElements.serverValidation.innerHTML = ''
+            //let inAmountToReceive = exchangeElements.BTCToReceive
+            const outBalance = parseFloat(exchangeElements.outCurrencyValue.value)
+            const out_amount = outBalance.toFixed(12)
+            exchangeElements.inCurrencyValue.value = 'Loading...'
+            if (exchangeElements.currencyInputTimer !== undefined) {
+                clearTimeout(exchangeElements.currencyInputTimer)
+            }
+        
+            exchangeElements.validationMessages.innerHTML = ''
+            exchangeElements.serverValidation.innerHTML = ''
+            exchangeElements.currencyInputTimer = setTimeout(() => {
+                let inCurrencyDiv = document.getElementById("inCurrencySelectList");
+                let outCurrencyDiv = document.getElementById("outCurrencySelectList");  
+                let outCurrencyValue = document.getElementById("outCurrencyValue").value;
+                outCurrencyGetOffer(inCurrencyDiv, outCurrencyDiv, outCurrencyValue, exchangeElements).then((response) => {
+                    exchangeElements.inCurrencyValue.value = response.in_amount;
+                    resolve(response);
+                }).catch((error) => {
+                    console.log("outBalance promise rejection");
+                    reject(error);
+                })
+            }, 1500)
+        } catch (error) {
+            console.log("outBalanceChecks error route");
+            reject(error);
+        }
+    })
+}
+    //     let outCurrencyToReceive;
+    //     let outCurrencyTicker
+    //     let outBalance = parseFloat(outCurrencyInput.value);
+    //     let out_amount = BTCbalance.toFixed(12);
+    //     inCurrencyInput.value = "Loading...";
+    //     if (currencyInputTimer !== undefined) {
+    //         clearTimeout(currencyInputTimer);
+    //     }
+        
+    //     if (out_amount == 0) {
+    //         let error = document.createElement('div');
+    //         error.classList.add('message-label');
+    //         error.id = 'xmrexceeded';
+    //         error.innerHTML = `Please enter a valid amount`;
+    //         validationMessages.appendChild(error);
+    //         return;
+    //     }
+    //     // if (exchangeFunctions.currentRates.out_min > BTCbalance) {
+    //         //     let error = document.createElement('div');
+    //     //     error.classList.add('message-label');
+    //     //     error.id = 'xmrexceeded';
+    //     //     error.innerHTML = `You cannot exchange less than ${exchangeFunctions.currentRates.out_min} BTC`;
+    //     //     validationMessages.appendChild(error);
+    //     //     return;
+    //     // }
+    //     // if (exchangeFunctions.currentRates.out_max < BTCbalance) {
+    //         //     let error = document.createElement('div');
+    //     //     error.classList.add('message-label');
+    //     //     error.id = 'xmrexceeded';
+    //     //     error.innerHTML = `You cannot exchange more than ${exchangeFunctions.currentRates.out_max} BTC`;
+    //     //     validationMessages.appendChild(error);
+    //     //     return;
+    //     // }
+    //     validationMessages.innerHTML = "";
+    //     serverValidation.innerHTML = "";
+    //     currencyInputTimer = setTimeout(() => {
+    //         exchangeFunctions.getOfferWithOutAmount(exchangeFunctions.in_currency, exchangeFunctions.out_currency, out_amount)
+    //         .then((response) => {
+    //             // We clear error messages again here to prevent duplicates, since it's possible that a user may change the input value while a request is still waiting for a server response. This prevents duplicate error messages
+    //             validationMessages.innerHTML = "";
+    //             serverValidation.innerHTML = "";
+    //             let XMRtoReceive = parseFloat(response.in_amount);
+    //             let selectedWallet = document.getElementById('selected-wallet');
+    //             let tx_feeElem = document.getElementById('tx-fee');
+    //             let tx_fee = tx_feeElem.dataset.txFee;
+    //             let tx_fee_double = parseFloat(tx_fee);
+    //             let walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance);
+    //             let walletMaxSpend = walletMaxSpendDouble - tx_fee;
+    //             let BTCCurrencyValue = parseFloat(BTCcurrencyInput.value);
+                
+                
+    //             if ((walletMaxSpend - XMRtoReceive) < 0) {
+    //                 let error = document.createElement('div');
+    //                 error.classList.add('message-label');
+    //                 error.id = 'xmrexceeded';
+    //                 error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`;
+    //                 validationMessages.appendChild(error);
+    //             }
+                
+    //             if (BTCCurrencyValue.toFixed(12) > exchangeFunctions.currentRates.upper_limit) {
+    //                 let error = document.createElement('div');
+    //                 error.id = 'xmrexceeded';
+    //                 error.classList.add('message-label');
+    //                 let btc_amount = parseFloat(exchangeFunctions.currentRates.upper_limit);
+    //                 error.innerHTML = `You cannot exchange more than ${btc_amount} BTC.`;
+    //                 validationMessages.appendChild(error);
+    //             }
+    //             if (BTCCurrencyValue.toFixed(8) < exchangeFunctions.currentRates.lower_limit) {
+    //                 let error = document.createElement('div');
+    //                 error.id = 'xmrtoolow';
+    //                 error.classList.add('message-label');
+    //                 let btc_amount = parseFloat(exchangeFunctions.currentRates.lower_limit);
+    //                 error.innerHTML = `You cannot exchange less than ${btc_amount} BTC.`;
+    //                 validationMessages.appendChild(error);
+    //             }
+    //             inCurrencyInput.value = XMRtoReceive.toFixed(12);
+    //         }).catch((error) => {
+    //             // We clear error messages again here to prevent duplicates, since it's possible that a user may change the input value while a request is still waiting for a server response. This prevents duplicate error messages
+    //             validationMessages.innerHTML = "";
+    //             serverValidation.innerHTML = "";
+    //             let errorDiv = document.createElement('div');
+    //             let errorStringSplit = error.response.data.Error.split("must be");
+    //             errorDiv.classList.add('message-label');
+    //             let errorMessage = "";
+    //             if (typeof(error.response.status) == "undefined") {
+    //                 errorMessage = error.message
+    //             } else {
+    //                 // We may have a value in error.response.data.Error
+    //                 if (typeof(error.response.data) !== "undefined" && typeof(error.response.data.Error !== "undefined")) {
+    //                     errorMessage = error.response.data.Error
+    //                 } else {
+    //                     errorMessage = error.message
+    //                 }
+    //             }
+    //             errorDiv.id = 'server-invalid';
+    //             errorDiv.innerHTML = `There was a problem communicating with the server. <br>If this problem keeps occurring, please contact support with a screenshot of the following error: <br>` + errorMessage;
+    //             serverValidation.appendChild(errorDiv);
+    //         });
+    //     }, 1500);
+    // }
+// }
 
 // formerly xmrBalanceChecks
 // inBalanceChecks = function(exchangeElements, exchangeFunctions) {
@@ -327,109 +452,6 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
 //             });
 //     }, 1500);
 // }
-
-// This would have been through key screening and 
-outBalanceChecks = function(exchangeElements) {    
-    let outCurrencyToReceive;
-    let outCurrencyTicker
-    let outBalance = parseFloat(outCurrencyInput.value);
-    let out_amount = BTCbalance.toFixed(12);
-    inCurrencyInput.value = "Loading...";
-    if (currencyInputTimer !== undefined) {
-        clearTimeout(currencyInputTimer);
-    }
-
-    if (out_amount == 0) {
-        let error = document.createElement('div');
-        error.classList.add('message-label');
-        error.id = 'xmrexceeded';
-        error.innerHTML = `Please enter a valid amount`;
-        validationMessages.appendChild(error);
-        return;
-    }
-    // if (exchangeFunctions.currentRates.out_min > BTCbalance) {
-    //     let error = document.createElement('div');
-    //     error.classList.add('message-label');
-    //     error.id = 'xmrexceeded';
-    //     error.innerHTML = `You cannot exchange less than ${exchangeFunctions.currentRates.out_min} BTC`;
-    //     validationMessages.appendChild(error);
-    //     return;
-    // }
-    // if (exchangeFunctions.currentRates.out_max < BTCbalance) {
-    //     let error = document.createElement('div');
-    //     error.classList.add('message-label');
-    //     error.id = 'xmrexceeded';
-    //     error.innerHTML = `You cannot exchange more than ${exchangeFunctions.currentRates.out_max} BTC`;
-    //     validationMessages.appendChild(error);
-    //     return;
-    // }
-    validationMessages.innerHTML = "";
-    serverValidation.innerHTML = "";
-    currencyInputTimer = setTimeout(() => {
-        exchangeFunctions.getOfferWithOutAmount(exchangeFunctions.in_currency, exchangeFunctions.out_currency, out_amount)
-            .then((response) => {
-                // We clear error messages again here to prevent duplicates, since it's possible that a user may change the input value while a request is still waiting for a server response. This prevents duplicate error messages
-                validationMessages.innerHTML = "";
-                serverValidation.innerHTML = "";
-                let XMRtoReceive = parseFloat(response.in_amount);
-                let selectedWallet = document.getElementById('selected-wallet');
-                let tx_feeElem = document.getElementById('tx-fee');
-                let tx_fee = tx_feeElem.dataset.txFee;
-                let tx_fee_double = parseFloat(tx_fee);
-                let walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance);
-                let walletMaxSpend = walletMaxSpendDouble - tx_fee;
-                let BTCCurrencyValue = parseFloat(BTCcurrencyInput.value);
-
-
-                if ((walletMaxSpend - XMRtoReceive) < 0) {
-                    let error = document.createElement('div');
-                    error.classList.add('message-label');
-                    error.id = 'xmrexceeded';
-                    error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`;
-                    validationMessages.appendChild(error);
-                }
-
-                if (BTCCurrencyValue.toFixed(12) > exchangeFunctions.currentRates.upper_limit) {
-                    let error = document.createElement('div');
-                    error.id = 'xmrexceeded';
-                    error.classList.add('message-label');
-                    let btc_amount = parseFloat(exchangeFunctions.currentRates.upper_limit);
-                    error.innerHTML = `You cannot exchange more than ${btc_amount} BTC.`;
-                    validationMessages.appendChild(error);
-                }
-                if (BTCCurrencyValue.toFixed(8) < exchangeFunctions.currentRates.lower_limit) {
-                    let error = document.createElement('div');
-                    error.id = 'xmrtoolow';
-                    error.classList.add('message-label');
-                    let btc_amount = parseFloat(exchangeFunctions.currentRates.lower_limit);
-                    error.innerHTML = `You cannot exchange less than ${btc_amount} BTC.`;
-                    validationMessages.appendChild(error);
-                }
-                inCurrencyInput.value = XMRtoReceive.toFixed(12);
-            }).catch((error) => {
-                // We clear error messages again here to prevent duplicates, since it's possible that a user may change the input value while a request is still waiting for a server response. This prevents duplicate error messages
-                validationMessages.innerHTML = "";
-                serverValidation.innerHTML = "";
-                let errorDiv = document.createElement('div');
-                let errorStringSplit = error.response.data.Error.split("must be");
-                errorDiv.classList.add('message-label');
-                let errorMessage = "";
-                if (typeof(error.response.status) == "undefined") {
-                    errorMessage = error.message
-                } else {
-                    // We may have a value in error.response.data.Error
-                    if (typeof(error.response.data) !== "undefined" && typeof(error.response.data.Error !== "undefined")) {
-                        errorMessage = error.response.data.Error
-                    } else {
-                        errorMessage = error.message
-                    }
-                }
-                errorDiv.id = 'server-invalid';
-                errorDiv.innerHTML = `There was a problem communicating with the server. <br>If this problem keeps occurring, please contact support with a screenshot of the following error: <br>` + errorMessage;
-                serverValidation.appendChild(errorDiv);
-            });
-    }, 1500);
-}
 
 backButtonClickListener = function() {
     let backBtn = document.getElementsByClassName('nav-button-left-container')[0];
