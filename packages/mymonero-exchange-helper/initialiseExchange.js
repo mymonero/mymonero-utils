@@ -15,6 +15,7 @@ function checkDecimals (value, decimals) {
   return true
 }
 
+// Tests whether the keypress is valid, checks currency precision, aborts if either fail
 function outCurrencyValueKeydownListener(event, exchangeHelper) {
   let outCurrencyValue = document.getElementById('outCurrencyValue');
 
@@ -49,6 +50,7 @@ function outCurrencyValueKeydownListener(event, exchangeHelper) {
   event.preventDefault()
 }
 
+// Tests whether the keypress is valid, checks currency precision, aborts if either fail
 function inCurrencyValueKeydownListener(event, exchangeHelper) {
   let inCurrencyValue = document.getElementById('inCurrencyValue');
 
@@ -84,15 +86,7 @@ function inCurrencyValueKeydownListener(event, exchangeHelper) {
 }
 
 function initialiseExchangeHelper(context, exchangeHelper) {
-    // console.log(tc);
-    console.log(context)
-    // console.log(this);
-    // console.log(ExchangeHelper);
-    // let exchangeHelper = new ExchangeHelper();
-    console.log("initialiseFunction invoked");
-    console.log(exchangeHelper);
     // This isn't great for migrating to an external library, but presently, we bind `this` when we invoke this function in ECV.web.js
-    console.log(this);
     const order = {}
     let orderStarted = false
     let orderCreated = false
@@ -144,56 +138,40 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       //   addressValidation.appendChild(error)
       // }
     }
+    
+    // const outCurrencyValueKeydownListener = function (event) {
+    //   let outCurrencyValue = document.getElementById('outCurrencyValue');
   
-    // const inCurrencyValueKeydownListener = function (event) {
-    //   if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) { return }
-  
-    //   if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
-    //     return
+    //   // Test whether the key is allowed or not, and abort execution if not allowed
+    //   let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
+    //   if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    //     // These are valid keypresses, but we don't need to request an offer from the API
+    //     return false
     //   }
   
-    //   if (!checkDecimals(inCurrencyValue.value, 12)) {
+    //   let currencyTickerCode = document.getElementById("outCurrencySelectList").value;
+    //   // We need to limit the number of decimals based on the selected currency
+    //   // checkDecimals returns false if we exceed the second parameter in decimal places
+    //   if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
+    //     console.log("Decimal limit reached");
     //     event.preventDefault()
-    //     return
+    //     return false
+    //   }
+  
+    //   allowableKeyArray = [110, 46, 190] // decimal point, delete, period
+    //   if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+    //     // These are valid keypresses, but we don't need to request an offer from the API
+    //     return false
+    //   }
+      
+    //   // numpad 0-9, numeric 0-9
+    //   if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
+    //     // These are valid keypresses. Return true 
+    //     return true
     //   }
   
     //   event.preventDefault()
     // }
-  
-    // Tests whether the keypress is valid, checks currency precision, aborts if either fail
-    const outCurrencyValueKeydownListener = function (event) {
-      let outCurrencyValue = document.getElementById('outCurrencyValue');
-  
-      // Test whether the key is allowed or not, and abort execution if not allowed
-      let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
-      if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-        // These are valid keypresses, but we don't need to request an offer from the API
-        return false
-      }
-  
-      let currencyTickerCode = document.getElementById("outCurrencySelectList").value;
-      // We need to limit the number of decimals based on the selected currency
-      // checkDecimals returns false if we exceed the second parameter in decimal places
-      if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
-        console.log("Decimal limit reached");
-        event.preventDefault()
-        return false
-      }
-  
-      allowableKeyArray = [110, 46, 190] // decimal point, delete, period
-      if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-        // These are valid keypresses, but we don't need to request an offer from the API
-        return false
-      }
-      
-      // numpad 0-9, numeric 0-9
-      if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
-        // These are valid keypresses. Return true 
-        return true
-      }
-  
-      event.preventDefault()
-    }
 
     // const outCurrencyValueKeydownListener = function (event) {
     //   let outCurrencyValue = document.getElementById('outCurrencyValue');
@@ -307,11 +285,14 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         function getRates() {
           // it's safe to refresh the sending fee here, because we know the HTML exists in the DOM
           //self._refresh_sending_fee();
+          let currencyInputTimer;
           const exchangePage = document.getElementById('orderStatusPage')
           const loaderPage = document.getElementById('loader')
           const outAddressInput = document.getElementById('outAddress')
           const inCurrencyValue = document.getElementById('inCurrencyValue')
           const outCurrencyValue = document.getElementById('outCurrencyValue')
+          const inCurrencyTickerCode = document.getElementById('inCurrencySelectList').value
+          const outCurrencyTickerCode = document.getElementById('outCurrencySelectList').value
           const orderBtn = document.getElementById('order-button')
           const explanatoryMessage = document.getElementById('explanatory-message')
           const serverRatesValidation = document.getElementById('server-rates-messages')
@@ -324,7 +305,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const serverValidation = document.getElementById('server-messages')
           const selectedWallet = document.getElementById('selected-wallet')
           const orderStatusDiv = document.getElementById('exchangePage')
-    
+          
   
           let exchangeElements = {
             exchangePage: exchangePage,
@@ -343,24 +324,59 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             addressValidation: addressValidation,
             serverValidation: serverValidation,
             selectedWallet: selectedWallet,
-            orderStatusDiv: orderStatusDiv
+            orderStatusDiv: orderStatusDiv,
+            orderStarted: orderStarted,
+            orderTimer: orderTimer,
+            inCurrencyTickerCode,
+            outCurrencyTickerCode,
+            currencyInputTimer
           }
           
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
+          
           //inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
           //outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
-          outCurrencyValue.addEventListener('keydown', outCurrencyValueKeydownListener)
+          //outCurrencyValue.addEventListener('keydown', outCurrencyValueKeydownListener)
           console.log(orderBtn);
           console.log("OrderBtnBindNext");
+          walletSelector.addEventListener('click', function(event) {
+            console.log("Wallet selector clicked");
+            exchangeHelper.eventListeners.walletSelectorClickListener(event, exchangeElements) 
+          });
           //console.log(exchangeHelper.eventListeners.orderBtnClickedListener.bind())
           //orderBtn.addEventListener('click', exchangeHelper.eventListeners.orderButtonClickedListener)
-          orderBtn.addEventListener('click', orderBtnClicked)
+          orderBtn.addEventListener('click', function (event) {
+            orderBtnClicked(exchangeElements, exchangeHelper.exchangeFunctions)
+          })
   
-          outCurrencyValue.addEventListener('keyup', function (event) {
-            //clearValidationMessages(alertValid);
+          // outCurrencyValue.addEventListener('keyup', function (event) {
+          //   //clearValidationMessages(alertValid);
+          //   validationMessages.innerHTML = ''
+          //   if (outCurrencyValue.value.length > 0) {
+          //     exchangeHelper.eventListeners.outBalanceChecks()
+          //   }
+          // })
+          outCurrencyValue.addEventListener('keydown', function(event) {
             validationMessages.innerHTML = ''
-            if (outCurrencyValue.value.length > 0) {
-              exchangeHelper.eventListeners.outBalanceChecks()
+            if (outCurrencyValue.value.length > -1) {
+              console.log("keydown check init: out");
+              if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+                try {
+                  console.log("Try out here");
+                  console.log(exchangeHelper.eventListeners.outBalanceChecks);
+                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                    console.log(response);
+                  }).catch((error) => {
+                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                      serverValidation.appendChild(errorDiv);
+                      console.log("Caught error");
+                  })
+                } catch (error) {
+                  //handleOfferError(error);
+                  console.log(error.message);
+                  console.log("Handled at 301");
+                }
+              } 
             }
           })
   
@@ -392,11 +408,25 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             }
           })
 
-          outCurrencyValue.addEventListener('change', function (event) {
+          outCurrencyValue.addEventListener('input', function (event) {
             validationMessages.innerHTML = ''
-            if (outCurrencyValue.value.length > 0) {
-              //exchangeHelper.eventListeners.inBalanceChecks()
-              exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions)
+            if (outCurrencyValue.value.length > -1) {
+              console.log("keydown check init");
+              if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+                try {
+                  console.log("Trying here");
+                  console.log(exchangeHelper.eventListeners.inBalanceChecks);
+                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                    console.log(response);
+                  }).catch((error) => {
+                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                      serverValidation.appendChild(errorDiv);
+                      console.log("Caught error");
+                  })
+                } catch (error) {
+                  console.log(error.message);
+                }
+              } 
             }
           })
           
@@ -494,49 +524,50 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           return true
         }
   
-        function orderBtnClicked () {
+        function orderBtnClicked(exchangeElements, exchangeFunctions) {
           let validationError = false
-          serverValidation.innerHTML = ''
-          if (orderStarted == true) {
+          exchangeElements.serverValidation.innerHTML = ''
+          if (exchangeElements.orderStarted == true) {
             return
           }
-          if (validationMessages.firstChild !== null) {
-            validationMessages.firstChild.style.color = '#ff0000'
+          if (exchangeElements.validationMessages.firstChild !== null) {
+            exchangeElementsvalidationMessages.firstChild.style.color = '#ff0000'
             validationError = true
             return
           }
-          if (addressValidation.firstChild !== null) {
-            addressValidation.firstChild.style.color = '#ff0000'
+          if (exchangeElements.addressValidation.firstChild !== null) {
+            exchangeElements.addressValidation.firstChild.style.color = '#ff0000'
             validationError = true
             return
           }
-          const btc_dest_address = document.getElementById('outAddress').value
+          const outAddress = document.getElementById('outAddress').value
           let firstTick = true
-          orderBtn.style.display = 'none'
-          orderStarted = true
+          exchangeElements.orderBtn.style.display = 'none'
+          exchangeElements.orderStarted = true
           // backBtn.style.display = "block";
-          loaderPage.classList.add('active')
+          exchangeElements.loaderPage.classList.add('active')
           let orderStatusResponse = { orderTick: 0 }
           const out_amount = document.getElementById('outCurrencyValue').value
-          const in_currency = 'XMR'
-          const out_currency = 'BTC'
+          const in_currency = exchangeElements.inCurrencyTickerCode
+          const out_currency = exchangeElements.outCurrencyTickerCode
           try {
+            exchangeElements.loaderPage.classList.remove('active')
+            exchangeElements.orderStatusDiv.classList.add('active')
+            exchangeElements.exchangePageDiv.classList.add('active')
             const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
   
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
   
-              exchangeHelper.exchangeFunctions.createOrder(btc_dest_address, selectedWallet.dataset.walletpublicaddress).then((response) => {
+              exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress).then((response) => {
                 //document.getElementById('orderStatusPage').classList.remove('active')
                 let e = document.getElementById('orderStatusPage');
-                console.log(e);
                 e = document.getElementById('orderStatusPage');
-                console.log(e);
-                loaderPage.classList.remove('active')
-                orderStatusDiv.classList.add('active')
-                exchangePageDiv.classList.add('active')
+                exchangeElements.loaderPage.classList.remove('active')
+                exchangeElements.orderStatusPage.classList.add('active')
+                exchangeElements.exchangePageDiv.classList.add('active')
                 // backBtn.innerHTML = `<div class="base-button hoverable-cell utility grey-menu-button disableable left-back-button" style="cursor: default; -webkit-app-region: no-drag; position: absolute; opacity: 1; left: 0px;"></div>`;
-                orderTimer = setInterval(() => {
+                exchangeElements.orderTimer = setInterval(() => {
                   if (orderStatusResponse.hasOwnProperty('expires_at')) {
                     orderStatusResponse.orderTick++
                     exchangeHelper.renderOrderStatus(orderStatusResponse)
@@ -565,7 +596,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                   if ((orderStatusResponse.orderTick % 10) == 0) {
                     exchangeHelper.exchangeFunctions.getOrderStatus().then(function (response) {
                       const elemArr = document.getElementsByClassName('provider-name')
-                      if (firstTick == true || elemArr[0].innerHTML == 'undefined') {
+                      if (firstTick == true || elemArr.length > 0) {
                         exchangeHelper.renderOrderStatus(response)
                         elemArr[0].innerHTML = response.provider_name
                         elemArr[1].innerHTML = response.provider_name
@@ -583,16 +614,16 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 document.getElementById('orderStatusPage').classList.remove('active')
               }).catch((error) => {
                 //exchangeHelper.ErrorHelper.handleOfferError(error, exchangeElements);
-                let errorDiv = exchangeHelper.errorHelper.handleOfferError;(error);
-                serverValidation.appendChild(errorDiv);
-                orderBtn.style.display = 'block'
-                orderStarted = false
+                let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                exchangeElements.serverValidation.appendChild(errorDiv);
+                exchangeElements.orderBtn.style.display = 'block'
+                exchangeElements.orderStarted = false
               })
             }).catch((error) => {
-              let errorDiv = exchangeHelper.errorHelper.handleOfferError;(error);
-              serverValidation.appendChild(errorDiv);
-              orderBtn.style.display = 'block'
-              orderStarted = false
+              let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+              exchangeElements.serverValidation.appendChild(errorDiv);
+              exchangeElements.orderBtn.style.display = 'block'
+              exchangeElements.orderStarted = false
             })
           } catch (Error) {
             console.log(Error)
@@ -621,7 +652,17 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             let feeElement = document.getElementById('tx-fee')
             // Safe to set up wallet selector since it'll have been rendered
             let walletSelector = document.getElementById('wallet-selector');
-  
+            
+            // Debug
+            /*
+            let testWallet = JSON.parse(JSON.stringify(context.walletsListController.records[0]))
+            let testWalletsArr = [
+              context.walletsListController.records[0],
+              testWallet
+            ]
+            console.log(testWalletsArr);
+            exchangeHelper.renderWalletSelector(testWalletsArr, walletSelector);
+            */
             exchangeHelper.renderWalletSelector(context.walletsListController.records, walletSelector);
             exchangeHelper.setSendingFee(estimatedFeeStr, feeElement)
           }
