@@ -305,7 +305,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const serverValidation = document.getElementById('server-messages')
           const selectedWallet = document.getElementById('selected-wallet')
           const orderStatusDiv = document.getElementById('exchangePage')
-          
+          const getOfferLoader = document.getElementById('getOfferLoader')
+          const getOfferLoaderText = document.getElementById('activityLoaderText');
+          let offerRetrievalIsSlowTimer
   
           let exchangeElements = {
             exchangePage: exchangePage,
@@ -329,7 +331,10 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             orderTimer: orderTimer,
             inCurrencyTickerCode,
             outCurrencyTickerCode,
-            currencyInputTimer
+            currencyInputTimer,
+            getOfferLoader,
+            offerRetrievalIsSlowTimer,
+            getOfferLoaderText
           }
           
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
@@ -356,20 +361,39 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           //     exchangeHelper.eventListeners.outBalanceChecks()
           //   }
           // })
+          function initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements) {
+            exchangeElements.offerRetrieval = setTimeout(() => {
+              exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
+            }, 3000)
+          }
+
+          function clearTimerUpdateWhenRetrievalIsSlow(exchangeElements) {
+            clearInterval(exchangeElements.offerRetrieval)
+            console.log("Clear slow retrieval timer");
+          }
+
           outCurrencyValue.addEventListener('keydown', function(event) {
             validationMessages.innerHTML = ''
             if (outCurrencyValue.value.length > -1) {
               console.log("keydown check init: out");
               if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+                exchangeElements.getOfferLoader.style.display = "block";
                 try {
                   console.log("Try out here");
                   console.log(exchangeHelper.eventListeners.outBalanceChecks);
+                  initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements)
                   exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    exchangeElements.getOfferLoader.style.display = "none";
                     console.log(response);
                   }).catch((error) => {
+                      clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                      exchangeElements.getOfferLoader.style.display = "none";
                       let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                       serverValidation.appendChild(errorDiv);
                       console.log("Caught error");
+                  }).finally(() => {
+                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
                   })
                 } catch (error) {
                   //handleOfferError(error);
@@ -389,15 +413,20 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             if (inCurrencyValue.value.length > -1) {
               console.log("keydown check init");
               if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
+                exchangeElements.getOfferLoader.style.display = "block";
                 try {
-                  console.log("Trying here");
-                  console.log(exchangeHelper.eventListeners.inBalanceChecks);
+                  initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements)
                   exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    console.log(response);
-                  }).catch((error) => {
-                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-                      serverValidation.appendChild(errorDiv);
-                      console.log("Caught error");
+                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    exchangeElements.getOfferLoader.style.display = "none";
+                }).catch((error) => {
+                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    exchangeElements.getOfferLoader.style.display = "none";
+                    let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                    serverValidation.appendChild(errorDiv);
+                    console.log("Caught error");
+                  }).finally(() => {
+                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
                   })
                 } catch (error) {
                   //handleOfferError(error);
