@@ -30,6 +30,37 @@ class HtmlHelper {
         `
     }
 
+    getActivityLoader() {
+        return `
+        <style>
+            #getOfferLoader {
+                float: left;
+                // min-height: 28px;
+            }
+            #getOfferLoader div { 
+                // display: none; 
+            }
+            #getOfferLoader {
+                padding: 0px 24px 0 0;
+                display: none;
+            }
+            #tx-fee {
+                float: right;
+            }
+            #btc-address {
+                clear: both;
+            }
+        </style>
+        <div id="getOffer" class="graphicAndLabel activityIndicators on-normal-background" style="font-family: Native-Light, input, menlo, monospace; -webkit-font-smoothing: subpixel-antialiased; font-size: 10px; letter-spacing: 0.5px; font-weight: 300; color: rgb(158, 156, 158); padding-left: 0px;">
+            <div class="loader">
+                <div class="block block1"></div>
+                <div class="block block2"></div>
+                <div class="block block3"></div>
+            </div>&nbsp;
+            <span id="activityLoaderText">Fetching offer</span>
+        </div>`
+    }
+
     // TODO: fix imports so that we can leverage this function
     newEstimatedNetworkFeeString(fee_JSBigInt = 0) {
         const self = this
@@ -89,10 +120,15 @@ class HtmlHelper {
                     <input id="in_address" type="hidden" value="">
                 </table>
             </div>
+
+            
+            <div class="form_field" id="getOfferLoader">
+                ${this.getActivityLoader()}
+            </div>
+            
             <div class="form_field" id="tx-fee">
                 <span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">Loading ...</span>
             </div>
-            
 
             <div class="form_field" id="btc-address">
                 <span class="field_title form-field-title" style="margin-top: 17px;">DESTINATION <span id="outCurrencyCoinName">BITCOIN</span> ADDRESS
@@ -113,7 +149,7 @@ class HtmlHelper {
 
         </div>
     </div>
-    <div id="exchangePage">
+    <div id="orderStatusPage">
         <div class="field_title form-field-title">
             <table>
                 <tr>
