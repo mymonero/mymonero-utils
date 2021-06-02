@@ -71,8 +71,7 @@ function New_EncryptedBase64String__Async (plaintext_msg, password) {
                 ])
                 const hmac = _new_generated_hmac(components, hmac_key)
                 const encryptedMessage_base64String = Buffer.concat([data, hmac]).toString('base64')
-                //
-                //fn(null, encryptedMessage_base64String)
+                
                 resolve(encryptedMessage_base64String);
             }).catch(function(err) {
                 reject(err)
@@ -101,13 +100,12 @@ function New_DecryptedString__Async (encrypted_msg_base64_string, password) {
             resolve(encrypted_msg_base64_string)
         }
         const unpacked_base64_components = _new_encrypted_base64_unpacked_components_object(encrypted_msg_base64_string)
-        _is_hmac_valid__async(
-            unpacked_base64_components,
-            password,
-            function (err, isValid) {
-            if (err) {
-                reject(err)
-            }
+
+        hashPassword(password, unpacked_base64_components.headers.hmac_salt).then(function(hmac_key) {
+            const generated_hmac_buffer = _new_generated_hmac(unpacked_base64_components, hmac_key)
+            // For 0.11+ we can use Buffer.compare
+            const isValid = unpacked_base64_components.hmac.toString('hex') == generated_hmac_buffer.toString('hex')
+            //
             if (isValid === false) {
                 const err = new Error('HMAC is not valid.')
                 reject(err)
@@ -124,14 +122,18 @@ function New_DecryptedString__Async (encrypted_msg_base64_string, password) {
                     deCipher.final()
                     ])
                     const decrypted_string = unpadded_decrypted_buffer.toString('utf8')
-                    //
-                    //fn(null, decrypted_string)
+
                     resolve(decrypted_string)
             }).catch(function(err) {
                 reject(err)
             })
-            }
-        )
+        }).catch(function(err) {
+            reject(err)
+        })
+
+        hashPassword(password, unpacked_base64_components.headers.hmac_salt).catch(function(err) {
+            reject(err)
+        })
     })
 }
 module.exports.New_DecryptedString__Async = New_DecryptedString__Async
@@ -151,7 +153,7 @@ function _new_encrypted_base64_unpacked_components_object (b64str) {
   const header_length = components.headers.length
   const cipher_text_length = data.length - header_length - components.hmac.length
   components.cipher_text = data.slice(header_length, header_length + cipher_text_length)
-  //
+  
   return components
 }
 
@@ -193,18 +195,6 @@ function validate_schema_version (version) {
     const err = 'Unsupported schema version ' + version
     throw err
   }
-}
-
-function _is_hmac_valid__async (components, password, fn) {
-    hashPassword(password, components.headers.hmac_salt).then(function(hmac_key) {
-        const generated_hmac_buffer = _new_generated_hmac(components, hmac_key)
-        // For 0.11+ we can use Buffer.compare
-        const isValid = components.hmac.toString('hex') == generated_hmac_buffer.toString('hex')
-        //
-        fn(null, isValid)
-    }).catch(function(err) {
-        fn(err)
-    })
 }
 
 let _new_generated_hmac = function (components, hmac_key) {
