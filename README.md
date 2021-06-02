@@ -24,6 +24,7 @@
 |[@mymonero/mymonero-app-bridge](./packages/mymonero-app-bridge)|[![MyMonero App Bridge](https://img.shields.io/npm/v/@mymonero/mymonero-app-bridge.svg)](https://npmjs.com/package/@mymonero/mymonero-app-bridge)|
 |[@mymonero/mymonero-bigint](./packages/mymonero-bigint)|[![MyMonero BigInt](https://img.shields.io/npm/v/@mymonero/mymonero-bigint.svg)](https://npmjs.com/package/@mymonero/mymonero-bigint)|
 |[@mymonero/mymonero-bridge-utils](./packages/mymonero-bridge-utils)|[![MyMonero Bridge Utils](https://img.shields.io/npm/v/@mymonero/mymonero-bridge-utils.svg)](https://npmjs.com/package/@mymonero/mymonero-bridge-utils)|
+|[@mymonero/mymonero-cryptor](./packages/mymonero-cryptor)|[![MyMonero Cryptor](https://img.shields.io/npm/v/@mymonero/mymonero-cryptor.svg)](https://npmjs.com/package/@mymonero/mymonero-cryptor)|
 |[@mymonero/mymonero-currencies](./packages/mymonero-currencies)|[![MyMonero Currencies](https://img.shields.io/npm/v/@mymonero/mymonero-currencies.svg)](https://npmjs.com/package/@mymonero/mymonero-currencies)|
 |[@mymonero/mymonero-exchange-js](./packages/mymonero-exchange-js)|[![MyMonero Exchange](https://img.shields.io/npm/v/@mymonero/mymonero-exchange.svg)](https://npmjs.com/package/@mymonero/mymonero-exchange)|
 |[@mymonero/mymonero-hosted-api](./packages/mymonero-hosted-api)|[![MyMonero Hosted Api](https://img.shields.io/npm/v/@mymonero/mymonero-hosted-api.svg)](https://npmjs.com/package/@mymonero/mymonero-hosted-api)|
