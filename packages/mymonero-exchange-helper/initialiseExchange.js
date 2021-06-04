@@ -92,7 +92,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
     let orderCreated = false
     // let backBtn = document.getElementsByClassName('nav-button-left-container')[0];
     // backBtn.style.display = "none";
-    let exchangePage = document.getElementById('orderStatusPage')
+    let exchangePage = document.getElementById('exchangePage')
     let outAddressInput = document.getElementById('outAddress')
     let walletSelector = document.getElementById('wallet-selector')
     let walletOptions = document.getElementById('wallet-options')
@@ -307,6 +307,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const orderStatusDiv = document.getElementById('exchangePage')
           const getOfferLoader = document.getElementById('getOfferLoader')
           const getOfferLoaderText = document.getElementById('activityLoaderText');
+          const sendFundsBtn = document.getElementById('exchange-xmr');
           let offerRetrievalIsSlowTimer
   
           let exchangeElements = {
@@ -334,7 +335,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             currencyInputTimer,
             getOfferLoader,
             offerRetrievalIsSlowTimer,
-            getOfferLoaderText
+            getOfferLoaderText,
+            sendFundsBtn
           }
           
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
@@ -361,19 +363,20 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           //     exchangeHelper.eventListeners.outBalanceChecks()
           //   }
           // })
-          function initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements) {
+          function initialiseSlowRetrievalTimer(exchangeElements) {
             exchangeElements.offerRetrieval = setTimeout(() => {
               exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
             }, 3000)
           }
 
-          function clearTimerUpdateWhenRetrievalIsSlow(exchangeElements) {
+          function clearSlowRetrievalTimer(exchangeElements) {
             clearInterval(exchangeElements.offerRetrieval)
             console.log("Clear slow retrieval timer");
           }
 
           outCurrencyValue.addEventListener('keydown', function(event) {
             validationMessages.innerHTML = ''
+            clearSlowRetrievalTimer(exchangeElements);
             if (outCurrencyValue.value.length > -1) {
               console.log("keydown check init: out");
               if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
@@ -381,13 +384,13 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 try {
                   console.log("Try out here");
                   console.log(exchangeHelper.eventListeners.outBalanceChecks);
-                  initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                  initialiseSlowRetrievalTimer(exchangeElements)
                   exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    clearSlowRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                     console.log(response);
                   }).catch((error) => {
-                      clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                      clearSlowRetrievalTimer(exchangeElements)
                       exchangeElements.getOfferLoader.style.display = "none";
                       let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                       serverValidation.appendChild(errorDiv);
@@ -415,12 +418,12 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 exchangeElements.getOfferLoader.style.display = "block";
                 try {
-                  initialiseTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                  initialiseSlowRetrievalTimer(exchangeElements)
                   exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    clearSlowRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                 }).catch((error) => {
-                    clearTimerUpdateWhenRetrievalIsSlow(exchangeElements)
+                    clearSlowRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                     serverValidation.appendChild(errorDiv);
@@ -497,6 +500,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               explanatoryMessage.appendChild(retryBtn)
             }
           }).finally(() => {
+            let message = document.getElementById('explanatory-message');
+            message.innerText = "";
             exchangeHelper.exchangeFunctions.initialiseExchangeConfiguration().then((response) => {
               // Data returned by resolve
               // If we get an error, we assume localmonero should be enabled 
@@ -581,22 +586,23 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const out_currency = exchangeElements.outCurrencyTickerCode
           try {
             exchangeElements.loaderPage.classList.remove('active')
-            exchangeElements.orderStatusDiv.classList.add('active')
-            exchangeElements.exchangePageDiv.classList.add('active')
+            // exchangeElements.orderStatusDiv.classList.add('active')
+            // exchangeElements.exchangePageDiv.classList.add('active')
             const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
   
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
+              exchangeElements.exchangePageDiv.classList.remove('active')
   
               exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress).then((response) => {
-                //document.getElementById('orderStatusPage').classList.remove('active')
+                document.getElementById('orderStatusPage').classList.remove('active')
                 let e = document.getElementById('orderStatusPage');
                 e = document.getElementById('orderStatusPage');
-                exchangeElements.loaderPage.classList.remove('active')
-                exchangeElements.orderStatusPage.classList.add('active')
-                exchangeElements.exchangePageDiv.classList.add('active')
                 // backBtn.innerHTML = `<div class="base-button hoverable-cell utility grey-menu-button disableable left-back-button" style="cursor: default; -webkit-app-region: no-drag; position: absolute; opacity: 1; left: 0px;"></div>`;
                 exchangeElements.orderTimer = setInterval(() => {
+                  //exchangeElements.orderStatusPage.classList.add('active')
+                  exchangeElements.exchangePageDiv.classList.add('active')
+                  exchangeElements.sendFundsBtn.classList.add('active');
                   if (orderStatusResponse.hasOwnProperty('expires_at')) {
                     orderStatusResponse.orderTick++
                     exchangeHelper.renderOrderStatus(orderStatusResponse)
