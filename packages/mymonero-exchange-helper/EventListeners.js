@@ -21,42 +21,17 @@ clearCurrencies = function() {
 }
 
 outAddressInputListener = function() {
-    console.log(this);
-    let div = document.getElementById('btc-invalid');
-    let outAddressInput = document.getElementById("outAddress");
-    if ((Utils.validateoutAddress(outAddressInput.value) == false) && div == null) {
-        let error = document.createElement('div');
-        error.classList.add('message-label');
-        error.id = 'btc-invalid';
-        error.innerHTML = `Your BTC address is not valid.`;
-        let addressValidation = document.getElementById('address-messages');
-        addressValidation.appendChild(error);
-    } else {
-        if (!(div == null)) {
-            div.remove();
-        }
-    }
+    // This first version of the revamp relies on order creation to ensure addresses are valid -- when we swap over to client-based queries, we'll validate here again
 }
 
-// Works, keep
 inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeElements) {
     return new Promise((resolve, reject) => {
         exchangeFunctions.getOfferWithInAmount(inCurrencyDiv.value, outCurrencyDiv.value, inAmount)
         .then((response) => {
-            // const BTCToReceive = parseFloat(response.out_amount)
-            // let outCurrencyValue = document.getElementById('outCurrencyValue')
-            // outCurrencyValue.value = BTCToReceive.toFixed(8)
             resolve(response)
         }).catch((error) => {
             console.log("Rejecting with error to bubble up to inCurrencyBalanceChecks")
             reject(error);
-            //handleOfferError(error)
-            //console.log(error);
-            // let errorDivToAppend = handleOfferError(error);
-            // exchangeElements.serverValidation.appendChild(errorDiv);
-            //orderBtn.style.display = 'block'
-            //orderStarted = false
-            //throw error;
         })
     })
 }
@@ -73,69 +48,22 @@ outCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchange
     })
 }
 
-// inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeElements) {
-//     ExchangeFunctions.getOfferWithInAmount(inCurrencyDiv.value, outCurrencyDiv.value, inAmount)
-//     .then((response) => {
-//         // TODO: Refactor to work with input currency rather than 'BTC'
-//         const BTCToReceive = parseFloat(response.out_amount)
-//         // console.log("wtf");
-//         // const selectedWallet = document.getElementById('selected-wallet')
-//         // const tx_feeElem = document.getElementById('tx-fee')
-//         // const tx_fee = tx_feeElem.dataset.txFee
-//         // const tx_fee_double = parseFloat(tx_fee)
-//         // const walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance)
-//         // const walletMaxSpend = walletMaxSpendDouble - tx_fee
-        
-//         // if ((walletMaxSpend - XMRbalance) < 0) {
-//         //   const error = document.createElement('div')
-//         //   error.classList.add('message-label')
-//         //   error.id = 'xmrexceeded'
-//         //   error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`
-//         //   validationMessages.appendChild(error)
-//         // }
-//         // if (BTCToReceive.toFixed(8) > ExchangeFunctions.currentRates.out_max) {
-//         //   const error = document.createElement('div')
-//         //   error.classList.add('message-label')
-//         //   error.id = 'xmrexceeded'
-//         //   error.innerHTML = `You cannot exchange more than ${ExchangeFunctions.currentRates.in_max.toFixed(12)} XMR`
-//         //   validationMessages.appendChild(error)
-//         // }
-//         // if (BTCToReceive.toFixed(8) < ExchangeFunctions.currentRates.lower_limit) {
-//         //   const error = document.createElement('div')
-//         //   error.classList.add('message-label')
-//         //   error.id = 'xmrtoolow'
-//         //   error.innerHTML = `You cannot exchange less than ${ExchangeFunctions.currentRates.in_min.toFixed(12)} XMR.`
-//         //   validationMessages.appendChild(error)
-//         // }
-//         //let outCurrencyValue = document.getElementById('outCurrencyValue')
-//         exchangeElements.outCurrencyValue.value = BTCToReceive.toFixed(8)
-//     }).catch((error) => {
-//         //exchangeHelper.errorHelper.handleOfferError;(error)
-//         console.log(error);
-//         let errorDiv = handleOfferError;
-//         exchangeElements.serverValidation.appendChild(errorDiv);
-//         exchangeElements.orderBtn.style.display = 'block'
-//         orderStarted = false
-//     })
+// inCurrencyInputKeydownListener = function(event) {
+//     if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
+//     return;
+
+//     if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
+//         return;
+//     }
+
+//     if (!Utils.checkDecimals(inCurrencyInput.value, 12)) {
+//         event.preventDefault();
+//         return;
+//     }
+
+//     event.preventDefault();
+//     return;
 // }
-
-// Let's see if we can make this generic -- we need the value, and the precision of the accompanying currency
-inCurrencyInputKeydownListener = function(event) {
-    if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
-    return;
-
-    if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
-        return;
-    }
-
-    if (!Utils.checkDecimals(inCurrencyInput.value, 12)) {
-        event.preventDefault();
-        return;
-    }
-
-    event.preventDefault();
-    return;
-}
 
  walletSelectorClickListener = function(event, exchangeElements) {
     console.log(exchangeElements);
@@ -171,22 +99,22 @@ inCurrencyInputKeydownListener = function(event) {
     } 
 }
 
-BTCCurrencyKeydownListener = function(event) {
+// BTCCurrencyKeydownListener = function(event) {
 
-    if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
-    return;
+//     if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
+//     return;
 
-    if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
-        return;
-    }
+//     if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
+//         return;
+//     }
 
-    if (!Utils.checkDecimals(BTCcurrencyInput.value, 8)) {
-        event.preventDefault();
-        return;
-    }
-    event.preventDefault();
-    return;
-}
+//     if (!Utils.checkDecimals(BTCcurrencyInput.value, 8)) {
+//         event.preventDefault();
+//         return;
+//     }
+//     event.preventDefault();
+//     return;
+// }
 
 inBalanceChecks = function (exchangeElements, exchangeFunctions) {
     return new Promise((resolve, reject) => {
@@ -583,9 +511,8 @@ updateCurrencyLabels = function(event) {
 
 
 module.exports = { 
-    BTCCurrencyKeydownListener,
     outAddressInputListener,
-    inCurrencyInputKeydownListener,
+    //inCurrencyInputKeydownListener,
     walletSelectorClickListener,
     inBalanceChecks,
     orderButtonClickedListener,
