@@ -1,5 +1,7 @@
 const MyMoneroLibAppBridgeClass = require('./MyMoneroLibAppBridgeClass')
 const MyMoneroBridge_utils = require('@mymonero/mymonero-bridge-utils')
+const path = require('path');
+
 //
 // This function is copied here for now so that the parent directory / path discovery stuff happens from the right directory - in the future it may be worthwhile to generalize it so that it can work from any directory
 module.exports = function(options)
@@ -10,7 +12,6 @@ module.exports = function(options)
 
 	const platform_info = MyMoneroBridge_utils.detect_platform();
 	const ENVIRONMENT_IS_WEB = platform_info.ENVIRONMENT_IS_WEB;
-	const ENVIRONMENT_IS_WORKER = platform_info.ENVIRONMENT_IS_WORKER;
 	const ENVIRONMENT_IS_NODE = platform_info.ENVIRONMENT_IS_NODE;
 	
 	function locateFile(filename, scriptDirectory)
@@ -26,15 +27,10 @@ module.exports = function(options)
 		}
 		var fullPath = null; // add trailing slash to this
 		if (ENVIRONMENT_IS_NODE) {
-			const lastPathComponent = path.basename(this_scriptDirectory)
-			if (lastPathComponent == "libapp_js") { // typical node or electron-main process
 				fullPath = path.format({
 					dir: this_scriptDirectory,
 					base: filename
 				})
-			} else {
-				console.warn(`MyMoneroLibAppBridge/locateFile() on node.js didn't find "libapp_js" (or possibly MyMoneroCoreBridge.js) itself in the expected location in the following path. The function may need to be expanded but it might in normal situations be likely to be another bug. ${pathTo_cryptonoteUtilsDir}`)
-			}
 		} else if (ENVIRONMENT_IS_WEB) {
 			var pathTo_cryptonoteUtilsDir;
 			if (typeof __dirname !== undefined && __dirname !== "/") { // looks like node running in browser.. (but not going to assume it's electron-renderer since that should be taken care of by monero_utils.js itself)
