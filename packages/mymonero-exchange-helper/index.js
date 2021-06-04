@@ -46,6 +46,8 @@ class ExchangeHelper {
         this.initialiseExchangeHelper = InitialiseExchange;
         this.doInit = this.doInit;
         this.exchangeFunctions = exchangeFunctions;
+        this.handleSendFundsResponseCallback = this.handleSendFundsResponseCallback;
+        this.sendFundsValidationStatusCallback = this.sendFundsValidationStatusCallback;
     }
 
     doInit(context) {
