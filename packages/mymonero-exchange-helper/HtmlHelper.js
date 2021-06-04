@@ -103,7 +103,7 @@ class HtmlHelper {
                                 <div style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0;">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                     <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
-                                    <div id="inCurrencySelector"></div>
+                                    <div id="inCurrencySelector"></div><div class="selectIndicator" style="right: 12px; top: 33px;"></div>
                                 </div>
                             </div>
                         </td>
@@ -149,7 +149,7 @@ class HtmlHelper {
 
         </div>
     </div>
-    <div id="orderStatusPage">
+    <div id="exchangePage">
         <div class="field_title form-field-title">
             <table>
                 <tr>
@@ -201,7 +201,8 @@ class HtmlHelper {
                             <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                 <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">Order Status</span>
                                 <div class="order-status textInput currencyOutput" id="status"></div>
-                                <div class="currencySelect"><option value="XMR" style="text-align: center;">&nbsp;&nbsp;&nbsp;</option>
+                                <div class="currencySelect">
+                                    <option value="XMR" style="text-align: center;">&nbsp;&nbsp;&nbsp;</option>
                                 </div>
                             </div>
                         </div>
