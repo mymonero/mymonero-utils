@@ -195,7 +195,7 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
             //let inAmountToReceive = exchangeElements.BTCToReceive
             const inBalance = parseFloat(exchangeElements.inCurrencyValue.value)
             const in_amount = inBalance.toFixed(12)
-            exchangeElements.outCurrencyValue.value = 'Loading...'
+            exchangeElements.outCurrencyValue.value = ''
             if (exchangeElements.currencyInputTimer !== undefined) {
                 clearTimeout(exchangeElements.currencyInputTimer)
             }
@@ -221,7 +221,7 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
     })
 }
 
-// This would have been through key screening and 
+// This would have been through key screening and an offer would've come back
 outBalanceChecks = function(exchangeElements) {    
     return new Promise((resolve, reject) => {
         try {
@@ -229,7 +229,7 @@ outBalanceChecks = function(exchangeElements) {
             //let inAmountToReceive = exchangeElements.BTCToReceive
             const outBalance = parseFloat(exchangeElements.outCurrencyValue.value)
             const out_amount = outBalance.toFixed(12)
-            exchangeElements.inCurrencyValue.value = 'Loading...'
+            exchangeElements.inCurrencyValue.value = ''
             if (exchangeElements.currencyInputTimer !== undefined) {
                 clearTimeout(exchangeElements.currencyInputTimer)
             }
