@@ -147,15 +147,15 @@ class ExchangeFunctions {
         return this.orderStatus.seconds_till_timeout;
     }
 
-    createOrder(out_address, refund_address) {
+    createOrder(out_address, refund_address, in_currency = "XMR", out_currency = "BTC") {
 
         let self = this;
         let endpoint = `${self.apiUrl}/create_order`;
         let data = {
             out_address,
             refund_address,
-            in_currency: "XMR",
-            out_currency: "BTC",
+            in_currency,
+            out_currency,
             ...self.offer
         }
 
@@ -165,7 +165,6 @@ class ExchangeFunctions {
         } else if (self.offer_type == "in_amount") {
             delete data.out_amount;
         }
-        console.log(data);
         return new Promise((resolve, reject) => {
             try {
                 axios.post(endpoint, data)
