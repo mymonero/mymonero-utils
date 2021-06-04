@@ -103,7 +103,7 @@ class HtmlHelper {
                                 <div style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0;">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                     <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
-                                    <div id="inCurrencySelector"></div><div class="selectIndicator" style="right: 12px; top: 33px;"></div>
+                                    <div id="inCurrencySelector"></div>
                                 </div>
                             </div>
                         </td>
@@ -112,7 +112,7 @@ class HtmlHelper {
                                 <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                     <input id="outCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
-                                    <div id="outCurrencySelector"></div>
+                                    <div id="outCurrencySelector"></div><div class="selectIndicator" style="right: 12px; top: 33px;"></div>
                                 </div>
                             </div>
                         </td>
@@ -186,11 +186,11 @@ class HtmlHelper {
                         </div>
                     </td>
                     <td>
-                        <div class="field_title form-field-title"><span id="orderStatusPageCurrencyTicker">BTC</span> to be paid out
+                        <div class="field_title form-field-title"><span class="outCurrencyTickerCode" id="orderStatusPageCurrencyTicker">BTC</span> to be paid out
                             <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                 <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                 <div id="out_amount" class="textInput currencyOutput" type="text">Loading</div>
-                                <div class="currencySelect"><option value="BTC" style="text-align: center;">BTC</option>    
+                                <div class="currencySelect outCurrencyTickerCode">&nbsp;</div>    
                             </div>
                         </div>
                     </td>

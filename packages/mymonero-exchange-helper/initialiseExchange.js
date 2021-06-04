@@ -291,8 +291,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const outAddressInput = document.getElementById('outAddress')
           const inCurrencyValue = document.getElementById('inCurrencyValue')
           const outCurrencyValue = document.getElementById('outCurrencyValue')
-          const inCurrencyTickerCode = document.getElementById('inCurrencySelectList').value
-          const outCurrencyTickerCode = document.getElementById('outCurrencySelectList').value
+          const inCurrencyTickerCodeDiv = document.getElementById('inCurrencySelectList')
+          const outCurrencyTickerCodeDiv = document.getElementById('outCurrencySelectList')
           const orderBtn = document.getElementById('order-button')
           const explanatoryMessage = document.getElementById('explanatory-message')
           const serverRatesValidation = document.getElementById('server-rates-messages')
@@ -330,8 +330,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             orderStatusDiv: orderStatusDiv,
             orderStarted: orderStarted,
             orderTimer: orderTimer,
-            inCurrencyTickerCode,
-            outCurrencyTickerCode,
+            inCurrencyTickerCodeDiv,
+            outCurrencyTickerCodeDiv,
             currencyInputTimer,
             getOfferLoader,
             offerRetrievalIsSlowTimer,
@@ -582,19 +582,20 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           exchangeElements.loaderPage.classList.add('active')
           let orderStatusResponse = { orderTick: 0 }
           const out_amount = document.getElementById('outCurrencyValue').value
-          const in_currency = exchangeElements.inCurrencyTickerCode
-          const out_currency = exchangeElements.outCurrencyTickerCode
+          let in_currency = exchangeElements.inCurrencyTickerCodeDiv.value
+          let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
             exchangeElements.loaderPage.classList.remove('active')
             // exchangeElements.orderStatusDiv.classList.add('active')
             // exchangeElements.exchangePageDiv.classList.add('active')
+            console.log(out_currency);
             const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
   
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
               exchangeElements.exchangePageDiv.classList.remove('active')
   
-              exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress).then((response) => {
+              exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress, in_currency, out_currency).then((response) => {
                 document.getElementById('orderStatusPage').classList.remove('active')
                 let e = document.getElementById('orderStatusPage');
                 e = document.getElementById('orderStatusPage');
@@ -630,13 +631,16 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                   }
                   if ((orderStatusResponse.orderTick % 10) == 0) {
                     exchangeHelper.exchangeFunctions.getOrderStatus().then(function (response) {
-                      const elemArr = document.getElementsByClassName('provider-name')
+                      let elemArr = document.getElementsByClassName('provider-name')
                       if (firstTick == true || elemArr.length > 0) {
                         exchangeHelper.renderOrderStatus(response)
                         elemArr[0].innerHTML = response.provider_name
                         elemArr[1].innerHTML = response.provider_name
                         elemArr[2].innerHTML = response.provider_name
   
+                        elemArr = document.getElementsByClassName('outCurrencyTickerCode');
+                        elemArr[0].innerHTML = out_currency;
+                        elemArr[1].innerHTML = out_currency;
                         firstTick = false
                       }
                       let orderTick = orderStatusResponse.orderTick
