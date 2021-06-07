@@ -435,15 +435,17 @@ outCurrencySelectListChangeListener = function(event, exchangeElements) {
     clearInterval(exchangeElements.currencyInputTimer);
     clearInterval(exchangeElements.offerRetrievalIsSlowTimer);
     document.getElementById('getOffer').style.display = "none";
+    // get elements that show the 
     // clear timers too...
 }
 
-updateCurrencyLabels = function(event) {
+updateCurrencyLabels = function(event, exchangeElements) {
     let coinTickerCode = event.srcElement.value;
     let coinName = CurrencyMetadata[coinTickerCode].fullName.toUpperCase();
+    document.getElementById("outCurrencyTickerCode").innerText = coinTickerCode;
     document.getElementById("orderStatusPageCurrencyTicker").innerText = coinName;
     document.getElementById("outCurrencyCoinName").innerText = coinName;
-    document.getElementById("outAddress").placeholder = `Destination ${coinTickerCode} Address`;    
+    document.getElementById("outAddress").placeholder = `Destination ${coinTickerCode} Address`;
     clearCurrencyInputValues();
 }
 

@@ -108,7 +108,7 @@ class HtmlHelper {
                             </div>
                         </td>
                         <td>
-                            <div id="BTCInputDiv" class="field_title form-field-title">BTC you will receive
+                            <div id="inInputDiv" class="field_title form-field-title"><span id="outCurrencyTickerCode">BTC</span> you will receive
                                 <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                     <input id="outCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">

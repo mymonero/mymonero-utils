@@ -1,6 +1,7 @@
 "use strict"
 
 const { handleOfferError } = require("./ErrorHelper");
+const { updateCurrencyLabels } = require("./EventListeners");
 const ExchangeHelper = require("./index")
 
 function checkDecimals (value, decimals) {
@@ -341,6 +342,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
             exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
             clearSlowRetrievalTimer(exchangeElements);
+            updateCurrencyLabels(event, exchangeElements);
           })
 
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
