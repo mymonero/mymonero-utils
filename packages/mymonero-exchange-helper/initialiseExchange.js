@@ -237,7 +237,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           // Get inCurrencyType, outCurrencyType
           exchangeHelper.exchangeFunctions.getOfferWithOutAmount(inCurrency, outCurrency, outAmount)
             .then((response) => {
-              console.log("Response for out currency");
               const XMRtoReceive = parseFloat(response.in_amount)
               const selectedWallet = document.getElementById('selected-wallet')
               const tx_feeElem = document.getElementById('tx-fee')
@@ -339,6 +338,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             sendFundsBtn
           }
           
+          outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
+            exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
+            clearSlowRetrievalTimer(exchangeElements);
+          })
+
           outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
           
           //inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
@@ -674,18 +678,20 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           if (exchangeRendered == null) {
             // do nothing -- this loop will run when order page is locked
           } else {
+            // In edge cases where wallet hasn't initialised yet but the user has input a valid PIN/pass and clicked exchange tab, prevent an undefined error from being thrown
+            if (context.walletsListController.records == "undefined" || context.walletsListController.records.length == "undefined") {
+              setTimeout(() => {
+                getRates()
+              }, 500);
+            }
             function clearValidationMessages(callbackFunction = null) {
               if (typeof(callbackFunction) === "function") {
                 callbackFunction('test');
               }
             }
-    
-            // bind to listener that will update the coin labels when the outCurrency is changed
-            //document.getElementById('outCurrencySelectList').addEventListener('change', exchangeHelper.eventListeners.updateCurrencyLabels);
-  
             getRates()
-            // Safe to set fee because the DOM will have rendered
             
+            // Safe to set fee because the DOM will have rendered
             let estimatedTotalFee_JSBigInt = context.monero_utils.estimated_tx_network_fee(null, 1, '24658');
             let estimatedFeeStr = exchangeHelper.htmlHelper.newEstimatedNetworkFeeString(estimatedTotalFee_JSBigInt);
             let feeElement = document.getElementById('tx-fee')
