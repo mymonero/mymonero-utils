@@ -429,6 +429,15 @@ validateOrder = function() {
 
 }
 
+outCurrencySelectListChangeListener = function(event, exchangeElements) {
+
+    clearCurrencies();
+    clearInterval(exchangeElements.currencyInputTimer);
+    clearInterval(exchangeElements.offerRetrievalIsSlowTimer);
+    document.getElementById('getOffer').style.display = "none";
+    // clear timers too...
+}
+
 updateCurrencyLabels = function(event) {
     let coinTickerCode = event.srcElement.value;
     let coinName = CurrencyMetadata[coinTickerCode].fullName.toUpperCase();
@@ -519,5 +528,6 @@ module.exports = {
     updateCurrencyLabels,
     validateOrder,
     outBalanceChecks,
-    inCurrencyGetOffer
+    inCurrencyGetOffer,
+    outCurrencySelectListChangeListener
 };  
