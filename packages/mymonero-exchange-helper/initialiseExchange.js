@@ -4,6 +4,10 @@ const { handleOfferError } = require("./ErrorHelper");
 const { updateCurrencyLabels } = require("./EventListeners");
 const ExchangeHelper = require("./index")
 
+console.log(window);
+console.log(global);
+console.log(this);
+
 function checkDecimals (value, decimals) {
   console.log("checkDecimals:", value, decimals);
   const str = value.toString()
@@ -523,7 +527,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               // }
               if (response.data.referrer_info.localmonero.enabled === true) {
                 localmoneroDiv.style.display = 'block'
-                localmoneroAnchor.addEventListener('click', exchangeHelper.openClickableLink)
+                localmoneroAnchor.addEventListener('click', (event) => {
+                  exchangeHelper.openClickableLink(event, context);
+                })
               }
             }).catch(error => {
               const localmoneroDiv = document.getElementById('localmonero')
@@ -534,7 +540,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               localmoneroAnchor.setAttribute('param_str', 'rc')
               // No data received from promise resolve(). Display link for LocalMonero
               localmoneroDiv.style.display = 'block'
-              localmoneroAnchor.addEventListener('click', exchangeHelper.openClickableLink)
+              localmoneroAnchor.addEventListener('click', (event) => {
+                exchangeHelper.openClickableLink(event, context);
+              })
             })
           })
         }

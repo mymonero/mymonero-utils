@@ -51,9 +51,12 @@ class ExchangeHelper {
     }
 
     doInit(context) {
+        console.log("Oh look, context!");
+        console.log(context);
         const self = this;
         console.log(this);
         console.log(self);
+        this.context = context;
         InitialiseExchange(context, self);
     }
 
@@ -283,22 +286,25 @@ class ExchangeHelper {
     }
 
     // TODO: Pass this function parameters, use those parameters, determine runtime context, open based on runtime context (shell.openExternal for Electron, window.location for web, etc)
-    openClickableLink() {
+    openClickableLink(event, context) {
         // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
-        const self = this;
-        let referrer_id = self.getAttribute("referrer_id");
-        let url = self.getAttribute("url");
-        let paramStr = self.getAttribute("param_str");
-        if (referrer_id.length > 0) {
-            console.log("Got a referrer -- generate custom URL");
-            let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
-            shell.openExternal(urlToOpen);
-        } else {
-            console.log("No referrer");
-            shell.openExternal("https://localmonero.co");
+        //const self = this;
+        console.log(event);
+        console.log(context);
+        let referrer_id = event.srcElement.getAttribute("referrer_id");
+        let url = event.srcElement.getAttribute("url");
+        let paramStr = event.srcElement.getAttribute("param_str");
+        if (context.shell !== "undefined") {
+            if (referrer_id.length > 0) {
+                console.log("Got a referrer -- generate custom URL");
+                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+                context.shell.openExternal(urlToOpen);
+            } else {
+                console.log("No referrer");
+                context.shell.openExternal("https://localmonero.co");
+            }
         }
     }
-
 }
 
 module.exports = ExchangeHelper
