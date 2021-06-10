@@ -15,24 +15,13 @@ class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
     
     constructor() {
+        // Assignment to this is so that we can invoke these functions using an instance of this class in a public fashion
         this.supportedOutCurrencies = ["BTC", "ETH", "LTC"]
         this.supportedInCurrencies = ["XMR"];
-        //htmlForm = ""; // init blank string for now
         this.baseForm = "";
-        // this.apiUrl = "https://api.mymonero.com:8443/cx";
-        // // this.apiVersion = "v3";
-        // // this.currencyToExchange = "xmr2btc";
-        // this.offer = {};
-        // this.offer_type = "";
-        // this.order = {};
-        // this.orderRefreshTimer = {};
-        // this.currentRates = {};
-        // this.orderStatus = {};
-        // this.exchangeConfiguration = {};
-        // //this.fetch = fetch;
 
         // Fetch form we'll insert into the content view's innerHTML
-        // These declarations make these functions accessible publically
+        
         this.htmlHelper = new HtmlHelper();
         this.baseForm = this.htmlHelper.getBaseForm();
         this.eventListeners = EventListeners;
@@ -51,11 +40,7 @@ class ExchangeHelper {
     }
 
     doInit(context) {
-        console.log("Oh look, context!");
-        console.log(context);
         const self = this;
-        console.log(this);
-        console.log(self);
         this.context = context;
         InitialiseExchange(context, self);
     }
@@ -71,10 +56,6 @@ class ExchangeHelper {
     setSendingFee(feeString, elemToSet) {
         elemToSet.dataset.txFee = feeString;
         elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ ${feeString} XMR EST. FEE</span>`
-    }
-
-    walletSelectorElement(walletContextObject) {
-
     }
 
     // This function is invoked to update the order status page
@@ -149,7 +130,7 @@ class ExchangeHelper {
         
     // }
  
-    UnlockedBalance_FormattedString(wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
+    UnlockedBalance_FormattedString(wallet) { 
         const self = this
         const balance_JSBigInt = self.UnlockedBalance_JSBigInt(wallet)
         return monero_amount_format_utils.formatMoney(balance_JSBigInt)
@@ -186,8 +167,6 @@ class ExchangeHelper {
 
     // we should refactor this to return a template instead of HTML
     walletSelectorTemplate(walletList) {
-        console.log(this);
-        console.log("walletSelectorTemplate invoked");
         let self = this;
         let walletDiv = document.getElementById('wallet-selector');
         if (walletDiv === null) {
@@ -204,17 +183,13 @@ class ExchangeHelper {
             let selectorInt = parseInt(selectorOffset);
             let wallet = self.context.wallets[selectorInt];
             //let walletBalance = document.getElementById('selected-wallet-balance'); 
-            console.log("Wallet balance a: ");
-            console.log(self.UnlockedBalance_FormattedString(walletList));
             walletBalance.innerText = `${self.UnlockedBalance_FormattedString(walletList[selectorOffset])} XMR   `;
         } else {
-            console.log(walletList);
             let walletOptions = ``;
             let walletRecords = walletList;
             walletRecords.reverse();
             
             for (let i = 0; i < walletRecords.length; i++) {
-                console.log("Wallet balance b: ");
                 
                 let wallet = walletRecords[i];
                 let swatch = wallet.swatch.substr(1);
@@ -227,7 +202,6 @@ class ExchangeHelper {
                 </div>
                 `;
             }         
-            //console.log('wallet html ran options '+i)
             // get oldest wallet based on how wallets are inserted into wallets as a zero element, changing indexes backwards
             let size = walletList.length;
             size = size - 1;
@@ -246,26 +220,22 @@ class ExchangeHelper {
                 </div>
             `;
             return walletSelectOptions;
-            //walletDiv.innerHTML = walletSelectOptions;
         }
         return walletDiv;
     }
 
     htmlFormTemplate() {
-        console.log("htmlForm invoked. Let's create a template from that html, then find the currency elements and replace them dynamically")
+        // htmlForm invoked. Let's create a template from that html, then find the currency elements and replace them dynamically
         let template = document.createElement('template');
         let templateContents = this.baseForm.trim();
         template.innerHTML = templateContents;
         let walletSelector = template.content.getElementById('wallet-selector');
-        //console.log(walletSelector);
         let inCurrencySelector = template.content.getElementById('inCurrencySelector');
         inCurrencySelector.appendChild(this.inCurrencySelector);
         let outCurrencySelector = template.content.getElementById('outCurrencySelector');
         outCurrencySelector.appendChild(this.outCurrencySelector);
         console.log(template);
         return template;
-        //return this.baseForm;
-        //return this.htmlForm;
     }    
 
     sendFundsValidationStatusCallback (str) {
