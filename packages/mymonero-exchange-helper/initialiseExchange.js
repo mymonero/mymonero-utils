@@ -5,7 +5,6 @@ const { updateCurrencyLabels } = require("./EventListeners");
 const ExchangeHelper = require("./index")
 
 function checkDecimals (value, decimals) {
-  //console.log("checkDecimals:", value, decimals);
   const str = value.toString()
   const strArr = str.split('.')
   if (strArr.length > 1) {
@@ -31,7 +30,6 @@ function outCurrencyValueKeydownListener(event, exchangeHelper) {
   // We need to limit the number of decimals based on the selected currency
   // checkDecimals returns false if we exceed the second parameter in decimal places
   if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
-    console.log("Decimal limit reached");
     event.preventDefault()
     return false
   }
@@ -252,27 +250,19 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             updateCurrencyLabels(event, exchangeElements);
           })
 
-          outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
-          
           inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
           outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
-          //outCurrencyValue.addEventListener('keydown', outCurrencyValueKeydownListener)
+          outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
+          
           walletSelector.addEventListener('click', function(event) {
             exchangeHelper.eventListeners.walletSelectorClickListener(event, exchangeElements) 
           });
-          //console.log(exchangeHelper.eventListeners.orderBtnClickedListener.bind())
-          //orderBtn.addEventListener('click', exchangeHelper.eventListeners.orderButtonClickedListener)
+
+          // Binds to "Create order"
           orderBtn.addEventListener('click', function (event) {
             orderBtnClicked(exchangeElements, exchangeHelper.exchangeFunctions)
           })
   
-          // outCurrencyValue.addEventListener('keyup', function (event) {
-          //   //clearValidationMessages(alertValid);
-          //   validationMessages.innerHTML = ''
-          //   if (outCurrencyValue.value.length > 0) {
-          //     exchangeHelper.eventListeners.outBalanceChecks()
-          //   }
-          // })
           function initialiseSlowRetrievalTimer(exchangeElements) {
             exchangeElements.offerRetrieval = setTimeout(() => {
               exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
@@ -288,30 +278,24 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             validationMessages.innerHTML = ''
             clearSlowRetrievalTimer(exchangeElements);
             if (outCurrencyValue.value.length > -1) {
-              console.log("keydown check init: out");
               if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 exchangeElements.getOfferLoader.style.display = "block";
                 try {
-                  console.log("Try out here");
-                  console.log(exchangeHelper.eventListeners.outBalanceChecks);
                   initialiseSlowRetrievalTimer(exchangeElements)
                   exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
                     clearSlowRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
-                    console.log(response);
                   }).catch((error) => {
                       clearSlowRetrievalTimer(exchangeElements)
                       exchangeElements.getOfferLoader.style.display = "none";
                       let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                       serverValidation.appendChild(errorDiv);
-                      console.log("Caught error");
                   }).finally(() => {
                     exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
                   })
                 } catch (error) {
                   //handleOfferError(error);
                   console.log(error.message);
-                  console.log("Handled at 301");
                 }
               } 
             }
@@ -324,7 +308,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           inCurrencyValue.addEventListener('keydown', function (event) {
             validationMessages.innerHTML = ''
             if (inCurrencyValue.value.length > -1) {
-              console.log("keydown check init");
               if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 exchangeElements.getOfferLoader.style.display = "block";
                 try {
@@ -337,7 +320,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                     exchangeElements.getOfferLoader.style.display = "none";
                     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                     serverValidation.appendChild(errorDiv);
-                    console.log("Caught error");
                   }).finally(() => {
                     exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
                   })
@@ -353,21 +335,16 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           outCurrencyValue.addEventListener('input', function (event) {
             validationMessages.innerHTML = ''
             if (outCurrencyValue.value.length > -1) {
-              console.log("keydown check init");
               exchangeElements.getOfferLoader.style.display = "block";
               if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 try {
-                  console.log("Trying here");
-                  console.log(exchangeHelper.eventListeners.inBalanceChecks);
-                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    console.log(response);
+                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {                    
                   }).catch((error) => {
                       let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                       serverValidation.appendChild(errorDiv);
-                      console.log("Caught error");
-                    }).finally(() => {
-                      exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
-                    })
+                  }).finally(() => {
+                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
+                  })
                 } catch (error) {
                   console.log(error.message);
                 }
@@ -424,10 +401,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
               localmoneroAnchor.setAttribute('param_str', 'rc')
   
-              // if (response.referrer_info.indacoin.enabled === true) {
-              //     indacoinDiv.style.display = "block";
-              //     indacoinAnchor.addEventListener('click', openClickableLink);
-              // }
               if (response.data.referrer_info.localmonero.enabled === true) {
                 localmoneroDiv.style.display = 'block'
                 localmoneroAnchor.addEventListener('click', (event) => {
@@ -503,9 +476,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
             exchangeElements.loaderPage.classList.remove('active')
-            // exchangeElements.orderStatusDiv.classList.add('active')
-            // exchangeElements.exchangePageDiv.classList.add('active')
-            console.log(out_currency);
             const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
   
             }).then((error, response) => {
@@ -611,16 +581,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             // Safe to set up wallet selector since it'll have been rendered
             let walletSelector = document.getElementById('wallet-selector');
             
-            // Debug
-            /*
-            let testWallet = JSON.parse(JSON.stringify(context.walletsListController.records[0]))
-            let testWalletsArr = [
-              context.walletsListController.records[0],
-              testWallet
-            ]
-            console.log(testWalletsArr);
-            exchangeHelper.renderWalletSelector(testWalletsArr, walletSelector);
-            */
             exchangeHelper.renderWalletSelector(context.walletsListController.records, walletSelector);
             exchangeHelper.setSendingFee(estimatedFeeStr, feeElement)
           }
