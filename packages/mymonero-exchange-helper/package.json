@@ -15,6 +15,31 @@
     "require": "./index.js",
     "import": "./index.esm.js"
   },
-  "author": "Karl Buys (MyMonero Pty Ltd)",
-  "license": "ISC"
+  "keywords": [
+    "cryptocurrency-conversion",
+    "cryptocurrency-exchange",
+    "mymonero",
+    "xmrtobtc",
+    "xmr-to-btc",
+    "xmr-to-ltc",
+    "xmr-to-eth",
+    "monerotobitcoin",
+    "monero-to-bitcoin",
+    "monero-to-litecoin",
+    "monero-to-ethereum"
+  ],
+  "author": "MyMonero",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mymonero/mymonero-utils.git"
+  },
+  "homepage": "https://mymonero.com",
+  "bugs": {
+    "url": "https://github.com/mymonero/mymonero-utils/issues",
+    "email": "info@mymonero.com"
+  },
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "access": "public"
+  }
 }
