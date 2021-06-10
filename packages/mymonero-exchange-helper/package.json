@@ -11,6 +11,10 @@
     "@mymonero/mymonero-exchange": "1.1.3",
     "@mymonero/mymonero-money-format": "1.1.3"
   },
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.esm.js"
+  },
   "author": "Karl Buys (MyMonero Pty Ltd)",
   "license": "ISC"
 }
