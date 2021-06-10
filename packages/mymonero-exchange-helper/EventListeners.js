@@ -434,7 +434,7 @@ outCurrencySelectListChangeListener = function(event, exchangeElements) {
     clearCurrencies();
     clearInterval(exchangeElements.currencyInputTimer);
     clearInterval(exchangeElements.offerRetrievalIsSlowTimer);
-    document.getElementById('getOffer').style.display = "none";
+    exchangeElements.getOfferLoader.style.display = "none";
     // get elements that show the 
     // clear timers too...
 }
