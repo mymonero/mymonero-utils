@@ -82,11 +82,11 @@ class ExchangeHelper {
         }
     }
 
-    get supportedInCurrencies() {
+    supportedInCurrencies() {
         return this.supportedInCurrencies;
     }
 
-    get supportedOutCurrencies() {
+    supportedOutCurrencies() {
         return this.supportedOutCurrencies;
     }
 
