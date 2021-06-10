@@ -1,6 +1,6 @@
 {
-  "name": "@mymonero/mymonero-nettype",
-  "version": "1.0.2",
+  "name": "@mymonero/mymonero-request-utils",
+  "version": "1.1.4",
   "description": "Definitions of the monero network types used in mymonero",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,11 @@
   "author": "MyMonero <info@mymonero,com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devinpearson/mymonero-utils.git"
+    "url": "git+https://github.com/mymonero/mymonero-utils.git"
   },
   "license": "ISC",
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "9223b2c982cfa17bc1fc1c065c92205cfafae980"
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }
