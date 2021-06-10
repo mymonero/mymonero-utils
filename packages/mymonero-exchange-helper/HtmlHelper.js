@@ -1,7 +1,6 @@
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 class HtmlHelper {
     // This class is designed to return a uniform HTML structure that we can leverage in all JS codebases
-    baseForm = "";
     constructor() {
         this.baseForm = this.getBaseForm();
         this.baseWalletSelector = this.getBaseWalletSelector();

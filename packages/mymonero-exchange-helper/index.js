@@ -13,12 +13,12 @@ const exchangeFunctions = new ExchangeFunctions();
 
 class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
-    supportedOutCurrencies = ["BTC", "ETH", "LTC"]
-    supportedInCurrencies = ["XMR"];
-    //htmlForm = ""; // init blank string for now
-    baseForm = "";
-
+    
     constructor() {
+        this.supportedOutCurrencies = ["BTC", "ETH", "LTC"]
+        this.supportedInCurrencies = ["XMR"];
+        //htmlForm = ""; // init blank string for now
+        this.baseForm = "";
         // this.apiUrl = "https://api.mymonero.com:8443/cx";
         // // this.apiVersion = "v3";
         // // this.currencyToExchange = "xmr2btc";
@@ -145,17 +145,17 @@ class ExchangeHelper {
         return false
     }
     
-    _setup_walletExchangeOptions(context) {
+    // _setup_walletExchangeOptions(context) {
         
-    }
+    // }
  
-    UnlockedBalance_FormattedString = function(wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
+    UnlockedBalance_FormattedString(wallet) { // provided for convenience mainly so consumers don't have to require monero_utils
         const self = this
         const balance_JSBigInt = self.UnlockedBalance_JSBigInt(wallet)
         return monero_amount_format_utils.formatMoney(balance_JSBigInt)
     }
 
-    UnlockedBalance_JSBigInt = function(wallet) {
+    UnlockedBalance_JSBigInt(wallet) {
         const self = wallet
         const difference = self.Balance_JSBigInt().subtract(
           self.locked_balance || new JSBigInt(0)
@@ -167,7 +167,7 @@ class ExchangeHelper {
         return difference
     }
 
-    Balance_JSBigInt = function(wallet) {
+    Balance_JSBigInt(wallet) {
         const self = this
         let total_received = wallet.total_received
         let total_sent = wallet.total_sent
