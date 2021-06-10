@@ -133,7 +133,7 @@ class HtmlHelper {
                 <span class="field_title form-field-title" style="margin-top: 17px;">DESTINATION <span id="outCurrencyCoinName">BITCOIN</span> ADDRESS
                 </span>
                 <div class="contactPicker" style="position: relative; width: 100%; user-select: none;">
-                    <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="3E6iM3nAY2sAyTqx5gF6nnCvqAUtMyRGEm">
+                    <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
                 </div>
             </div>
             <div id="localmonero"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
