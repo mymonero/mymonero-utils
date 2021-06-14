@@ -60,6 +60,31 @@ class HtmlHelper {
         </div>`
     }
 
+    getAddressValidationLoader() {
+        return `
+        <style>
+        #addressValidationLoader {
+            float: left;
+            // min-height: 28px;
+        }
+        #addressValidationLoader div { 
+            // display: none; 
+        }
+        #addressValidationLoader {
+            padding: 0px 24px 0 0;
+            display: none;
+        }
+        </style>
+        <div id="addressValidationLoader" class="graphicAndLabel activityIndicators on-normal-background" style="font-family: Native-Light, input, menlo, monospace; -webkit-font-smoothing: subpixel-antialiased; font-size: 10px; letter-spacing: 0.5px; font-weight: 300; color: rgb(158, 156, 158); padding-left: 0px;">
+            <div class="loader">
+                <div class="block block1"></div>
+                <div class="block block2"></div>
+                <div class="block block3"></div>
+            </div>&nbsp;
+            <span id="addressValidationLoaderText">Validating Address</span>
+        </div>`
+    }
+
     // TODO: fix imports so that we can leverage this function
     newEstimatedNetworkFeeString(fee_JSBigInt = 0) {
         const self = this
@@ -135,6 +160,9 @@ class HtmlHelper {
                 <div class="contactPicker" style="position: relative; width: 100%; user-select: none;">
                     <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
                 </div>
+            </div>
+            <div class="form_field" id="getAddressValidationLoader">
+                ${this.getAddressValidationLoader()}
             </div>
             <div id="localmonero"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
             <div id="indacoin"><a href="#" id="indacoin-anchor" class="clickableLinkButton">Buy Monero using Indacoin</a></div>
