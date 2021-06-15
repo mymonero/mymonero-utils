@@ -20,7 +20,53 @@ clearCurrencies = function() {
     document.getElementById("outCurrencyValue").value = "";
 }
 
-outAddressInputListener = function() {
+outAddressInputListener = function(exchangeElements, currencyTickerCode, address) {
+    
+    return new Promise((resolve, reject) => {
+        exchangeElements.serverValidation.innerText = "";
+        try {
+            exchangeElements.serverValidation.innerHTML = ''
+            //let inAmountToReceive = exchangeElements.BTCToReceive
+            const outBalance = parseFloat(exchangeElements.outCurrencyValue.value)
+            const out_amount = outBalance.toFixed(12)
+            exchangeElements.inCurrencyValue.value = ''
+            if (exchangeElements.currencyInputTimer !== undefined) {
+                clearTimeout(exchangeElements.currencyInputTimer)
+            }
+            exchangeElements.getAddressValidationLoader.style.display = "block";
+            exchangeElements.getAddressValidationLoaderText.style.display = "block";
+            exchangeElements.validationMessages.innerHTML = ''
+            exchangeElements.serverValidation.innerHTML = ''
+            exchangeElements.addressInputTimer = setTimeout(() => {
+                Utils.validateOutAddress(currencyTickerCode, address).then(response => {
+                    // successful response in following format: {"isActivated":null,"result":true,"message":null}
+                    let element = document.createElement("div");
+                    element.classList.add('message-label');
+                    
+                    if (response.result == true) {
+                        element.innerHTML = "&#10004; Validated address successfully";
+                        exchangeElements.getAddressValidationLoaderText.innerHTML = "<span class='exchange-tick'>&#10004;</span> Validated address successfully";
+                        exchangeElements.serverValidation.append(element);
+                    } else if (response.result == false) {
+                        element.innerText = "Your address is invalid";
+                        exchangeElements.getAddressValidationLoaderText.innerHTML = "<span class='exchange-cross'>&#10006;</span> The address you've specified is not valid";
+                        exchangeElements.serverValidation.append(element);
+                    } else {
+                        // failed response in following format: {"isActivated":null,"result":false,"message":"Invalid checksum"}
+                        element.innerText = "An unexpected error occurred: " + response.message.toString();
+                        exchangeElements.serverValidation.append(element);
+                    }
+                }).catch(error => {
+                    // 4xx or 5xx errors of some sort
+                    console.log(error);
+                })
+            }, 1500)
+        } catch (error) {
+            console.log("outBalanceChecks error route");
+            reject(error);
+        }
+    })
+    
     // This first version of the revamp relies on order creation to ensure addresses are valid -- when we swap over to client-based queries, we'll validate here again
 }
 

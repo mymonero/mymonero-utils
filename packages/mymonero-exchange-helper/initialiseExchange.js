@@ -109,7 +109,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
     let orderTimer = {}
     let currencyInputTimer
     
-    function validateBTCAddress (address, ValidationLibrary) {
+    function validateOutAddress(address, ValidationLibrary) {
       // Replace this with our ChangeNow library's integration at some stage
       try {
         if (ValidationLibrary.validate(address) == false) {
@@ -121,21 +121,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       }
       console.log(ValidationLibrary.validate(address))
       return true
-    }
-  
-    const outAddressInputListener = function () {
-      const outAddressInput = document.getElementById('outAddress')
-      addressValidation.innerHTML = ''
-  
-      /* We could leave address validation to the exchange server instead of validating three different address types, then implement validation when we pull in the 
-      client side npm module") */
-      // if (validateBTCAddress(btcAddressInput.value, ValidationLibrary) == false) {
-      //   const error = document.createElement('div')
-      //   error.classList.add('message-label')
-      //   error.id = 'btc-invalid'
-      //   error.innerHTML = 'Your BTC address is not valid.'
-      //   addressValidation.appendChild(error)
-      // }
     }
       // Coordinates the retrieval of a quote given an out currency and a in amount. Returns a value for outCurrencyValue
         // Coordinates the retrieval of a quote given an out currency and a out amount. Returns a value for inCurrencyValue
@@ -190,7 +175,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         function getRates() {
           // it's safe to refresh the sending fee here, because we know the HTML exists in the DOM
           //self._refresh_sending_fee();
-          let currencyInputTimer;
+          let currencyInputTimer, addressInputTimer;
           const exchangePage = document.getElementById('orderStatusPage')
           const loaderPage = document.getElementById('loader')
           const outAddressInput = document.getElementById('outAddress')
@@ -211,7 +196,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const selectedWallet = document.getElementById('selected-wallet')
           const orderStatusDiv = document.getElementById('exchangePage')
           const getOfferLoader = document.getElementById('getOfferLoader')
+          const getAddressValidationLoader = document.getElementById('addressValidationLoader')
           const getOfferLoaderText = document.getElementById('activityLoaderText');
+          const getAddressValidationLoaderText = document.getElementById('addressValidationLoaderText');
           const sendFundsBtn = document.getElementById('exchange-xmr');
           let offerRetrievalIsSlowTimer
   
@@ -238,55 +225,92 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             inCurrencyTickerCodeDiv,
             outCurrencyTickerCodeDiv,
             currencyInputTimer,
+            addressInputTimer,
             getOfferLoader,
             offerRetrievalIsSlowTimer,
             getOfferLoaderText,
-            sendFundsBtn
+            sendFundsBtn,
+            getAddressValidationLoader,
+            getAddressValidationLoaderText
           }
           
           outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
             exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
-            clearSlowRetrievalTimer(exchangeElements);
+            clearSlowCurrencyRetrievalTimer(exchangeElements);
             updateCurrencyLabels(event, exchangeElements);
           })
 
           inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
           outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
-          outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
+          
+          // Event listener for validating destination address
+          outAddressInput.addEventListener('keyup', function(event) {
+            if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+              exchangeElements.getAddressLoader.style.display = "block";
+              try {
+                initialiseSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                  clearSlowCurrencyRetrievalTimer(exchangeElements)
+                  exchangeElements.getAddressLoader.style.display = "none";
+                }).catch((error) => {
+                    clearSlowCurrencyRetrievalTimer(exchangeElements)
+                    exchangeElements.getOfferLoader.style.display = "none";
+                    let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                    serverValidation.appendChild(errorDiv);
+                }).finally(() => {
+                  exchangeElements.getAddressLoader.innerText = "Fetching offer"
+                })
+              } catch (error) {
+                //handleOfferError(error);
+                console.log(error.message);
+              }
+            } 
+            exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value);
+          })
           
           walletSelector.addEventListener('click', function(event) {
             exchangeHelper.eventListeners.walletSelectorClickListener(event, exchangeElements) 
           });
 
+          function initialiseSlowAddressRetrievalTimer(exchangeElements) {
+            exchangeElements.addressRetrieval = setTimeout(() => {
+              exchangeElements.addressValidationLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
+            }, 3000)
+          }
+
+          function clearSlowAddressRetrievalTimer(exchangeElements) {
+            clearInterval(exchangeElements.addressRetrieval)
+            console.log("Clear slow retrieval timer");
+          }
           // Binds to "Create order"
           orderBtn.addEventListener('click', function (event) {
             orderBtnClicked(exchangeElements, exchangeHelper.exchangeFunctions)
           })
   
-          function initialiseSlowRetrievalTimer(exchangeElements) {
+          function initialiseSlowCurrencyRetrievalTimer(exchangeElements) {
             exchangeElements.offerRetrieval = setTimeout(() => {
               exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
             }, 3000)
           }
 
-          function clearSlowRetrievalTimer(exchangeElements) {
+          function clearSlowCurrencyRetrievalTimer(exchangeElements) {
             clearInterval(exchangeElements.offerRetrieval)
             console.log("Clear slow retrieval timer");
           }
 
           outCurrencyValue.addEventListener('keydown', function(event) {
             validationMessages.innerHTML = ''
-            clearSlowRetrievalTimer(exchangeElements);
+            clearSlowCurrencyRetrievalTimer(exchangeElements);
             if (outCurrencyValue.value.length > -1) {
               if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 exchangeElements.getOfferLoader.style.display = "block";
                 try {
-                  initialiseSlowRetrievalTimer(exchangeElements)
+                  initialiseSlowCurrencyRetrievalTimer(exchangeElements)
                   exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearSlowRetrievalTimer(exchangeElements)
+                    clearSlowCurrencyRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                   }).catch((error) => {
-                      clearSlowRetrievalTimer(exchangeElements)
+                      clearSlowCurrencyRetrievalTimer(exchangeElements)
                       exchangeElements.getOfferLoader.style.display = "none";
                       let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                       serverValidation.appendChild(errorDiv);
@@ -300,10 +324,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               } 
             }
           })
-  
-          //outCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.btcBalanceChecks))
-          //inCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.inBalanceChecks))
-  
+
           // Add inBalanceChecks listener
           inCurrencyValue.addEventListener('keydown', function (event) {
             validationMessages.innerHTML = ''
@@ -311,12 +332,12 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
                 exchangeElements.getOfferLoader.style.display = "block";
                 try {
-                  initialiseSlowRetrievalTimer(exchangeElements)
+                  initialiseSlowCurrencyRetrievalTimer(exchangeElements)
                   exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearSlowRetrievalTimer(exchangeElements)
+                    clearSlowCurrencyRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                 }).catch((error) => {
-                    clearSlowRetrievalTimer(exchangeElements)
+                    clearSlowCurrencyRetrievalTimer(exchangeElements)
                     exchangeElements.getOfferLoader.style.display = "none";
                     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                     serverValidation.appendChild(errorDiv);

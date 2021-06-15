@@ -1,6 +1,31 @@
 // import function for Bitcoin address checking
 // TODO: Fix validation const validate = require('bitcoin-address-validation')
 //console.log(validate)
+const axios = require('axios');
+
+function validateOutAddress(currencyTickerCode, address) {
+  return new Promise((resolve, reject) => {
+      this.apiUrl = "https://api.changenow.io/v2/";  
+      var axios = require('axios');
+      console.log("Running validate address");
+      var config = {
+          method: 'get',
+          url: `${this.apiUrl}validate/address`,
+          params: {
+              currency: currencyTickerCode,
+              address
+          },
+          headers: { }
+      };
+
+      axios(config).then(function (response) {                
+          resolve(response.data);
+      })
+      .catch(function (error) {
+          reject(error)
+      });
+  })
+}
 
 function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validation_status_fn, handle_response_fn) {
   return new Promise((resolve, reject) => {
@@ -47,23 +72,6 @@ function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validati
       // TODO: Karl: I haven't diven deep enough to determine what state would invoke this function yet
     }
   })
-}
-
-function validateBTCAddress (address) {
-  console.log("This validation is stubbed -- implement it before release");
-    console.log(validate(address))
-    return true;
-  if (validate(address) == false) {
-    return false
-  }
-  // TODO: check for and fail on testnet address? Force testnet address on ENABLE_TESTMODE?
-
-  return true
-}
-
-function determineAddressNetwork (address) {
-  const info = validate(address)
-  return info.network
 }
 
 // end of functions to check Bitcoin address
@@ -167,4 +175,4 @@ function isValidBase10Decimal (number) {
   return true
 }
 
-module.exports = { validateBTCAddress, getTimeRemaining, isValidBase10Decimal, checkDecimals, renderOrderStatus, sendFunds }
+module.exports = { validateOutAddress, getTimeRemaining, isValidBase10Decimal, checkDecimals, renderOrderStatus, sendFunds }
