@@ -199,6 +199,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const getAddressValidationLoader = document.getElementById('addressValidationLoader')
           const getOfferLoaderText = document.getElementById('activityLoaderText');
           const getAddressValidationLoaderText = document.getElementById('addressValidationLoaderText');
+          const getAddressValidationLoaderContainer = document.getElementById('addressValidationLoaderContainer');
           const sendFundsBtn = document.getElementById('exchange-xmr');
           let offerRetrievalIsSlowTimer
   
@@ -231,7 +232,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             getOfferLoaderText,
             sendFundsBtn,
             getAddressValidationLoader,
-            getAddressValidationLoaderText
+            getAddressValidationLoaderText,
+            getAddressValidationLoaderContainer
           }
           
           outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
@@ -245,27 +247,32 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           
           // Event listener for validating destination address
           outAddressInput.addEventListener('keyup', function(event) {
-            if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
-              exchangeElements.getAddressLoader.style.display = "block";
-              try {
-                initialiseSlowCurrencyRetrievalTimer(exchangeElements)
-                exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                  clearSlowCurrencyRetrievalTimer(exchangeElements)
-                  exchangeElements.getAddressLoader.style.display = "none";
-                }).catch((error) => {
-                    clearSlowCurrencyRetrievalTimer(exchangeElements)
-                    exchangeElements.getOfferLoader.style.display = "none";
-                    let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-                    serverValidation.appendChild(errorDiv);
-                }).finally(() => {
-                  exchangeElements.getAddressLoader.innerText = "Fetching offer"
-                })
-              } catch (error) {
-                //handleOfferError(error);
-                console.log(error.message);
-              }
-            } 
-            exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value);
+            clearSlowAddressRetrievalTimer(exchangeElements);
+            exchangeElements.getAddressValidationLoaderContainer.style.display = "block";
+            exchangeElements.getAddressValidationLoaderText.innerHTML = `<span id="addressValidationLoaderText">Validating Address</span>`;
+            exchangeElements.getAddressValidationLoader.style.display = "block";
+            try {
+              initialiseSlowCurrencyRetrievalTimer(exchangeElements)
+              exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value).then(response => {
+                clearSlowAddressRetrievalTimer(exchangeElements);
+              }).catch((error) => {
+                clearSlowAddressRetrievalTimer(exchangeElements);
+              });
+              // exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+              //   clearSlowCurrencyRetrievalTimer(exchangeElements)
+              //   exchangeElements.getAddressLoader.style.display = "none";
+              // }).catch((error) => {
+              //     clearSlowCurrencyRetrievalTimer(exchangeElements)
+              //     //exchangeElements.getOfferLoader.style.display = "none";
+              //     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+              //     serverValidation.appendChild(errorDiv);
+              // }).finally(() => {
+              //   exchangeElements.getAddressLoader.innerText = "Fetching offer"
+              // })
+            } catch (error) {
+              //handleOfferError(error);
+              console.log(error.message);
+            }
           })
           
           walletSelector.addEventListener('click', function(event) {
@@ -274,7 +281,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
 
           function initialiseSlowAddressRetrievalTimer(exchangeElements) {
             exchangeElements.addressRetrieval = setTimeout(() => {
-              exchangeElements.addressValidationLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
+              exchangeElements.addressValidationLoaderText.innerText = "Verifying the destination address is taking longer than expected. Please be patient"
             }, 3000)
           }
 
