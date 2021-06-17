@@ -100,7 +100,6 @@ class ExchangeHelper {
             option.text = this.supportedInCurrencies[i];
             selectList.appendChild(option);
         }
-        console.log(selectList);
         return selectList;
     }
 
@@ -114,7 +113,6 @@ class ExchangeHelper {
             option.text = this.supportedOutCurrencies[i];
             selectList.appendChild(option);
         }
-        console.log(selectList);
         return selectList;
     }
 
@@ -141,7 +139,6 @@ class ExchangeHelper {
         const difference = self.Balance_JSBigInt().subtract(
           self.locked_balance || new JSBigInt(0)
         )
-        console.log("UnlockedBalance:", difference);
         if (difference.compare(0) < 0) {
           return new JSBigInt(0)
         }
@@ -234,7 +231,6 @@ class ExchangeHelper {
         inCurrencySelector.appendChild(this.inCurrencySelector);
         let outCurrencySelector = template.content.getElementById('outCurrencySelector');
         outCurrencySelector.appendChild(this.outCurrencySelector);
-        console.log(template);
         return template;
     }    
 
