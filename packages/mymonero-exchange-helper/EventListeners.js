@@ -26,9 +26,6 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
         exchangeElements.serverValidation.innerText = "";
         try {
             exchangeElements.serverValidation.innerHTML = ''
-            const outBalance = parseFloat(exchangeElements.outCurrencyValue.value)
-            const out_amount = outBalance.toFixed(12)
-            exchangeElements.inCurrencyValue.value = ''
             if (exchangeElements.currencyInputTimer !== undefined) {
                 clearTimeout(exchangeElements.currencyInputTimer)
             }
@@ -65,12 +62,10 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
                 })
             }, 1500)
         } catch (error) {
-            console.log("outBalanceChecks error route");
+            // console.log("outBalanceChecks error route");
             reject(error);
         }
     })
-    
-    // This first version of the revamp relies on order creation to ensure addresses are valid -- when we swap over to client-based queries, we'll validate here again
 }
 
 inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeElements) {
@@ -79,7 +74,7 @@ inCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchangeE
         .then((response) => {
             resolve(response)
         }).catch((error) => {
-            console.log("Rejecting with error to bubble up to inCurrencyBalanceChecks")
+            // console.log("Rejecting with error to bubble up to inCurrencyBalanceChecks")
             reject(error);
         })
     })
@@ -91,33 +86,13 @@ outCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchange
         .then((response) => {
             resolve(response)
         }).catch((error) => {
-            console.log("Rejecting with error to bubble up to outCurrencyBalanceChecks")
+            // console.log("Rejecting with error to bubble up to outCurrencyBalanceChecks")
             reject(error);
         })
     })
 }
 
-// inCurrencyInputKeydownListener = function(event) {
-//     if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
-//     return;
-
-//     if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
-//         return;
-//     }
-
-//     if (!Utils.checkDecimals(inCurrencyInput.value, 12)) {
-//         event.preventDefault();
-//         return;
-//     }
-
-//     event.preventDefault();
-//     return;
-// }
-
- walletSelectorClickListener = function(event, exchangeElements) {
-    console.log(exchangeElements);
-    console.log(event);
-    console.log(this);
+walletSelectorClickListener = function(event, exchangeElements) {
     let walletElement = document.getElementById('wallet-options');
     let selectedWallet = document.getElementById('selected-wallet');
     walletElement.classList.add('active');
@@ -148,23 +123,6 @@ outCurrencyGetOffer = function(inCurrencyDiv, outCurrencyDiv, inAmount, exchange
     } 
 }
 
-// BTCCurrencyKeydownListener = function(event) {
-
-//     if (event.which == 8 || event.which == 110 || event.which == 46 || event.which == 190) 
-//     return;
-
-//     if ( (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) ) {
-//         return;
-//     }
-
-//     if (!Utils.checkDecimals(BTCcurrencyInput.value, 8)) {
-//         event.preventDefault();
-//         return;
-//     }
-//     event.preventDefault();
-//     return;
-// }
-
 inBalanceChecks = function (exchangeElements, exchangeFunctions) {
     return new Promise((resolve, reject) => {
         try {
@@ -187,12 +145,12 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
                     exchangeElements.outCurrencyValue.value = response.out_amount;
                     resolve(response);
                 }).catch((error) => {
-                    console.log("inBalance promise rejection");
+                    // console.log("inBalance promise rejection");
                     reject(error);
                 })
             }, 1500)
         } catch (error) {
-            console.log("InBalanceChecks error route");
+            // console.log("InBalanceChecks error route");
             reject(error);
         }
     })
@@ -221,12 +179,12 @@ outBalanceChecks = function(exchangeElements) {
                     exchangeElements.inCurrencyValue.value = response.in_amount;
                     resolve(response);
                 }).catch((error) => {
-                    console.log("outBalance promise rejection");
+                    // console.log("outBalance promise rejection");
                     reject(error);
                 })
             }, 1500)
         } catch (error) {
-            console.log("outBalanceChecks error route");
+            // console.log("outBalanceChecks error route");
             reject(error);
         }
     })
@@ -253,16 +211,16 @@ function clearCurrencyInputValues() {
 orderButtonClickedListener = function(orderStarted, ExchangeFunctions) {
     // 1. Do validation
     if (validateOrder) {
-        console.log("Order valid");
+        // console.log("Order valid");
     }
-    console.log(orderStarted);
-    console.log(ExchangeFunctions);
+    // console.log(orderStarted);
+    // console.log(ExchangeFunctions);
 
 }
 
 validateOrder = function() {
     let validationError = false;
-    console.log(validationMessages);
+    // console.log(validationMessages);
     if (orderStarted == true) {
 
         return false;
@@ -281,9 +239,9 @@ validateOrder = function() {
 }
 
 updateMinimumInputValue = function(event, exchangeElements) {
-    console.log("updateMinimum");
-    console.log(event);
-    console.log(exchangeElements);
+    // console.log("updateMinimum");
+    // console.log(event);
+    // console.log(exchangeElements);
     Utils.getMinimalExchangeAmount("XMR", exchangeElements.outCurrencyTickerCodeDiv.value).then(response => {
         exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)"
     }).catch(error => {
