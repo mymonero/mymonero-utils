@@ -1,6 +1,3 @@
-// import function for Bitcoin address checking
-// TODO: Fix validation const validate = require('bitcoin-address-validation')
-//console.log(validate)
 const axios = require('axios');
 
 function getMinimalExchangeAmount(fromCurrency, toCurrency) {
