@@ -148,6 +148,9 @@ class HtmlHelper {
                                     <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
                                     <div id="inCurrencySelector"></div>
                                 </div>
+                                <div id="minimum-fee">
+                                    <span id="minimum-fee-text" class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">Loading ...</span>
+                                </div>
                             </div>
                         </td>
                         <td>

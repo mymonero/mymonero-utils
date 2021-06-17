@@ -279,8 +279,20 @@ validateOrder = function() {
 
 }
 
-outCurrencySelectListChangeListener = function(event, exchangeElements) {
+updateMinimumInputValue = function(event, exchangeElements) {
+    console.log("updateMinimum");
+    console.log(event);
+    console.log(exchangeElements);
+    Utils.getMinimalExchangeAmount("XMR", exchangeElements.outCurrencyTickerCodeDiv.value).then(response => {
+        exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)"
+    }).catch(error => {
+        exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
+    })
+}
 
+outCurrencySelectListChangeListener = function(event, exchangeElements) {
+    
+    updateMinimumInputValue(event, exchangeElements);
     clearCurrencies();
     clearInterval(exchangeElements.currencyInputTimer);
     clearInterval(exchangeElements.offerRetrievalIsSlowTimer);

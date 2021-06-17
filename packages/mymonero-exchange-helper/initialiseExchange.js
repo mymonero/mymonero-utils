@@ -3,6 +3,7 @@
 const { handleOfferError } = require("./ErrorHelper");
 const { updateCurrencyLabels } = require("./EventListeners");
 const ExchangeHelper = require("./index")
+const Utils = require("./UtilityFunctions");
 
 function checkDecimals (value, decimals) {
   const str = value.toString()
@@ -201,6 +202,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           const getAddressValidationLoaderText = document.getElementById('addressValidationLoaderText');
           const getAddressValidationLoaderContainer = document.getElementById('addressValidationLoaderContainer');
           const sendFundsBtn = document.getElementById('exchange-xmr');
+          const minimumFeeText = document.getElementById('minimum-fee-text');
           let offerRetrievalIsSlowTimer
   
           let exchangeElements = {
@@ -233,8 +235,16 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             sendFundsBtn,
             getAddressValidationLoader,
             getAddressValidationLoaderText,
-            getAddressValidationLoaderContainer
+            getAddressValidationLoaderContainer,
+            minimumFeeText
           }
+
+          // Gets the initial minimum value
+          Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
+            exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)"
+          }).catch(error => {
+              exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
+          })
           
           outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
             exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
@@ -600,8 +610,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 callbackFunction('test');
               }
             }
-            getRates()
-            
+            getRates()            
             // Safe to set fee because the DOM will have rendered
             let estimatedTotalFee_JSBigInt = context.monero_utils.estimated_tx_network_fee(null, 1, '24658');
             let estimatedFeeStr = exchangeHelper.htmlHelper.newEstimatedNetworkFeeString(estimatedTotalFee_JSBigInt);

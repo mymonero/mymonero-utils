@@ -3,6 +3,35 @@
 //console.log(validate)
 const axios = require('axios');
 
+function getMinimalExchangeAmount(fromCurrency, toCurrency) {
+  return new Promise((resolve, reject) => {
+    this.apiUrl = "https://api.changenow.io/v2/";  
+    var axios = require('axios');
+    var config = {
+        method: 'get',
+        url: `${this.apiUrl}exchange/min-amount`,
+        params: {
+            fromCurrency,
+            fromNetwork: "",
+            toCurrency,
+            toNetwork: "",
+            flow: "standard"
+        },
+        headers: { 
+            'x-changenow-api-key': ``
+        }
+    };
+
+    axios(config).then(function (response) {
+        resolve(response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+        reject(error)
+    });
+  })
+}
+
 function validateOutAddress(currencyTickerCode, address) {
   return new Promise((resolve, reject) => {
       this.apiUrl = "https://api.changenow.io/v2/";  
@@ -175,4 +204,4 @@ function isValidBase10Decimal (number) {
   return true
 }
 
-module.exports = { validateOutAddress, getTimeRemaining, isValidBase10Decimal, checkDecimals, renderOrderStatus, sendFunds }
+module.exports = { validateOutAddress, getTimeRemaining, isValidBase10Decimal, checkDecimals, renderOrderStatus, sendFunds, getMinimalExchangeAmount }
