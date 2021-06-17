@@ -26,7 +26,6 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
         exchangeElements.serverValidation.innerText = "";
         try {
             exchangeElements.serverValidation.innerHTML = ''
-            //let inAmountToReceive = exchangeElements.BTCToReceive
             const outBalance = parseFloat(exchangeElements.outCurrencyValue.value)
             const out_amount = outBalance.toFixed(12)
             exchangeElements.inCurrencyValue.value = ''
@@ -43,19 +42,21 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
                     let element = document.createElement("div");
                     element.classList.add('message-label');
                     if (response.result == true) {
-                        element.innerHTML = "&#10004; Validated address successfully";
-                        
+                        element.innerHTML = "&#10004; Validated address successfully";                       
                         exchangeElements.getAddressValidationLoaderText.innerHTML = "<div><span class='exchange-tick'>&#10004;</span> Validated address successfully</div>";
-                        //exchangeElements.serverValidation.append(element);
                         exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
+                        resolve();
                     } else if (response.result == false) {
                         // failed response in following format: {"isActivated":null,"result":false,"message":"Invalid checksum"}
                         element.innerText = "Your address is invalid";
                         exchangeElements.getAddressValidationLoaderText.innerHTML = "<span class='exchange-cross'>&#10006;</span> The address you've specified is not valid";
                         exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
+                        resolve();
                     } else {
+                        
                         element.innerText = "An unexpected error occurred: " + response.message.toString();
                         exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
+                        reject(error);
                     }
                 }).catch(error => {
                     // 4xx or 5xx errors of some sort

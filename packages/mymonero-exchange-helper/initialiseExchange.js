@@ -259,30 +259,41 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           outAddressInput.addEventListener('keyup', function(event) {
             clearSlowAddressRetrievalTimer(exchangeElements);
             exchangeElements.getAddressValidationLoaderContainer.style.display = "block";
-            exchangeElements.getAddressValidationLoaderText.innerHTML = `<span id="addressValidationLoaderText">Validating Address</span>`;
+            exchangeElements.getAddressValidationLoaderText.innerHTML = `<span id="addressValidationLoaderText">&nbsp;Validating Address</span>`;
             exchangeElements.getAddressValidationLoader.style.display = "block";
-            try {
-              initialiseSlowCurrencyRetrievalTimer(exchangeElements)
-              exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value).then(response => {
-                clearSlowAddressRetrievalTimer(exchangeElements);
-              }).catch((error) => {
-                clearSlowAddressRetrievalTimer(exchangeElements);
-              });
-              // exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-              //   clearSlowCurrencyRetrievalTimer(exchangeElements)
-              //   exchangeElements.getAddressLoader.style.display = "none";
-              // }).catch((error) => {
-              //     clearSlowCurrencyRetrievalTimer(exchangeElements)
-              //     //exchangeElements.getOfferLoader.style.display = "none";
-              //     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-              //     serverValidation.appendChild(errorDiv);
-              // }).finally(() => {
-              //   exchangeElements.getAddressLoader.innerText = "Fetching offer"
-              // })
-            } catch (error) {
-              //handleOfferError(error);
-              console.log(error.message);
-            }
+            clearTimeout(exchangeElements.retrievalTimer);
+            exchangeElements.retrievalTimer = setTimeout(() => {
+              try {
+                console.log(exchangeElements.addressRetrieval)
+                //clearTimeout(exchangeElements.add)
+                initialiseSlowAddressRetrievalTimer(exchangeElements);
+                console.log(exchangeElements.addressRetrieval)
+                //initialiseSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value).then(response => {
+                  console.log("Does this ever run?");
+                  clearSlowAddressRetrievalTimer(exchangeElements);
+                  console.log("We should have cleared here?");
+                  console.log(exchangeElements)
+                }).catch((error) => {
+                  console.log("Or does error run?");
+                  clearSlowAddressRetrievalTimer(exchangeElements);
+                });
+                // exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                //   clearSlowCurrencyRetrievalTimer(exchangeElements)
+                //   exchangeElements.getAddressLoader.style.display = "none";
+                // }).catch((error) => {
+                //     clearSlowCurrencyRetrievalTimer(exchangeElements)
+                //     //exchangeElements.getOfferLoader.style.display = "none";
+                //     let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                //     serverValidation.appendChild(errorDiv);
+                // }).finally(() => {
+                //   exchangeElements.getAddressLoader.innerText = "Fetching offer"
+                // })
+              } catch (error) {
+                //handleOfferError(error);
+                console.log(error.message);
+              }
+            }, 2500)
           })
           
           walletSelector.addEventListener('click', function(event) {
@@ -290,14 +301,18 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           });
 
           function initialiseSlowAddressRetrievalTimer(exchangeElements) {
-            exchangeElements.addressRetrieval = setTimeout(() => {
-              exchangeElements.addressValidationLoaderText.innerText = "Verifying the destination address is taking longer than expected. Please be patient"
+            exchangeElements.addressRetrievalTimer = setTimeout(() => {
+              exchangeElements.getAddressValidationLoaderText.innerText = "Verifying the destination address is taking longer than expected. Please be patient"
             }, 3000)
           }
 
           function clearSlowAddressRetrievalTimer(exchangeElements) {
-            clearInterval(exchangeElements.addressRetrieval)
-            console.log("Clear slow retrieval timer");
+            // console.log("Clear slow retrieval timer");
+            // console.log(exchangeElements);
+            // console.log(exchangeElements.addressRetrievalTimer);
+            clearTimeout(exchangeElements.addressRetrievalTimer)
+            // console.log(exchangeElements.addressRetrievalTimer);
+            // console.log("Cleared slow retrieval timer");
           }
           // Binds to "Create order"
           orderBtn.addEventListener('click', function (event) {
@@ -492,8 +507,19 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           if (exchangeElements.orderStarted == true) {
             return
           }
+          console.log("Check out address")
+          console.log(exchangeElements.outAddressInput);
+          console.log(exchangeElements.outAddressInput.value);
+          if (exchangeElements.outAddressInput.value == "") {
+            let error = document.createElement("div");
+            error.classList.add("message-label");
+            error.innerText = "Please ensure you enter a valid destination address";
+            exchangeElements.validationMessages.appendChild(error);
+            
+            return
+          }
           if (exchangeElements.validationMessages.firstChild !== null) {
-            exchangeElementsvalidationMessages.firstChild.style.color = '#ff0000'
+            exchangeElements.validationMessages.firstChild.style.color = '#ff0000'
             validationError = true
             return
           }
