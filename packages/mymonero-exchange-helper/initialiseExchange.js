@@ -152,7 +152,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           }
           inCurrencyValue.value = XMRtoReceive.toFixed(12)
         }).catch((error) => {
-          exchangeHelper.errorHelper.handleOfferError;(error)
+          exchangeHelper.errorHelper.handleOfferError;
         })
     }
 
@@ -190,6 +190,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       const sendFundsBtn = document.getElementById('exchange-xmr');
       const minimumFeeText = document.getElementById('minimum-fee-text');
       let offerRetrievalIsSlowTimer
+
+      // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
+      if (exchangePageDiv.classList.contains("active")) {
+        return;
+      }
 
       let exchangeElements = {
         exchangePage: exchangePage,
@@ -529,12 +534,23 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                       const xmr_dest_address_elem = document.getElementById('in_address')
                       xmr_dest_address_elem.value = response.receiving_subaddress
                     }
-  
-                    if (orderStatusResponse.status == 'PAID' || orderStatusResponse.status == 'TIMED_OUT' ||
-                                  orderStatusResponse.status == 'DONE' || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS' ||
-                                  orderStatusResponse.status == 'PAYMENT_FAILED' || orderStatusResponse.status == 'REJECTED' ||
-                                  orderStatusResponse.status == 'EXPIRED') {
-                      clearInterval(localOrderTimer)
+                    
+                    if (orderStatusResponse.status == 'PAID' 
+                    || orderStatusResponse.status == 'TIMED_OUT' 
+                    || orderStatusResponse.status == 'DONE' 
+                    || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS' 
+                    || orderStatusResponse.status == 'PAYMENT_FAILED' 
+                    || orderStatusResponse.status == 'REJECTED' 
+                    || orderStatusResponse.status == 'EXPIRED') {
+                      clearInterval(exchangeElements.orderTimer)
+                      document.getElementById("exchange-xmr").classList.remove("active");
+                    }
+                    // Check expiry time
+                    let now = new Date();
+                    let expiryTimeObj = Date.parse(expiryTime);
+                    if (now > expiryTimeObj) {
+                      clearInterval(exchangeElements.orderTimer)
+                      document.getElementById("exchange-xmr").classList.remove("active");
                     }
                   }
                   if ((orderStatusResponse.orderTick % 10) == 0) {
@@ -586,6 +602,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             if (context.walletsListController.records == "undefined" || context.walletsListController.records.length == "undefined") {
               setTimeout(() => {
                 getRates()
+
               }, 500);
             }
             function clearValidationMessages(callbackFunction = null) {
