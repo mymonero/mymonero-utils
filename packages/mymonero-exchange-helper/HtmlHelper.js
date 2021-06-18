@@ -66,6 +66,7 @@ class HtmlHelper {
         #addressValidationLoader {
             float: left;
             // min-height: 28px;
+
         }
         #addressValidationLoader .loader {
             float: left;
@@ -183,7 +184,7 @@ class HtmlHelper {
                     <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
                 </div>
             </div>
-            <div id="localmonero"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
+            <div id="localmonero" style="margin-bottom: 6px"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
             <div id="indacoin"><a href="#" id="indacoin-anchor" class="clickableLinkButton">Buy Monero using Indacoin</a></div>
             <div id="getAddressValidationLoader">
                 ${this.getAddressValidationLoader()}

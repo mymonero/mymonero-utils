@@ -60,7 +60,6 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
                     let errorStr = "An unexpected error has occurred: " + error.message;
                     if (error.response.data.message !== null) {
                         errorStr += "<br>" + error.response.data.message;
-                        errorStr += "<br>You may still be able to create the order"
                     }
                     exchangeElements.getAddressValidationLoaderText.innerHTML = errorStr;
                     exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
