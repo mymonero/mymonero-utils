@@ -179,7 +179,7 @@ class ExchangeHelper {
             let selectorOffset = selectedWallet.dataset.walletoffset;
             let selectorInt = parseInt(selectorOffset);
             let wallet = self.context.wallets[selectorInt];
-            //let walletBalance = document.getElementById('selected-wallet-balance'); 
+            let walletBalance = document.getElementById('selected-wallet-balance'); 
             walletBalance.innerText = `${self.UnlockedBalance_FormattedString(walletList[selectorOffset])} XMR   `;
         } else {
             let walletOptions = ``;
