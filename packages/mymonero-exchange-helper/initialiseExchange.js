@@ -262,6 +262,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               clearSlowAddressRetrievalTimer(exchangeElements);
             });
           } catch (error) {
+            clearSlowAddressRetrievalTimer(exchangeElements);
             console.log(error.message);
           }
         }, 2500)
