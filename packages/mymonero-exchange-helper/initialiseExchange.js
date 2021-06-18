@@ -511,6 +511,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
   
               exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress, in_currency, out_currency).then((response) => {
                 document.getElementById('orderStatusPage').classList.remove('active')
+                document.getElementById('orderForm').classList.add('hidden');
                 let e = document.getElementById('orderStatusPage');
                 e = document.getElementById('orderStatusPage');
                 // backBtn.innerHTML = `<div class="base-button hoverable-cell utility grey-menu-button disableable left-back-button" style="cursor: default; -webkit-app-region: no-drag; position: absolute; opacity: 1; left: 0px;"></div>`;

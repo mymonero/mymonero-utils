@@ -128,7 +128,7 @@ class HtmlHelper {
     getBaseForm() {
         return `
         <div class="exchangeScreen exchange-page-panel">
-        <div class="content-container exchange-page-content-container">
+        <div class="content-container exchange-page-content-container" id="orderForm">
             <div id="server-rates-messages"></div>
             <div id="loader" class="active">
                 <!-- gets replaced by loader -->
@@ -201,7 +201,7 @@ class HtmlHelper {
     </div>
     <div id="exchangePage">
         <div class="field_title form-field-title">
-            <table>
+            <table class="full-width">
                 <tr>
                 <td colspan="2" style="word-wrap: normal; word-break: normal;">Please note an exchange may take a few minutes to process. <span class="provider-name"></span> are able to provide support for any exchanges. For all issues, please contact <span class="provider-name"></span> with your UUID for assistance.</td>
                 </tr>
