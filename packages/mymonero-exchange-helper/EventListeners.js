@@ -50,15 +50,21 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
                         exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
                         resolve();
                     } else {
-                        
+                        console.log(error);
                         element.innerText = "An unexpected error occurred: " + response.message.toString();
                         exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
                         reject(error);
                     }
                 }).catch(error => {
                     // 4xx or 5xx errors of some sort
-                    exchangeElements.getAddressValidationLoaderText.innerHTML = "An unexpected error has occurred: " + error.message;
+                    let errorStr = "An unexpected error has occurred: " + error.message;
+                    if (error.response.data.message !== null) {
+                        errorStr += "<br>" + error.response.data.message;
+                        errorStr += "<br>You may still be able to create the order"
+                    }
+                    exchangeElements.getAddressValidationLoaderText.innerHTML = errorStr;
                     exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
+                    reject(error);
                 })
             }, 1500)
         } catch (error) {
