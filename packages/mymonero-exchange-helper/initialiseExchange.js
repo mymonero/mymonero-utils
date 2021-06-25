@@ -378,36 +378,38 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         retry.classList.add('hidden')
         errorDiv.classList.add('hidden')
       }
-      exchangeHelper.exchangeFunctions.getRatesAndLimits().then(() => {
+      
+      // We attempt to retrieve enabled currency pairs from the server
+      exchangeHelper.exchangeFunctions.getCurrencyPairs().then((response) => {
+        
+        let outCurrencySelectList = document.getElementById('outCurrencySelectList')
+        let length = outCurrencySelectList.length;
+        for (let i = length - 1; i >= 0; i--) {
+          outCurrencySelectList.options[i].remove();
+        }
+
+        let newMetadata = {}
+        response.out_currencies.forEach((value => {
+          // populate replacement currencyMetadata object with each currency's data
+          newMetadata[value.symbol] = {
+            name: value.name,
+            precision: 8
+          }          
+          // push onto the options list
+          let option = document.createElement("option");
+          option.value = value.symbol;
+          option.text = value.symbol;
+          outCurrencySelectList.options.add(option);
+        }))
+
+        // Once the get_pairs endpoint is updated to return precision, we can uncomment the line below to make the coin list fully server-controlled
+        // exchangeHelper.currencyMetadata = newMetadata;
         loaderPage.classList.remove('active')
         exchangePage.classList.add('active')
       }).catch((error) => {
-        /**/
+        // Error occurred retrieving currency pair data from MYM server -- continue with defaults
         loaderPage.classList.remove('active')
         exchangePage.classList.add('active')
-        if (retry !== null) {
-          retry.classList.remove('hidden')
-          errorDiv.classList.remove('hidden')
-        } else {
-          // KB: Remove this ---
-
-          // end remove
-
-          const errorDiv = document.createElement('div')
-          errorDiv.innerText = "There was a problem with retrieving rates from the server. Please click the 'Retry' button to try connect again. The error message was: " + error.message
-          errorDiv.id = 'retry-error'
-          errorDiv.classList.add('message-label')
-          const retryBtn = document.createElement('div')
-          retryBtn.id = 'retry-rates'
-          retryBtn.classList.add('base-button')
-          retryBtn.classList.add('hoverable-cell')
-          retryBtn.classList.add('navigation-blue-button-enabled')
-          retryBtn.classList.add('action')
-          retryBtn.innerHTML = 'Retry'
-          retryBtn.addEventListener('click', getRates)
-          explanatoryMessage.appendChild(errorDiv)
-          explanatoryMessage.appendChild(retryBtn)
-        }
       }).finally(() => {
         let message = document.getElementById('explanatory-message');
         message.innerText = "";
