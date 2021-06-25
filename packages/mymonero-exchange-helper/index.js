@@ -15,7 +15,7 @@ class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
     
     constructor() {
-        // Assignment to this is so that we can invoke these functions using an instance of this class in a public fashion
+        // Assignment to `this` variable is so that we can invoke these functions using an instance of this class in a public fashion
         this.supportedOutCurrencies = ["BTC", "ETH", "LTC"]
         this.supportedInCurrencies = ["XMR"];
         this.baseForm = "";
@@ -37,6 +37,7 @@ class ExchangeHelper {
         this.exchangeFunctions = exchangeFunctions;
         this.handleSendFundsResponseCallback = this.handleSendFundsResponseCallback;
         this.sendFundsValidationStatusCallback = this.sendFundsValidationStatusCallback;
+
     }
 
     doInit(context) {
@@ -51,7 +52,7 @@ class ExchangeHelper {
           let walletSelector = elemToSet;
           walletSelector.innerHTML = walletHtml;
         }   
-      }
+    }
 
     setSendingFee(feeString, elemToSet) {
         elemToSet.dataset.txFee = feeString;
