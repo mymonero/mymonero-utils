@@ -272,7 +272,7 @@ outCurrencySelectListChangeListener = function(event, exchangeElements) {
 
 updateCurrencyLabels = function(event, exchangeElements) {
     let coinTickerCode = event.srcElement.value;
-    let coinName = CurrencyMetadata[coinTickerCode].fullName.toUpperCase();
+    let coinName = CurrencyMetadata[coinTickerCode].name.toUpperCase();
     document.getElementById("outCurrencyTickerCode").innerText = coinTickerCode;
     document.getElementById("orderStatusPageCurrencyTicker").innerText = coinName;
     document.getElementById("outCurrencyCoinName").innerText = coinName;
