@@ -204,6 +204,23 @@ class ExchangeFunctions {
         });
     }
 
+    getCurrencyPairs(in_currency = "XMR") {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            let data = {
+                "in_currency": in_currency
+            }
+            let endpoint = `${self.apiUrl}/get_pairs`;
+            axios.post(endpoint, data)
+                .then((response) => {
+                    self.enabledCurrencies = response.data.out_currencies;
+                    resolve(response.data);
+                }).catch((error) => {
+                    reject(error);
+                })
+        });
+    }
+
 }
 
 module.exports = ExchangeFunctions;
