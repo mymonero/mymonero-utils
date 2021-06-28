@@ -58,8 +58,10 @@ outAddressInputListener = function(exchangeElements, currencyTickerCode, address
                 }).catch(error => {
                     // 4xx or 5xx errors of some sort
                     let errorStr = "An unexpected error has occurred: " + error.message;
-                    if (error.response.data.message !== null) {
-                        errorStr += "<br>" + error.response.data.message;
+                    if (typeof(error.response) !== "undefined") {
+                        if (error.response.data.message !== null) {
+                            errorStr += "<br>" + error.response.data.message;
+                        }
                     }
                     exchangeElements.getAddressValidationLoaderText.innerHTML = errorStr;
                     exchangeElements.getAddressValidationLoaderContainer.style.display = "none";
@@ -152,10 +154,17 @@ inBalanceChecks = function (exchangeElements, exchangeFunctions) {
                 let outCurrencyDiv = document.getElementById("outCurrencySelectList");  
                 let inCurrencyValue = document.getElementById("inCurrencyValue").value;
                 inCurrencyGetOffer(inCurrencyDiv, outCurrencyDiv, inCurrencyValue, exchangeElements).then((response) => {
+                    // successfully retrieved an offer
                     exchangeElements.outCurrencyValue.value = response.out_amount;
+                    // replace minAmount with estimated total
+                    let txFee = parseFloat(exchangeElements.txFee.dataset.txFee)
+                    let inAmount = parseFloat(response.in_amount)
+                    let estimatedTotal = txFee + inAmount;
+                    exchangeElements.minimumFeeText.innerText = `~ ${estimatedTotal} XMR EST. TOTAL`;
                     resolve(response);
                 }).catch((error) => {
-                    // console.log("inBalance promise rejection");
+
+                    exchangeElements.minimumFeeText.innerText = `${exchangeElements.minimumFeeText.dataset.minimumAmount} XMR minimum (excluding tx fee)`
                     reject(error);
                 })
             }, 1500)
@@ -187,9 +196,15 @@ outBalanceChecks = function(exchangeElements) {
                 let outCurrencyValue = document.getElementById("outCurrencyValue").value;
                 outCurrencyGetOffer(inCurrencyDiv, outCurrencyDiv, outCurrencyValue, exchangeElements).then((response) => {
                     exchangeElements.inCurrencyValue.value = response.in_amount;
+                    let txFee = parseFloat(exchangeElements.txFee.dataset.txFee)
+                    let inAmount = parseFloat(response.in_amount)
+                    let estimatedTotal = txFee + inAmount;
+                    exchangeElements.minimumFeeText.innerText = `~ ${estimatedTotal} XMR EST. TOTAL`;
+
                     resolve(response);
                 }).catch((error) => {
                     // console.log("outBalance promise rejection");
+                    exchangeElements.minimumFeeText.innerText = `${exchangeElements.minimumAmount.dataset.minimumAmount} XMR minimum (excluding tx fee)`
                     reject(error);
                 })
             }, 1500)
@@ -253,7 +268,8 @@ updateMinimumInputValue = function(event, exchangeElements) {
     // console.log(event);
     // console.log(exchangeElements);
     Utils.getMinimalExchangeAmount("XMR", exchangeElements.outCurrencyTickerCodeDiv.value).then(response => {
-        exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)"
+        //exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)" // use this line when we switch to polling ChangeNow
+        exchangeElements.minimumFeeText.innerText = response.data.in_min + " XMR minimum (excluding tx fee)"
     }).catch(error => {
         exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
     })

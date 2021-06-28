@@ -1,33 +1,56 @@
 const axios = require('axios');
 
 function getMinimalExchangeAmount(fromCurrency, toCurrency) {
+  let self = this;
   return new Promise((resolve, reject) => {
-    this.apiUrl = "https://api.changenow.io/v2/";  
-    var axios = require('axios');
-    var config = {
-        method: 'get',
-        url: `${this.apiUrl}exchange/min-amount`,
-        params: {
-            fromCurrency,
-            fromNetwork: "",
-            toCurrency,
-            toNetwork: "",
-            flow: "standard"
-        },
-        headers: { 
-            'x-changenow-api-key': ``
-        }
-    };
-
-    axios(config).then(function (response) {
-        resolve(response.data);
-    })
-    .catch(function (error) {
-        console.log(error);
-        reject(error)
-    });
-  })
+    this.apiUrl = "https://api.mymonero.com:8443/cx";
+      let data = {
+          "in_currency": "XMR",
+          "out_currency": "BTC"
+      }
+      let endpoint = `${this.apiUrl}/get_info`;
+      axios.post(endpoint, data)
+          .then((response) => {
+              self.currentRates = response.data;
+              self.in_currency = "XMR";
+              self.out_currency = "BTC";
+              self.currentRates.minimum_xmr = self.currentRates.in_min;
+              self.currentRates.maximum_xmr = self.currentRates.in_max;
+              resolve(response);
+          }).catch((error) => {
+              reject(error);
+          })
+  });
 }
+
+// function getMinimalExchangeAmount(fromCurrency, toCurrency) {
+//   return new Promise((resolve, reject) => {
+//     this.apiUrl = "https://api.changenow.io/v2/";  
+//     var axios = require('axios');
+//     var config = {
+//         method: 'get',
+//         url: `${this.apiUrl}exchange/min-amount`,
+//         params: {
+//             fromCurrency,
+//             fromNetwork: "",
+//             toCurrency,
+//             toNetwork: "",
+//             flow: "standard"
+//         },
+//         headers: { 
+//             'x-changenow-api-key': ``
+//         }
+//     };
+
+//     axios(config).then(function (response) {
+//         resolve(response.data);
+//     })
+//     .catch(function (error) {
+//         console.log(error);
+//         reject(error)
+//     });
+//   })
+// }
 
 function validateOutAddress(currencyTickerCode, address) {
   return new Promise((resolve, reject) => {

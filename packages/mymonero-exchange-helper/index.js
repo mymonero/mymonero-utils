@@ -56,7 +56,7 @@ class ExchangeHelper {
 
     setSendingFee(feeString, elemToSet) {
         elemToSet.dataset.txFee = feeString;
-        elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ ${feeString} XMR EST. FEE</span>`
+        elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ <span id='feeString'>${feeString}</span> XMR EST. FEE</span>`
     }
 
     // This function is invoked to update the order status page
