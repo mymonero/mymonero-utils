@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "1.1.3",
-    "@mymonero/mymonero-exchange": "1.1.3",
-    "@mymonero/mymonero-money-format": "1.1.3",
+    "@mymonero/mymonero-bigint": "^1.1.9",
+    "@mymonero/mymonero-exchange": "^1.1.11",
+    "@mymonero/mymonero-money-format": "^1.1.9",
     "axios": "^0.21.1"
   },
   "exports": {
