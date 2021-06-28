@@ -117,6 +117,44 @@ class ExchangeFunctions {
         });
     }
     
+    getOffer(in_currency, out_currency, amount, offerType) {
+        return new Promise((resolve, reject) => {
+            if (offerType == "in") {
+                this.getOfferWithInAmount(in_currency, out_currency, amount).then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            } else if (offerType == "out") {
+                this.getOfferWithOutAmount(in_currency, out_currency, amount).then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            }
+        })
+        // let data = {
+        //     in_amount,
+        //     in_currency,
+        //     out_currency
+        // }
+
+        // const self = this;
+        // self.offer_type = "in_amount";
+        // let endpoint = `${self.apiUrl}/get_offer`;
+        //     axios.post(endpoint, data)
+        //         .then(function (response) {
+        //             console.log('resp from getOfferwithtinamount', response);
+        //             self.offer = response.data;
+        //             resolve(self.offer);
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error);
+        //             reject(error);
+        //         });
+        // });
+    }
+    
 
     
     getOrderStatus() {
