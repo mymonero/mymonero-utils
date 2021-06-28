@@ -189,7 +189,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       const getAddressValidationLoaderContainer = document.getElementById('addressValidationLoaderContainer');
       const sendFundsBtn = document.getElementById('exchange-xmr');
       const minimumFeeText = document.getElementById('minimum-fee-text');
-      let offerRetrievalIsSlowTimer
+      const txFee = document.getElementById('tx-fee');
+      let offerRetrievalIsSlowTimer, offerType
 
       // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
       if (exchangePageDiv.classList.contains("active")) {
@@ -227,14 +228,19 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         getAddressValidationLoader,
         getAddressValidationLoaderText,
         getAddressValidationLoaderContainer,
-        minimumFeeText
+        minimumFeeText,
+        txFee,
+        offerType
       }
 
       // Gets the initial minimum value
       Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
-        exchangeElements.minimumFeeText.innerText = response.minAmount + " XMR minimum (excluding tx fee)"
+        // let minimumAmount = parseFloat(response.minAmount);
+        let minimumAmount = parseFloat(response.data.in_min);
+        exchangeElements.minimumFeeText.innerText = `${minimumAmount} XMR minimum (excluding tx fee)`;
+        exchangeElements.minimumFeeText.dataset.minimumAmount = minimumAmount;
       }).catch(error => {
-          exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
+        exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
       })
       
       outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
@@ -326,6 +332,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
 
       // Add inBalanceChecks listener
       inCurrencyValue.addEventListener('keydown', function (event) {
+        console.log(exchangeElements);
+        exchangeElements.offerType = "in";
         validationMessages.innerHTML = ''
         if (inCurrencyValue.value.length > -1) {
           if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
@@ -353,6 +361,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
 
       outCurrencyValue.addEventListener('input', function (event) {
         validationMessages.innerHTML = ''
+        console.log("Out");
+        console.log(exchangeElements)
+        exchangeElements.offerType = "out";
         if (outCurrencyValue.value.length > -1) {
           exchangeElements.getOfferLoader.style.display = "block";
           if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
@@ -505,8 +516,17 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
             exchangeElements.loaderPage.classList.remove('active')
-            const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
-  
+            // We check whether the user received a quote on an in_amount or an out_amount, and invoke the appropriate getOffer type accordingly
+            let amount;
+            if(exchangeElements.offerType == "in") {
+              amount = exchangeElements.inCurrencyValue.value
+            } else {
+              amount = exchangeElements.outCurrencyValue.value
+            }
+            //getOffer.bind(exchangeHelper.exchangeFunctions);
+            const offer = exchangeHelper.exchangeFunctions.getOffer(in_currency, out_currency, amount, exchangeElements.offerType).then((response) => {
+              console.log("Woot")
+              console.log(response)
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
               exchangeElements.exchangePageDiv.classList.remove('active')
