@@ -60,6 +60,51 @@ class HtmlHelper {
         </div>`
     }
 
+    getAddressValidationLoader() {
+        return `
+        <style>
+        #addressValidationLoader {
+            float: left;
+            // min-height: 28px;
+
+        }
+        #addressValidationLoader .loader {
+            float: left;
+        }
+        #addressValidationLoaderText {
+            float: left;
+        }
+        .exchange-cross {
+            color: #d80000;
+            font-size: 18px;
+            position: relative;
+            top: 2px;
+        }
+        .exchange-tick {
+            color: #00CD00;
+            font-size: 18px;
+            position: relative;
+            top: 2px;
+        }
+        #addressValidationLoader div { 
+            // display: none; 
+        }
+        #addressValidationLoader {
+            padding: 0px 24px 0 0;
+            display: none;
+        }
+        
+        </style>
+        <div id="addressValidationLoader" class="graphicAndLabel activityIndicators on-normal-background" style="font-family: Native-Light, input, menlo, monospace; -webkit-font-smoothing: subpixel-antialiased; font-size: 10px; letter-spacing: 0.5px; font-weight: 300; color: rgb(158, 156, 158); padding-left: 0px;">
+            <div class="loader" id="addressValidationLoaderContainer">
+                <div class="block block1"></div>
+                <div class="block block2"></div>
+                <div class="block block3"></div>
+            </div>&nbsp;
+            <span id="addressValidationLoaderText">Validating Address</span>
+        </div>`
+    }
+
     // TODO: fix imports so that we can leverage this function
     newEstimatedNetworkFeeString(fee_JSBigInt = 0) {
         const self = this
@@ -83,7 +128,7 @@ class HtmlHelper {
     getBaseForm() {
         return `
         <div class="exchangeScreen exchange-page-panel">
-        <div class="content-container exchange-page-content-container">
+        <div class="content-container exchange-page-content-container" id="orderForm">
             <div id="server-rates-messages"></div>
             <div id="loader" class="active">
                 <!-- gets replaced by loader -->
@@ -103,6 +148,9 @@ class HtmlHelper {
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
                                     <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
                                     <div id="inCurrencySelector"></div>
+                                </div>
+                                <div id="minimum-fee">
+                                    <span id="minimum-fee-text" class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">Loading ...</span>
                                 </div>
                             </div>
                         </td>
@@ -136,8 +184,11 @@ class HtmlHelper {
                     <input id="outAddress" class="full-width longTextInput" type="text" placeholder="Destination BTC Address" autocomplete="off" autocapitalize="none" spellcheck="false" value="">
                 </div>
             </div>
-            <div id="localmonero"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
+            <div id="localmonero" style="margin-bottom: 6px"><a href="#" id="localmonero-anchor" class="clickableLinkButton">Buy Monero using LocalMonero</a></div>
             <div id="indacoin"><a href="#" id="indacoin-anchor" class="clickableLinkButton">Buy Monero using Indacoin</a></div>
+            <div id="getAddressValidationLoader">
+                ${this.getAddressValidationLoader()}
+            </div>
             <div id="validation-messages"></div>
             <div id="address-messages"></div>
             <div id="server-messages"></div>
@@ -150,7 +201,7 @@ class HtmlHelper {
     </div>
     <div id="exchangePage">
         <div class="field_title form-field-title">
-            <table>
+            <table class="full-width">
                 <tr>
                 <td colspan="2" style="word-wrap: normal; word-break: normal;">Please note an exchange may take a few minutes to process. <span class="provider-name"></span> are able to provide support for any exchanges. For all issues, please contact <span class="provider-name"></span> with your UUID for assistance.</td>
                 </tr>

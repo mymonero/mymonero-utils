@@ -15,7 +15,7 @@ class ExchangeHelper {
     // We declare these in this module so that we don't tightly couple currencies to the REST API module
     
     constructor() {
-        // Assignment to this is so that we can invoke these functions using an instance of this class in a public fashion
+        // Assignment to `this` variable is so that we can invoke these functions using an instance of this class in a public fashion
         this.supportedOutCurrencies = ["BTC", "ETH", "LTC"]
         this.supportedInCurrencies = ["XMR"];
         this.baseForm = "";
@@ -37,6 +37,7 @@ class ExchangeHelper {
         this.exchangeFunctions = exchangeFunctions;
         this.handleSendFundsResponseCallback = this.handleSendFundsResponseCallback;
         this.sendFundsValidationStatusCallback = this.sendFundsValidationStatusCallback;
+
     }
 
     doInit(context) {
@@ -51,11 +52,11 @@ class ExchangeHelper {
           let walletSelector = elemToSet;
           walletSelector.innerHTML = walletHtml;
         }   
-      }
+    }
 
     setSendingFee(feeString, elemToSet) {
         elemToSet.dataset.txFee = feeString;
-        elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ ${feeString} XMR EST. FEE</span>`
+        elemToSet.innerHTML = `<span class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">+ <span id='feeString'>${feeString}</span> XMR EST. FEE</span>`
     }
 
     // This function is invoked to update the order status page
@@ -100,7 +101,6 @@ class ExchangeHelper {
             option.text = this.supportedInCurrencies[i];
             selectList.appendChild(option);
         }
-        console.log(selectList);
         return selectList;
     }
 
@@ -114,7 +114,6 @@ class ExchangeHelper {
             option.text = this.supportedOutCurrencies[i];
             selectList.appendChild(option);
         }
-        console.log(selectList);
         return selectList;
     }
 
@@ -141,7 +140,6 @@ class ExchangeHelper {
         const difference = self.Balance_JSBigInt().subtract(
           self.locked_balance || new JSBigInt(0)
         )
-        console.log("UnlockedBalance:", difference);
         if (difference.compare(0) < 0) {
           return new JSBigInt(0)
         }
@@ -182,8 +180,8 @@ class ExchangeHelper {
             let selectorOffset = selectedWallet.dataset.walletoffset;
             let selectorInt = parseInt(selectorOffset);
             let wallet = self.context.wallets[selectorInt];
-            //let walletBalance = document.getElementById('selected-wallet-balance'); 
-            walletBalance.innerText = `${self.UnlockedBalance_FormattedString(walletList[selectorOffset])} XMR   `;
+            let walletBalance = document.getElementById('selected-wallet-balance'); 
+            walletBalance.innerText = `${self.UnlockedBalance_FormattedString(walletList[selectorOffset])} XMR`;
         } else {
             let walletOptions = ``;
             let walletRecords = walletList;
@@ -234,7 +232,6 @@ class ExchangeHelper {
         inCurrencySelector.appendChild(this.inCurrencySelector);
         let outCurrencySelector = template.content.getElementById('outCurrencySelector');
         outCurrencySelector.appendChild(this.outCurrencySelector);
-        console.log(template);
         return template;
     }    
 

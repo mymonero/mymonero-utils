@@ -3,6 +3,7 @@
 const { handleOfferError } = require("./ErrorHelper");
 const { updateCurrencyLabels } = require("./EventListeners");
 const ExchangeHelper = require("./index")
+const Utils = require("./UtilityFunctions");
 
 function checkDecimals (value, decimals) {
   const str = value.toString()
@@ -109,322 +110,353 @@ function initialiseExchangeHelper(context, exchangeHelper) {
     let orderTimer = {}
     let currencyInputTimer
     
-    function validateBTCAddress (address, ValidationLibrary) {
-      // Replace this with our ChangeNow library's integration at some stage
-      try {
-        if (ValidationLibrary.validate(address) == false) {
-          console.log(ValidationLibrary.validate(address))
-          return false
-        }
-      } catch (Error) {
-        console.log(Error)
-      }
-      console.log(ValidationLibrary.validate(address))
-      return true
-    }
-  
-    const outAddressInputListener = function () {
-      const outAddressInput = document.getElementById('outAddress')
-      addressValidation.innerHTML = ''
-  
-      /* We could leave address validation to the exchange server instead of validating three different address types, then implement validation when we pull in the 
-      client side npm module") */
-      // if (validateBTCAddress(btcAddressInput.value, ValidationLibrary) == false) {
-      //   const error = document.createElement('div')
-      //   error.classList.add('message-label')
-      //   error.id = 'btc-invalid'
-      //   error.innerHTML = 'Your BTC address is not valid.'
-      //   addressValidation.appendChild(error)
-      // }
-    }
-      // Coordinates the retrieval of a quote given an out currency and a in amount. Returns a value for outCurrencyValue
-        // Coordinates the retrieval of a quote given an out currency and a out amount. Returns a value for inCurrencyValue
-        let outCurrencyGetOffer = function(inCurrency, outCurrency, outAmount) {
-          // Get inCurrencyType, outCurrencyType
-          exchangeHelper.exchangeFunctions.getOfferWithOutAmount(inCurrency, outCurrency, outAmount)
-            .then((response) => {
-              const XMRtoReceive = parseFloat(response.in_amount)
-              const selectedWallet = document.getElementById('selected-wallet')
-              const tx_feeElem = document.getElementById('tx-fee')
-              const tx_fee = tx_feeElem.dataset.txFee
-              const tx_fee_double = parseFloat(tx_fee)
-              const walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance)
-              const walletMaxSpend = walletMaxSpendDouble - tx_fee
-              // let BTCToReceive = inCurrencyValue.value * exchangeHelper.exchangeFunctions.currentRates.price;
-              // let XMRbalance = parseFloat(inCurrencyValue.value);
-              const BTCCurrencyValue = parseFloat(outCurrencyValue.value)
-  
-              if ((walletMaxSpend - XMRtoReceive) < 0) {
-                const error = document.createElement('div')
-                error.classList.add('message-label')
-                error.id = 'xmrexceeded'
-                error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`
-                validationMessages.appendChild(error)
-              }
-  
-              if (BTCCurrencyValue.toFixed(12) > exchangeHelper.exchangeFunctions.currentRates.upper_limit) {
-                const error = document.createElement('div')
-                error.id = 'xmrexceeded'
-                error.classList.add('message-label')
-                const btc_amount = parseFloat(exchangeHelper.exchangeFunctions.currentRates.upper_limit)
-                error.innerHTML = `You cannot exchange more than ${btc_amount} BTC.`
-                validationMessages.appendChild(error)
-              }
-              if (BTCCurrencyValue.toFixed(8) < exchangeHelper.exchangeFunctions.currentRates.lower_limit) {
-                const error = document.createElement('div')
-                error.id = 'xmrtoolow'
-                error.classList.add('message-label')
-                const btc_amount = parseFloat(exchangeHelper.exchangeFunctions.currentRates.lower_limit)
-                error.innerHTML = `You cannot exchange less than ${btc_amount} BTC.`
-                validationMessages.appendChild(error)
-              }
-              inCurrencyValue.value = XMRtoReceive.toFixed(12)
-            }).catch((error) => {
-              exchangeHelper.errorHelper.handleOfferError;(error)
-            })
-        }
-
-        const outputBalanceChecks = exchangeHelper.eventListeners.outBalanceChecks;
-        const inBalanceChecks = exchangeHelper.eventListeners.inBalanceChecks;
-  
-        function getRates() {
-          // it's safe to refresh the sending fee here, because we know the HTML exists in the DOM
-          //self._refresh_sending_fee();
-          let currencyInputTimer;
-          const exchangePage = document.getElementById('orderStatusPage')
-          const loaderPage = document.getElementById('loader')
-          const outAddressInput = document.getElementById('outAddress')
-          const inCurrencyValue = document.getElementById('inCurrencyValue')
-          const outCurrencyValue = document.getElementById('outCurrencyValue')
-          const inCurrencyTickerCodeDiv = document.getElementById('inCurrencySelectList')
-          const outCurrencyTickerCodeDiv = document.getElementById('outCurrencySelectList')
-          const orderBtn = document.getElementById('order-button')
-          const explanatoryMessage = document.getElementById('explanatory-message')
-          const serverRatesValidation = document.getElementById('server-rates-messages')
-          const validationMessages = document.getElementById('validation-messages')
-          const walletSelector = document.getElementById('wallet-selector')
-          const walletOptions = document.getElementById('wallet-options')
-          const exchangePageDiv = document.getElementById('exchangePage')
-          const orderStatusPage = document.getElementById('orderStatusPage')
-          const addressValidation = document.getElementById('address-messages')
-          const serverValidation = document.getElementById('server-messages')
+    // Coordinates the retrieval of a quote given an out currency and a in amount. Returns a value for outCurrencyValue
+    // Coordinates the retrieval of a quote given an out currency and a out amount. Returns a value for inCurrencyValue
+    let outCurrencyGetOffer = function(inCurrency, outCurrency, outAmount) {
+      exchangeHelper.exchangeFunctions.getOfferWithOutAmount(inCurrency, outCurrency, outAmount)
+        .then((response) => {
+          const XMRtoReceive = parseFloat(response.in_amount)
           const selectedWallet = document.getElementById('selected-wallet')
-          const orderStatusDiv = document.getElementById('exchangePage')
-          const getOfferLoader = document.getElementById('getOfferLoader')
-          const getOfferLoaderText = document.getElementById('activityLoaderText');
-          const sendFundsBtn = document.getElementById('exchange-xmr');
-          let offerRetrievalIsSlowTimer
-  
-          let exchangeElements = {
-            exchangePage: exchangePage,
-            loaderPage: loaderPage,
-            outAddressInput: outAddressInput,
-            inCurrencyValue: inCurrencyValue,
-            outCurrencyValue: outCurrencyValue,
-            orderBtn: orderBtn,
-            explanatoryMessage: explanatoryMessage,
-            serverRatesValidation: serverRatesValidation,
-            validationMessages: validationMessages,
-            walletSelector: walletSelector,
-            walletOptions: walletOptions,
-            exchangePageDiv: exchangePageDiv,
-            orderStatusPage: orderStatusPage,
-            addressValidation: addressValidation,
-            serverValidation: serverValidation,
-            selectedWallet: selectedWallet,
-            orderStatusDiv: orderStatusDiv,
-            orderStarted: orderStarted,
-            orderTimer: orderTimer,
-            inCurrencyTickerCodeDiv,
-            outCurrencyTickerCodeDiv,
-            currencyInputTimer,
-            getOfferLoader,
-            offerRetrievalIsSlowTimer,
-            getOfferLoaderText,
-            sendFundsBtn
-          }
-          
-          outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
-            exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
-            clearSlowRetrievalTimer(exchangeElements);
-            updateCurrencyLabels(event, exchangeElements);
-          })
+          const tx_feeElem = document.getElementById('tx-fee')
+          const tx_fee = tx_feeElem.dataset.txFee
+          const tx_fee_double = parseFloat(tx_fee)
+          const walletMaxSpendDouble = parseFloat(selectedWallet.dataset.walletbalance)
+          const walletMaxSpend = walletMaxSpendDouble - tx_fee
+          // let BTCToReceive = inCurrencyValue.value * exchangeHelper.exchangeFunctions.currentRates.price;
+          // let XMRbalance = parseFloat(inCurrencyValue.value);
+          const BTCCurrencyValue = parseFloat(outCurrencyValue.value)
 
-          inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
-          outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
-          outAddressInput.addEventListener('input', exchangeHelper.eventListeners.outAddressInputListener)
-          
-          walletSelector.addEventListener('click', function(event) {
-            exchangeHelper.eventListeners.walletSelectorClickListener(event, exchangeElements) 
-          });
-
-          // Binds to "Create order"
-          orderBtn.addEventListener('click', function (event) {
-            orderBtnClicked(exchangeElements, exchangeHelper.exchangeFunctions)
-          })
-  
-          function initialiseSlowRetrievalTimer(exchangeElements) {
-            exchangeElements.offerRetrieval = setTimeout(() => {
-              exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
-            }, 3000)
+          if ((walletMaxSpend - XMRtoReceive) < 0) {
+            const error = document.createElement('div')
+            error.classList.add('message-label')
+            error.id = 'xmrexceeded'
+            error.innerHTML = `You cannot exchange more than ${walletMaxSpend} XMR`
+            validationMessages.appendChild(error)
           }
 
-          function clearSlowRetrievalTimer(exchangeElements) {
-            clearInterval(exchangeElements.offerRetrieval)
-            console.log("Clear slow retrieval timer");
+          if (BTCCurrencyValue.toFixed(12) > exchangeHelper.exchangeFunctions.currentRates.upper_limit) {
+            const error = document.createElement('div')
+            error.id = 'xmrexceeded'
+            error.classList.add('message-label')
+            const btc_amount = parseFloat(exchangeHelper.exchangeFunctions.currentRates.upper_limit)
+            error.innerHTML = `You cannot exchange more than ${btc_amount} BTC.`
+            validationMessages.appendChild(error)
           }
-
-          outCurrencyValue.addEventListener('keydown', function(event) {
-            validationMessages.innerHTML = ''
-            clearSlowRetrievalTimer(exchangeElements);
-            if (outCurrencyValue.value.length > -1) {
-              if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
-                exchangeElements.getOfferLoader.style.display = "block";
-                try {
-                  initialiseSlowRetrievalTimer(exchangeElements)
-                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearSlowRetrievalTimer(exchangeElements)
-                    exchangeElements.getOfferLoader.style.display = "none";
-                  }).catch((error) => {
-                      clearSlowRetrievalTimer(exchangeElements)
-                      exchangeElements.getOfferLoader.style.display = "none";
-                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-                      serverValidation.appendChild(errorDiv);
-                  }).finally(() => {
-                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
-                  })
-                } catch (error) {
-                  //handleOfferError(error);
-                  console.log(error.message);
-                }
-              } 
-            }
-          })
-  
-          //outCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.btcBalanceChecks))
-          //inCurrencyValue.addEventListener('keyup', () => clearValidationMessages(exchangeHelper.eventListeners.inBalanceChecks))
-  
-          // Add inBalanceChecks listener
-          inCurrencyValue.addEventListener('keydown', function (event) {
-            validationMessages.innerHTML = ''
-            if (inCurrencyValue.value.length > -1) {
-              if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
-                exchangeElements.getOfferLoader.style.display = "block";
-                try {
-                  initialiseSlowRetrievalTimer(exchangeElements)
-                  exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
-                    clearSlowRetrievalTimer(exchangeElements)
-                    exchangeElements.getOfferLoader.style.display = "none";
-                }).catch((error) => {
-                    clearSlowRetrievalTimer(exchangeElements)
-                    exchangeElements.getOfferLoader.style.display = "none";
-                    let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-                    serverValidation.appendChild(errorDiv);
-                  }).finally(() => {
-                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
-                  })
-                } catch (error) {
-                  //handleOfferError(error);
-                  console.log(error.message);
-                  console.log("Handled at 301");
-                }
-              } 
-            }
-          })
-
-          outCurrencyValue.addEventListener('input', function (event) {
-            validationMessages.innerHTML = ''
-            if (outCurrencyValue.value.length > -1) {
-              exchangeElements.getOfferLoader.style.display = "block";
-              if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
-                try {
-                  exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {                    
-                  }).catch((error) => {
-                      let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
-                      serverValidation.appendChild(errorDiv);
-                  }).finally(() => {
-                    exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
-                  })
-                } catch (error) {
-                  console.log(error.message);
-                }
-              } 
-            }
-          })
-          
-          serverRatesValidation.innerHTML = ''
-          const retry = document.getElementById('retry-rates')
-          const errorDiv = document.getElementById('retry-error')
-          if (retry !== null) {
-            retry.classList.add('hidden')
-            errorDiv.classList.add('hidden')
+          if (BTCCurrencyValue.toFixed(8) < exchangeHelper.exchangeFunctions.currentRates.lower_limit) {
+            const error = document.createElement('div')
+            error.id = 'xmrtoolow'
+            error.classList.add('message-label')
+            const btc_amount = parseFloat(exchangeHelper.exchangeFunctions.currentRates.lower_limit)
+            error.innerHTML = `You cannot exchange less than ${btc_amount} BTC.`
+            validationMessages.appendChild(error)
           }
-          exchangeHelper.exchangeFunctions.getRatesAndLimits().then(() => {
-            loaderPage.classList.remove('active')
-            exchangePage.classList.add('active')
-          }).catch((error) => {
-            /**/
-            loaderPage.classList.remove('active')
-            exchangePage.classList.add('active')
-            if (retry !== null) {
-              retry.classList.remove('hidden')
-              errorDiv.classList.remove('hidden')
-            } else {
-              // KB: Remove this ---
-  
-              // end remove
-  
-              const errorDiv = document.createElement('div')
-              errorDiv.innerText = "There was a problem with retrieving rates from the server. Please click the 'Retry' button to try connect again. The error message was: " + error.message
-              errorDiv.id = 'retry-error'
-              errorDiv.classList.add('message-label')
-              const retryBtn = document.createElement('div')
-              retryBtn.id = 'retry-rates'
-              retryBtn.classList.add('base-button')
-              retryBtn.classList.add('hoverable-cell')
-              retryBtn.classList.add('navigation-blue-button-enabled')
-              retryBtn.classList.add('action')
-              retryBtn.innerHTML = 'Retry'
-              retryBtn.addEventListener('click', getRates)
-              explanatoryMessage.appendChild(errorDiv)
-              explanatoryMessage.appendChild(retryBtn)
-            }
-          }).finally(() => {
-            let message = document.getElementById('explanatory-message');
-            message.innerText = "";
-            exchangeHelper.exchangeFunctions.initialiseExchangeConfiguration().then((response) => {
-              // Data returned by resolve
-              // If we get an error, we assume localmonero should be enabled 
-              const localmoneroDiv = document.getElementById('localmonero')
-              const localmoneroAnchor = document.getElementById('localmonero-anchor')
-              localmoneroAnchor.setAttribute('referrer_id', response.data.referrer_info.localmonero.referrer_id)
-              localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
-              localmoneroAnchor.setAttribute('param_str', 'rc')
-  
-              if (response.data.referrer_info.localmonero.enabled === true) {
-                localmoneroDiv.style.display = 'block'
-                localmoneroAnchor.addEventListener('click', (event) => {
-                  exchangeHelper.openClickableLink(event, context);
-                })
-              }
-            }).catch(error => {
-              const localmoneroDiv = document.getElementById('localmonero')
-              const localmoneroAnchor = document.getElementById('localmonero-anchor')
-  
-              localmoneroAnchor.setAttribute('referrer_id', 'h2t1')
-              localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
-              localmoneroAnchor.setAttribute('param_str', 'rc')
-              // No data received from promise resolve(). Display link for LocalMonero
-              localmoneroDiv.style.display = 'block'
-              localmoneroAnchor.addEventListener('click', (event) => {
-                exchangeHelper.openClickableLink(event, context);
+          inCurrencyValue.value = XMRtoReceive.toFixed(12)
+        }).catch((error) => {
+          exchangeHelper.errorHelper.handleOfferError;
+        })
+    }
+
+    const outputBalanceChecks = exchangeHelper.eventListeners.outBalanceChecks;
+    const inBalanceChecks = exchangeHelper.eventListeners.inBalanceChecks;
+
+    function getRates() {
+      // it's safe to refresh the sending fee here, because we know the HTML exists in the DOM
+      //self._refresh_sending_fee();
+      let currencyInputTimer, addressInputTimer;
+      const exchangePage = document.getElementById('orderStatusPage')
+      const loaderPage = document.getElementById('loader')
+      const outAddressInput = document.getElementById('outAddress')
+      const inCurrencyValue = document.getElementById('inCurrencyValue')
+      const outCurrencyValue = document.getElementById('outCurrencyValue')
+      const inCurrencyTickerCodeDiv = document.getElementById('inCurrencySelectList')
+      const outCurrencyTickerCodeDiv = document.getElementById('outCurrencySelectList')
+      const orderBtn = document.getElementById('order-button')
+      const explanatoryMessage = document.getElementById('explanatory-message')
+      const serverRatesValidation = document.getElementById('server-rates-messages')
+      const validationMessages = document.getElementById('validation-messages')
+      const walletSelector = document.getElementById('wallet-selector')
+      const walletOptions = document.getElementById('wallet-options')
+      const exchangePageDiv = document.getElementById('exchangePage')
+      const orderStatusPage = document.getElementById('orderStatusPage')
+      const addressValidation = document.getElementById('address-messages')
+      const serverValidation = document.getElementById('server-messages')
+      const selectedWallet = document.getElementById('selected-wallet')
+      const orderStatusDiv = document.getElementById('exchangePage')
+      const getOfferLoader = document.getElementById('getOfferLoader')
+      const getAddressValidationLoader = document.getElementById('addressValidationLoader')
+      const getOfferLoaderText = document.getElementById('activityLoaderText');
+      const getAddressValidationLoaderText = document.getElementById('addressValidationLoaderText');
+      const getAddressValidationLoaderContainer = document.getElementById('addressValidationLoaderContainer');
+      const sendFundsBtn = document.getElementById('exchange-xmr');
+      const minimumFeeText = document.getElementById('minimum-fee-text');
+      const txFee = document.getElementById('tx-fee');
+      let offerRetrievalIsSlowTimer, offerType
+
+      // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
+      if (exchangePageDiv.classList.contains("active")) {
+        return;
+      }
+
+      let exchangeElements = {
+        exchangePage: exchangePage,
+        loaderPage: loaderPage,
+        outAddressInput: outAddressInput,
+        inCurrencyValue: inCurrencyValue,
+        outCurrencyValue: outCurrencyValue,
+        orderBtn: orderBtn,
+        explanatoryMessage: explanatoryMessage,
+        serverRatesValidation: serverRatesValidation,
+        validationMessages: validationMessages,
+        walletSelector: walletSelector,
+        walletOptions: walletOptions,
+        exchangePageDiv: exchangePageDiv,
+        orderStatusPage: orderStatusPage,
+        addressValidation: addressValidation,
+        serverValidation: serverValidation,
+        selectedWallet: selectedWallet,
+        orderStatusDiv: orderStatusDiv,
+        orderStarted: orderStarted,
+        orderTimer: orderTimer,
+        inCurrencyTickerCodeDiv,
+        outCurrencyTickerCodeDiv,
+        currencyInputTimer,
+        addressInputTimer,
+        getOfferLoader,
+        offerRetrievalIsSlowTimer,
+        getOfferLoaderText,
+        sendFundsBtn,
+        getAddressValidationLoader,
+        getAddressValidationLoaderText,
+        getAddressValidationLoaderContainer,
+        minimumFeeText,
+        txFee,
+        offerType
+      }
+
+      // Gets the initial minimum value
+      Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
+        // let minimumAmount = parseFloat(response.minAmount);
+        let minimumAmount = parseFloat(response.data.in_min);
+        exchangeElements.minimumFeeText.innerText = `${minimumAmount} XMR minimum (excluding tx fee)`;
+        exchangeElements.minimumFeeText.dataset.minimumAmount = minimumAmount;
+      }).catch(error => {
+        exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
+      })
+      
+      outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
+        exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
+        clearSlowCurrencyRetrievalTimer(exchangeElements);
+        updateCurrencyLabels(event, exchangeElements);
+      })
+
+      inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
+      outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
+      
+      // Event listener for validating destination address
+      outAddressInput.addEventListener('keyup', function(event) {
+        clearTimeout(exchangeElements.retrievalTimer);
+        clearSlowAddressRetrievalTimer(exchangeElements);
+        exchangeElements.getAddressValidationLoaderContainer.style.display = "block";
+        exchangeElements.getAddressValidationLoaderText.innerHTML = `<span id="addressValidationLoaderText">&nbsp;Validating Address</span>`;
+        exchangeElements.getAddressValidationLoader.style.display = "block";
+        exchangeElements.retrievalTimer = setTimeout(() => {
+          try {
+            initialiseSlowAddressRetrievalTimer(exchangeElements);
+            exchangeHelper.eventListeners.outAddressInputListener(exchangeElements, outCurrencyTickerCodeDiv.value, outAddressInput.value).then(response => {
+              clearSlowAddressRetrievalTimer(exchangeElements);
+            }).catch((error) => {
+              clearSlowAddressRetrievalTimer(exchangeElements);
+            });
+          } catch (error) {
+            clearSlowAddressRetrievalTimer(exchangeElements);
+            console.log(error.message);
+          }
+        }, 2500)
+      })
+      
+      walletSelector.addEventListener('click', function(event) {
+        exchangeHelper.eventListeners.walletSelectorClickListener(event, exchangeElements) 
+      });
+
+      function initialiseSlowAddressRetrievalTimer(exchangeElements) {
+        exchangeElements.addressRetrievalTimer = setTimeout(() => {
+          exchangeElements.getAddressValidationLoaderText.innerText = "Verifying the destination address is taking longer than expected. Please be patient"
+        }, 3000)
+      }
+
+      function clearSlowAddressRetrievalTimer(exchangeElements) {
+        clearTimeout(exchangeElements.addressRetrievalTimer)
+      }
+
+      // Binds to "Create order"
+      orderBtn.addEventListener('click', function (event) {
+        orderBtnClicked(exchangeElements, exchangeHelper.exchangeFunctions)
+      })
+
+      function initialiseSlowCurrencyRetrievalTimer(exchangeElements) {
+        exchangeElements.offerRetrieval = setTimeout(() => {
+          exchangeElements.getOfferLoaderText.innerText = "Retrieving an offer is taking longer than expected. Please be patient"
+        }, 3000)
+      }
+
+      function clearSlowCurrencyRetrievalTimer(exchangeElements) {
+        clearInterval(exchangeElements.offerRetrieval)
+      }
+
+      outCurrencyValue.addEventListener('keydown', function(event) {
+        validationMessages.innerHTML = ''
+        clearSlowCurrencyRetrievalTimer(exchangeElements);
+        if (outCurrencyValue.value.length > -1) {
+          if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+            exchangeElements.getOfferLoader.style.display = "block";
+            try {
+              initialiseSlowCurrencyRetrievalTimer(exchangeElements)
+              exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                clearSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeElements.getOfferLoader.style.display = "none";
+              }).catch((error) => {
+                  clearSlowCurrencyRetrievalTimer(exchangeElements)
+                  exchangeElements.getOfferLoader.style.display = "none";
+                  let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                  serverValidation.appendChild(errorDiv);
+              }).finally(() => {
+                exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
               })
-            })
-          })
+            } catch (error) {
+              //handleOfferError(error);
+              console.log(error.message);
+            }
+          } 
         }
-  
+      })
+
+      // Add inBalanceChecks listener
+      inCurrencyValue.addEventListener('keydown', function (event) {
+        console.log(exchangeElements);
+        exchangeElements.offerType = "in";
+        validationMessages.innerHTML = ''
+        if (inCurrencyValue.value.length > -1) {
+          if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
+            exchangeElements.getOfferLoader.style.display = "block";
+            try {
+              initialiseSlowCurrencyRetrievalTimer(exchangeElements)
+              exchangeHelper.eventListeners.inBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {
+                clearSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeElements.getOfferLoader.style.display = "none";
+            }).catch((error) => {
+                clearSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeElements.getOfferLoader.style.display = "none";
+                let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                serverValidation.appendChild(errorDiv);
+              }).finally(() => {
+                exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
+              })
+            } catch (error) {
+              //handleOfferError(error);
+              console.log(error.message);
+            }
+          } 
+        }
+      })
+
+      outCurrencyValue.addEventListener('input', function (event) {
+        validationMessages.innerHTML = ''
+        console.log("Out");
+        console.log(exchangeElements)
+        exchangeElements.offerType = "out";
+        if (outCurrencyValue.value.length > -1) {
+          exchangeElements.getOfferLoader.style.display = "block";
+          if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+            try {
+              exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {                    
+              }).catch((error) => {
+                  let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                  serverValidation.appendChild(errorDiv);
+              }).finally(() => {
+                exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
+              })
+            } catch (error) {
+              console.log(error.message);
+            }
+          } 
+        }
+      })
+      
+      serverRatesValidation.innerHTML = ''
+      const retry = document.getElementById('retry-rates')
+      const errorDiv = document.getElementById('retry-error')
+      if (retry !== null) {
+        retry.classList.add('hidden')
+        errorDiv.classList.add('hidden')
+      }
+      
+      // We attempt to retrieve enabled currency pairs from the server
+      exchangeHelper.exchangeFunctions.getCurrencyPairs().then((response) => {
         
-  
+        let outCurrencySelectList = document.getElementById('outCurrencySelectList')
+        let length = outCurrencySelectList.length;
+        for (let i = length - 1; i >= 0; i--) {
+          outCurrencySelectList.options[i].remove();
+        }
+
+        let newMetadata = {}
+        response.out_currencies.forEach((value => {
+          // populate replacement currencyMetadata object with each currency's data
+          newMetadata[value.symbol] = {
+            name: value.name,
+            precision: 8
+          }          
+          // push onto the options list
+          let option = document.createElement("option");
+          option.value = value.symbol;
+          option.text = value.symbol;
+          outCurrencySelectList.options.add(option);
+        }))
+
+        // Once the get_pairs endpoint is updated to return precision, we can uncomment the line below to make the coin list fully server-controlled
+        // exchangeHelper.currencyMetadata = newMetadata;
+        loaderPage.classList.remove('active')
+        exchangePage.classList.add('active')
+      }).catch((error) => {
+        // Error occurred retrieving currency pair data from MYM server -- continue with defaults
+        loaderPage.classList.remove('active')
+        exchangePage.classList.add('active')
+      }).finally(() => {
+        let message = document.getElementById('explanatory-message');
+        message.innerText = "";
+        exchangeHelper.exchangeFunctions.initialiseExchangeConfiguration().then((response) => {
+          // Data returned by resolve
+          // If we get an error, we assume localmonero should be enabled 
+          const localmoneroDiv = document.getElementById('localmonero')
+          const localmoneroAnchor = document.getElementById('localmonero-anchor')
+          localmoneroAnchor.setAttribute('referrer_id', response.data.referrer_info.localmonero.referrer_id)
+          localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
+          localmoneroAnchor.setAttribute('param_str', 'rc')
+
+          if (response.data.referrer_info.localmonero.enabled === true) {
+            localmoneroDiv.style.display = 'block'
+            localmoneroAnchor.addEventListener('click', (event) => {
+              exchangeHelper.openClickableLink(event, context);
+            })
+          }
+        }).catch(error => {
+          const localmoneroDiv = document.getElementById('localmonero')
+          const localmoneroAnchor = document.getElementById('localmonero-anchor')
+
+          localmoneroAnchor.setAttribute('referrer_id', 'h2t1')
+          localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
+          localmoneroAnchor.setAttribute('param_str', 'rc')
+          // No data received from promise resolve(). Display link for LocalMonero
+          localmoneroDiv.style.display = 'block'
+          localmoneroAnchor.addEventListener('click', (event) => {
+            exchangeHelper.openClickableLink(event, context);
+          })
+        })
+      })
+    }
+
+    
+
         
   
         
@@ -454,8 +486,16 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           if (exchangeElements.orderStarted == true) {
             return
           }
+          if (exchangeElements.outAddressInput.value == "") {
+            let error = document.createElement("div");
+            error.classList.add("message-label");
+            error.innerText = "Please ensure you enter a valid destination address";
+            exchangeElements.validationMessages.appendChild(error);
+            
+            return
+          }
           if (exchangeElements.validationMessages.firstChild !== null) {
-            exchangeElementsvalidationMessages.firstChild.style.color = '#ff0000'
+            exchangeElements.validationMessages.firstChild.style.color = '#ff0000'
             validationError = true
             return
           }
@@ -476,14 +516,24 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
             exchangeElements.loaderPage.classList.remove('active')
-            const offer = exchangeHelper.exchangeFunctions.getOfferWithOutAmount(in_currency, out_currency, out_amount).then((response) => {
-  
+            // We check whether the user received a quote on an in_amount or an out_amount, and invoke the appropriate getOffer type accordingly
+            let amount;
+            if(exchangeElements.offerType == "in") {
+              amount = exchangeElements.inCurrencyValue.value
+            } else {
+              amount = exchangeElements.outCurrencyValue.value
+            }
+            //getOffer.bind(exchangeHelper.exchangeFunctions);
+            const offer = exchangeHelper.exchangeFunctions.getOffer(in_currency, out_currency, amount, exchangeElements.offerType).then((response) => {
+              console.log("Woot")
+              console.log(response)
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
               exchangeElements.exchangePageDiv.classList.remove('active')
   
               exchangeHelper.exchangeFunctions.createOrder(outAddress, selectedWallet.dataset.walletpublicaddress, in_currency, out_currency).then((response) => {
                 document.getElementById('orderStatusPage').classList.remove('active')
+                document.getElementById('orderForm').classList.add('hidden');
                 let e = document.getElementById('orderStatusPage');
                 e = document.getElementById('orderStatusPage');
                 // backBtn.innerHTML = `<div class="base-button hoverable-cell utility grey-menu-button disableable left-back-button" style="cursor: default; -webkit-app-region: no-drag; position: absolute; opacity: 1; left: 0px;"></div>`;
@@ -508,12 +558,23 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                       const xmr_dest_address_elem = document.getElementById('in_address')
                       xmr_dest_address_elem.value = response.receiving_subaddress
                     }
-  
-                    if (orderStatusResponse.status == 'PAID' || orderStatusResponse.status == 'TIMED_OUT' ||
-                                  orderStatusResponse.status == 'DONE' || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS' ||
-                                  orderStatusResponse.status == 'PAYMENT_FAILED' || orderStatusResponse.status == 'REJECTED' ||
-                                  orderStatusResponse.status == 'EXPIRED') {
-                      clearInterval(localOrderTimer)
+                    
+                    if (orderStatusResponse.status == 'PAID' 
+                    || orderStatusResponse.status == 'TIMED_OUT' 
+                    || orderStatusResponse.status == 'DONE' 
+                    || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS' 
+                    || orderStatusResponse.status == 'PAYMENT_FAILED' 
+                    || orderStatusResponse.status == 'REJECTED' 
+                    || orderStatusResponse.status == 'EXPIRED') {
+                      clearInterval(exchangeElements.orderTimer)
+                      document.getElementById("exchange-xmr").classList.remove("active");
+                    }
+                    // Check expiry time
+                    let now = new Date();
+                    let expiryTimeObj = Date.parse(expiryTime);
+                    if (now > expiryTimeObj) {
+                      clearInterval(exchangeElements.orderTimer)
+                      document.getElementById("exchange-xmr").classList.remove("active");
                     }
                   }
                   if ((orderStatusResponse.orderTick % 10) == 0) {
@@ -551,8 +612,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               exchangeElements.orderBtn.style.display = 'block'
               exchangeElements.orderStarted = false
             })
-          } catch (Error) {
-            console.log(Error)
+          } catch (error) {
+            console.log(error)
           }
         }
         
@@ -565,6 +626,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             if (context.walletsListController.records == "undefined" || context.walletsListController.records.length == "undefined") {
               setTimeout(() => {
                 getRates()
+
               }, 500);
             }
             function clearValidationMessages(callbackFunction = null) {
@@ -572,8 +634,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 callbackFunction('test');
               }
             }
-            getRates()
-            
+            getRates()            
             // Safe to set fee because the DOM will have rendered
             let estimatedTotalFee_JSBigInt = context.monero_utils.estimated_tx_network_fee(null, 1, '24658');
             let estimatedFeeStr = exchangeHelper.htmlHelper.newEstimatedNetworkFeeString(estimatedTotalFee_JSBigInt);

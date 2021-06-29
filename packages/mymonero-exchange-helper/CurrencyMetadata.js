@@ -1,18 +1,22 @@
 currencyMetadata = {
     "ETH": {
-        fullName: "Ethereum",
+        name: "Ethereum",
+        symbol: "ETH",
         precision: 18
     },
     "LTC": {
-        fullName: "Litecoin",
+        name: "Litecoin",
+        symbol: "LTC",
         precision: 8
     },
     "BTC": {
-        fullName: "Bitcoin",
+        name: "Bitcoin",
+        symbol: "BTC",
         precision: 8
     },
     "XMR": {
-        fullName: "Monero",
+        name: "Monero",
+        symbol: "XMR",
         precision: 12
     }
 }
