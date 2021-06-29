@@ -3,7 +3,7 @@ const axios = require("axios");
 class ExchangeFunctions {
 
     constructor() {
-        this.apiUrl = "https://api.mymonero.com:8443/cx";
+        this.apiUrl = "https://api.mymonero.com:443/cx";
         // this.apiVersion = "v3";
         // this.currencyToExchange = "xmr2btc";
         this.offer = {};

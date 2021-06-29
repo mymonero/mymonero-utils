@@ -3,7 +3,7 @@ const axios = require('axios');
 function getMinimalExchangeAmount(fromCurrency, toCurrency) {
   let self = this;
   return new Promise((resolve, reject) => {
-    this.apiUrl = "https://api.mymonero.com:8443/cx";
+    this.apiUrl = "https://api.mymonero.com:443/cx";
       let data = {
           "in_currency": "XMR",
           "out_currency": "BTC"
