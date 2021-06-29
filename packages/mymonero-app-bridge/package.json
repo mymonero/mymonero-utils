@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-app-bridge",
-  "version": "1.1.9",
+  "version": "1.1.13",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^1.1.9",
+    "@mymonero/mymonero-bigint": "^1.1.13",
     "@mymonero/mymonero-bridge-utils": "^1.1.9",
     "@mymonero/mymonero-nettype": "^1.1.9"
   },
