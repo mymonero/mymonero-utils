@@ -204,7 +204,7 @@ outBalanceChecks = function(exchangeElements) {
                     resolve(response);
                 }).catch((error) => {
                     // console.log("outBalance promise rejection");
-                    exchangeElements.minimumFeeText.innerText = `${exchangeElements.minimumAmount.dataset.minimumAmount} XMR minimum (excluding tx fee)`
+                    exchangeElements.minimumFeeText.innerText = `${exchangeElements.minimumFeeText.dataset.minimumAmount} XMR minimum (excluding tx fee)`
                     reject(error);
                 })
             }, 1500)
