@@ -146,11 +146,11 @@ class HtmlHelper {
                             <div class="field_title form-field-title">XMR to send
                                 <div style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0;">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
-                                    <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
+                                    <input id="inCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="" autocomplete="off">
                                     <div id="inCurrencySelector"></div>
                                 </div>
                                 <div id="minimum-fee">
-                                    <span id="minimum-fee-text" class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">Loading ...</span>
+                                    <span id="minimum-fee-text" class="field_title form-field-title" style="margin-top: 15px !important; color: rgb(158, 156, 158); display: inline-block;">Loading ...</span>
                                 </div>
                             </div>
                         </td>
@@ -158,7 +158,7 @@ class HtmlHelper {
                             <div id="inInputDiv" class="field_title form-field-title"><span id="outCurrencyTickerCode">BTC</span> you will receive
                                 <div class="" style="position: relative; left: 0px; top: 0px; padding: 2px 0 0 0">
                                     <span class="field_title form-field-title label-spacing" style="margin-top: 0px;">AMOUNT</span>
-                                    <input id="outCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="">
+                                    <input id="outCurrencyValue" class="textInput currencyInput" type="text" placeholder="00.00" value="" autocomplete="off">
                                     <div id="outCurrencySelector"></div><div class="selectIndicator" style="right: 12px; top: 33px;"></div>
                                 </div>
                             </div>
