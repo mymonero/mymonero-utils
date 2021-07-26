@@ -361,7 +361,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
 
       // Add inBalanceChecks listener
       inCurrencyValue.addEventListener('input', function (event) {
-        console.log(exchangeElements);
         exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
         validationMessages.innerHTML = ''
         clearSlowCurrencyRetrievalTimer(exchangeElements);
@@ -566,8 +565,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             }
             //getOffer.bind(exchangeHelper.exchangeFunctions);
             const offer = exchangeHelper.exchangeFunctions.getOffer(in_currency, out_currency, amount, exchangeElements.offerType).then((response) => {
-              console.log("Woot")
-              console.log(response)
+              
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
               exchangeElements.exchangePageDiv.classList.remove('active')
