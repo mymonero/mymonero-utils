@@ -362,6 +362,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       // Add inBalanceChecks listener
       inCurrencyValue.addEventListener('input', function (event) {
         exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
+        exchangeElements.offerType = "in";
         validationMessages.innerHTML = ''
         clearSlowCurrencyRetrievalTimer(exchangeElements);
         if (inCurrencyValue.value.length > 0) {
