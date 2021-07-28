@@ -217,7 +217,13 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       const sendFundsBtn = document.getElementById('exchange-xmr');
       const minimumFeeText = document.getElementById('minimum-fee-text');
       const txFee = document.getElementById('tx-fee');
+      const orderCreationLoader = exchangeHelper.htmlHelper.getOrderCreationLoader();
+      console.log(orderCreationLoader);
+      console.log(typeof(orderCreationLoader));
       let offerRetrievalIsSlowTimer, offerType
+      
+      console.log(exchangeHelper);
+
 
       // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
       if (exchangePageDiv.classList.contains("active")) {
@@ -257,8 +263,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         getAddressValidationLoaderContainer,
         minimumFeeText,
         txFee,
-        offerType
+        offerType,
+        orderCreationLoader
       }
+
+      console.log(exchangeElements);
 
       // Gets the initial minimum value
       Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
@@ -520,8 +529,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           }
           return true
         }
-  
+        
         function orderBtnClicked(exchangeElements, exchangeFunctions) {
+          
           let validationError = false
           exchangeElements.serverValidation.innerHTML = ''
           if (exchangeElements.orderStarted == true) {
@@ -556,7 +566,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           let in_currency = exchangeElements.inCurrencyTickerCodeDiv.value
           let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
+            // We've been through the validation by this stage. We can now hide the order button and swap in a loader
             exchangeElements.loaderPage.classList.remove('active')
+            exchangeElements.serverValidation.innerHTML = exchangeElements.orderCreationLoader;
             // We check whether the user received a quote on an in_amount or an out_amount, and invoke the appropriate getOffer type accordingly
             let amount;
             if(exchangeElements.offerType == "in") {
@@ -642,12 +654,14 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               }).catch((error) => {
                 //exchangeHelper.ErrorHelper.handleOfferError(error, exchangeElements);
                 let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                exchangeElements.serverValidation.innerHTML = "";
                 exchangeElements.serverValidation.appendChild(errorDiv);
                 exchangeElements.orderBtn.style.display = 'block'
                 exchangeElements.orderStarted = false
               })
             }).catch((error) => {
               let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+              exchangeElements.serverValidation.innerHTML = "";
               exchangeElements.serverValidation.appendChild(errorDiv);
               exchangeElements.orderBtn.style.display = 'block'
               exchangeElements.orderStarted = false

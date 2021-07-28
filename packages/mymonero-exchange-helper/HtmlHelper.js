@@ -5,6 +5,7 @@ class HtmlHelper {
         this.baseForm = this.getBaseForm();
         this.baseWalletSelector = this.getBaseWalletSelector();
         this.newEstimatedNetworkFeeString = this.newEstimatedNetworkFeeString;
+        this.getOrderCreationLoader = this.getOrderCreationLoader
     }
 
     getBaseWalletSelector() {
@@ -37,7 +38,7 @@ class HtmlHelper {
                 // min-height: 28px;
             }
             #getOfferLoader div { 
-                // display: none; 
+                //display: none; 
             }
             #getOfferLoader {
                 padding: 0px 24px 0 0;
@@ -57,6 +58,53 @@ class HtmlHelper {
                 <div class="block block3"></div>
             </div>&nbsp;
             <span id="activityLoaderText">Fetching offer</span>
+        </div>`
+    }
+
+    getOrderCreationLoader() {
+        return `<style>
+        #getOrderCreationLoader {
+            float: none;
+            // min-height: 28px;
+
+        }
+        #getOrderCreationLoader .loader {
+            //float: left;
+        }
+        #getOrderCreationText {
+            //float: left;
+        }
+        #getOrderCreationLoaderContainer .block {
+            height: 32px;
+            float: left;
+            width:12px;
+        }
+        #getOrderCreationLoaderContainer {
+            display: block;
+            width: 96px;
+        }        
+        #getOrderCreationLoader div { 
+            // display: none; 
+        }
+        #getOrderCreationLoader {
+            clear: left;
+            padding: 8px 24px 0 0;
+            display: flex;
+            justify-content: center;
+        }
+        #getOrderCreationText {
+            float: left;
+            margin-left: 12px;
+            margin-top: 2px;
+        }
+        </style>
+        <div id="getOrderCreationLoader" class="graphicAndLabel activityIndicators on-normal-background" style="font-family: Native-Light, input, menlo, monospace; -webkit-font-smoothing: subpixel-antialiased; font-size: 10px; letter-spacing: 0.5px; font-weight: 300; color: rgb(158, 156, 158); padding-left: 0px;">
+            <div class="loader" id="getOrderCreationLoaderContainer">
+                <div class="block block1"></div>
+                <div class="block block2"></div>
+                <div class="block block3"></div>
+            </div>
+            <span id="getOrderCreationText">Creating order. Please be patient. During peak times, an order can take up to half a minute to create.</span>
         </div>`
     }
 
