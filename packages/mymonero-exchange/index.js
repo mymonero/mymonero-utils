@@ -131,6 +131,11 @@ class ExchangeFunctions {
                 }).catch(error => {
                     reject(error);
                 });
+            } else {
+                // TODO: Handle error a bit more elegantly
+                let error = new Error("Please ensure you have specified an amount to exchange");
+                console.log(error);
+                reject(error);
             }
         })
         // let data = {
