@@ -18,70 +18,97 @@ function checkDecimals (value, decimals) {
 
 // Tests whether the keypress is valid, checks currency precision, aborts if either fail
 function outCurrencyValueKeydownListener(event, exchangeHelper) {
-  let outCurrencyValue = document.getElementById('outCurrencyValue');
+  // We need to handle two different use cases here: Android app, or desktop / web apps
+  // Android sends an InputEvent where event.which is undefined
+  // Traditional platforms send a Key
 
-  // Test whether the key is allowed or not, and abort execution if not allowed
-  let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
-  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-    // These are valid keypresses, but we don't need to request an offer from the API
-    return false
+  // We need to check in this fashion because isNaN will return true for a string containing commas
+  let allowableCharacters = [
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ","
+  ]
+  if (event.inputType == "insertText") {
+    if (allowableCharacters.includes(event.data)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  let currencyTickerCode = document.getElementById("outCurrencySelectList").value;
-  // We need to limit the number of decimals based on the selected currency
-  // checkDecimals returns false if we exceed the second parameter in decimal places
-  if (!checkDecimals(outCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
-    event.preventDefault()
-    return false
+  if ((event.inputType == "deleteContentForward" || 
+      event.inputType == "deleteContentBackward" ||
+      event.inputType == "insertFromPaste") && 
+      event.path[0].value.length > 0) {
+    let valueToTest = event.path[0].value;
+    if (!isNaN(valueToTest)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  allowableKeyArray = [110, 46, 190] // decimal point, delete, period
-  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-    // These are valid keypresses, but we don't need to request an offer from the API
-    return false
-  }
-  
-  // numpad 0-9, numeric 0-9
-  if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
-    // These are valid keypresses. Return true 
-    return true
-  }
 
-  event.preventDefault()
+  //event.preventDefault()
 }
 
 // Tests whether the keypress is valid, checks currency precision, aborts if either fail
-function inCurrencyValueKeydownListener(event, exchangeHelper) {
-  let inCurrencyValue = document.getElementById('inCurrencyValue');
+function currencyValueKeydownListener(event, exchangeHelper) {
+  // insertText
+  //let inCurrencyValue = document.getElementById('inCurrencyValue');
 
-  // Test whether the key is allowed or not, and abort execution if not allowed
-  let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
-  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-    // These are valid keypresses, but we don't need to request an offer from the API
-    return false
-  }
-
-  let currencyTickerCode = document.getElementById("inCurrencySelectList").value;
-  // We need to limit the number of decimals based on the selected currency
-  // checkDecimals returns false if we exceed the second parameter in decimal places
-  if (!checkDecimals(inCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
-    event.preventDefault()
-    return false
-  }
-
-  allowableKeyArray = [110, 46, 190] // decimal point, delete, period
-  if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
-    // These are valid keypresses, but we don't need to request an offer from the API
-    return false
-  }
+  // It might not be necessary, but we check values in this manner because certain locales may use commas as decimal separators 
+  // isNaN will return true for a string containing commas
+  // let allowableCharacters = [
+  //   "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."
+  // ]
+  // if (event.inputType == "insertText") {
+  //   if (allowableCharacters.includes(event.data)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
   
-  // numpad 0-9, numeric 0-9
-  if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
-    // These are valid keypresses. Return true 
-    return true
+  if ((event.inputType == "deleteContentForward" || 
+      event.inputType == "deleteContentBackward" ||
+      event.inputType == "insertFromPaste" ||
+      event.inputType == "insertText" ) && 
+      event.path[0].value.length > 0) {
+    let valueToTest = event.path[0].value;
+    if (!isNaN(valueToTest)) {
+      return true;
+    } else {
+      return false;
+    }
   }
+  //if (event.inputType = "de")
+  // Test whether the key is allowed or not, and abort execution if not allowed
+  // let allowableKeyArray = [37, 39, 46, 8]; // arrow keys, delete, backspace
+  // if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+  //   // These are valid keypresses, but we don't need to request an offer from the API
+  //   return false
+  // }
 
-  event.preventDefault()
+  // let currencyTickerCode = document.getElementById("inCurrencySelectList").value;
+  // // We need to limit the number of decimals based on the selected currency
+  // // checkDecimals returns false if we exceed the second parameter in decimal places
+  // if (!checkDecimals(inCurrencyValue.value, exchangeHelper.currencyMetadata[currencyTickerCode].precision)) {
+  //   event.preventDefault()
+  //   return false
+  // }
+
+  // allowableKeyArray = [110, 46, 190] // decimal point, delete, period
+  // if (exchangeHelper.isValidKey(event, allowableKeyArray)) {
+  //   // These are valid keypresses, but we don't need to request an offer from the API
+  //   return false
+  // }
+  
+  // // numpad 0-9, numeric 0-9
+  // if ((event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105)) {
+  //   // These are valid keypresses. Return true 
+  //   return true
+  // }
+
+  //event.preventDefault()
 }
 
 function initialiseExchangeHelper(context, exchangeHelper) {
@@ -190,7 +217,13 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       const sendFundsBtn = document.getElementById('exchange-xmr');
       const minimumFeeText = document.getElementById('minimum-fee-text');
       const txFee = document.getElementById('tx-fee');
+      const orderCreationLoader = exchangeHelper.htmlHelper.getOrderCreationLoader();
+      console.log(orderCreationLoader);
+      console.log(typeof(orderCreationLoader));
       let offerRetrievalIsSlowTimer, offerType
+      
+      console.log(exchangeHelper);
+
 
       // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
       if (exchangePageDiv.classList.contains("active")) {
@@ -230,8 +263,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         getAddressValidationLoaderContainer,
         minimumFeeText,
         txFee,
-        offerType
+        offerType,
+        orderCreationLoader
       }
+
+      console.log(exchangeElements);
 
       // Gets the initial minimum value
       Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
@@ -249,11 +285,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         updateCurrencyLabels(event, exchangeElements);
       })
 
-      inCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
-      outCurrencyValue.addEventListener('keydown', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
+      inCurrencyValue.addEventListener('input', exchangeHelper.eventListeners.inCurrencyValueKeydownListener)
+      outCurrencyValue.addEventListener('input', exchangeHelper.eventListeners.outCurrencyValueKeydownListener)
       
       // Event listener for validating destination address
-      outAddressInput.addEventListener('keyup', function(event) {
+      outAddressInput.addEventListener('input', function(event) {
         clearTimeout(exchangeElements.retrievalTimer);
         clearSlowAddressRetrievalTimer(exchangeElements);
         exchangeElements.getAddressValidationLoaderContainer.style.display = "block";
@@ -303,7 +339,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         clearInterval(exchangeElements.offerRetrieval)
       }
 
-      outCurrencyValue.addEventListener('keydown', function(event) {
+      outCurrencyValue.addEventListener('input', function(event) { 
         validationMessages.innerHTML = ''
         clearSlowCurrencyRetrievalTimer(exchangeElements);
         if (outCurrencyValue.value.length > -1) {
@@ -326,17 +362,20 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               //handleOfferError(error);
               console.log(error.message);
             }
-          } 
+          } else {
+            validationMessages.innerHTML = 'Please specify an amount using only numbers and a period'
+          }
         }
       })
 
       // Add inBalanceChecks listener
-      inCurrencyValue.addEventListener('keydown', function (event) {
-        console.log(exchangeElements);
+      inCurrencyValue.addEventListener('input', function (event) {
+        exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
         exchangeElements.offerType = "in";
         validationMessages.innerHTML = ''
-        if (inCurrencyValue.value.length > -1) {
-          if (inCurrencyValueKeydownListener(event, exchangeHelper) ) {
+        clearSlowCurrencyRetrievalTimer(exchangeElements);
+        if (inCurrencyValue.value.length > 0) {
+          if (currencyValueKeydownListener(event, exchangeHelper) ) {
             exchangeElements.getOfferLoader.style.display = "block";
             try {
               initialiseSlowCurrencyRetrievalTimer(exchangeElements)
@@ -353,29 +392,40 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               })
             } catch (error) {
               //handleOfferError(error);
+              exchangeElements.getOfferLoader.style.display = "none";
+              clearSlowCurrencyRetrievalTimer(exchangeElements);
               console.log(error.message);
             }
-          } 
+          } else {
+            validationMessages.innerHTML = 'Please specify an amount using only numbers and a period'
+          }
         }
       })
 
       outCurrencyValue.addEventListener('input', function (event) {
         validationMessages.innerHTML = ''
-        console.log("Out");
-        console.log(exchangeElements)
+        clearSlowCurrencyRetrievalTimer(exchangeElements)
+        exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
         exchangeElements.offerType = "out";
-        if (outCurrencyValue.value.length > -1) {
-          exchangeElements.getOfferLoader.style.display = "block";
-          if (outCurrencyValueKeydownListener(event, exchangeHelper) ) {
+        if (outCurrencyValue.value.length > 0) {
+          if (currencyValueKeydownListener(event, exchangeHelper) ) {
+            exchangeElements.getOfferLoader.style.display = "block";
             try {
+              initialiseSlowCurrencyRetrievalTimer(exchangeElements)
               exchangeHelper.eventListeners.outBalanceChecks(exchangeElements, exchangeHelper.exchangeFunctions).then((response) => {                    
+                clearSlowCurrencyRetrievalTimer(exchangeElements)
+                exchangeElements.getOfferLoader.style.display = "none";
               }).catch((error) => {
+                clearSlowCurrencyRetrievalTimer(exchangeElements)
+                  exchangeElements.getOfferLoader.style.display = "none";
                   let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
                   serverValidation.appendChild(errorDiv);
               }).finally(() => {
                 exchangeElements.getOfferLoaderText.innerText = "Fetching offer"
               })
             } catch (error) {
+              clearSlowCurrencyRetrievalTimer(exchangeElements)
+              exchangeElements.getOfferLoader.style.display = "none";
               console.log(error.message);
             }
           } 
@@ -479,8 +529,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           }
           return true
         }
-  
+        
         function orderBtnClicked(exchangeElements, exchangeFunctions) {
+          
           let validationError = false
           exchangeElements.serverValidation.innerHTML = ''
           if (exchangeElements.orderStarted == true) {
@@ -515,7 +566,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           let in_currency = exchangeElements.inCurrencyTickerCodeDiv.value
           let out_currency = exchangeElements.outCurrencyTickerCodeDiv.value
           try {
+            // We've been through the validation by this stage. We can now hide the order button and swap in a loader
             exchangeElements.loaderPage.classList.remove('active')
+            exchangeElements.serverValidation.innerHTML = exchangeElements.orderCreationLoader;
             // We check whether the user received a quote on an in_amount or an out_amount, and invoke the appropriate getOffer type accordingly
             let amount;
             if(exchangeElements.offerType == "in") {
@@ -525,8 +578,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
             }
             //getOffer.bind(exchangeHelper.exchangeFunctions);
             const offer = exchangeHelper.exchangeFunctions.getOffer(in_currency, out_currency, amount, exchangeElements.offerType).then((response) => {
-              console.log("Woot")
-              console.log(response)
+              
             }).then((error, response) => {
               const selectedWallet = document.getElementById('selected-wallet')
               exchangeElements.exchangePageDiv.classList.remove('active')
@@ -602,12 +654,14 @@ function initialiseExchangeHelper(context, exchangeHelper) {
               }).catch((error) => {
                 //exchangeHelper.ErrorHelper.handleOfferError(error, exchangeElements);
                 let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+                exchangeElements.serverValidation.innerHTML = "";
                 exchangeElements.serverValidation.appendChild(errorDiv);
                 exchangeElements.orderBtn.style.display = 'block'
                 exchangeElements.orderStarted = false
               })
             }).catch((error) => {
               let errorDiv = exchangeHelper.errorHelper.handleOfferError(error);
+              exchangeElements.serverValidation.innerHTML = "";
               exchangeElements.serverValidation.appendChild(errorDiv);
               exchangeElements.orderBtn.style.display = 'block'
               exchangeElements.orderStarted = false
