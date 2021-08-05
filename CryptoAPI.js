@@ -1,7 +1,7 @@
 const axios = require("axios");
 const apiKey = require("./apiKey");
 
-class ChangeNowIntegration {
+class CryptoAPI {
 
     constructor() {
         this.apiUrl = "https://api.changenow.io";
@@ -175,19 +175,22 @@ class ChangeNowIntegration {
                 url: `${this.getApiPath()}exchange/min-amount`,
                 params: {
                     fromCurrency,
+                    fromNetwork: "",
                     toCurrency,
+                    toNetwork: "",
                     flow
                 },
                 headers: { 
-                    'x-changenow-api-key': ''
+                    'x-changenow-api-key': `${this.apiKey}`
                 }
             };
             console.log(config);
             axios(config).then(function (response) {
-                console.log(JSON.stringify(response.data));
+                resolve(response.data);
             })
             .catch(function (error) {
                 console.log(error);
+                reject(error)
             });
         })
     }
@@ -206,14 +209,16 @@ class ChangeNowIntegration {
                     flow
                 },
                 headers: { 
-                    'x-changenow-api-key': 'your_api_key'
+                    'x-changenow-api-key': `${this.apiKey}`
                 }
             };
             
             axios(config).then(function (response) {
-                console.log(JSON.stringify(response.data));
-            }).catch(function (error) {
-                console.log(error);
+                console.log(response);
+                resolve(response.data);
+            })
+            .catch(function (error) {
+                reject(error)
             });
         })
     }
@@ -594,5 +599,5 @@ class ChangeNowIntegration {
 
 }
 
-module.exports = ChangeNowIntegration;
+module.exports = CryptoAPI;
 
