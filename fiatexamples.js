@@ -1,6 +1,10 @@
 const axios = require("axios");
-const ChangeNowIntegration = require("./ChangeNowIntegration");
-const integration = require("./ChangeNowIntegration")
+const FiatAPI = require("./FiatAPI");
+const integration = require("./FiatAPI")
+
+async function createExchangeTransaction(from_amount, from_currency, to_currency, address) {
+    
+}
 
 async function initialise() {
     try {
@@ -126,34 +130,56 @@ async function getTransactionStatus() {
 }
 
 (async() => {
-
-    // console.log('before start');
-    // let response;
-    // response = await initialise();
-    // console.log(response);
-
-    // response = await getMinimal();
-    // console.log(response);
-
-    // response = await validateAddresses();
-    // console.log(response);
-
-    // response = await createOrder()
-    // console.log(response);
+    let response;
     
-    // response = await getEstimatedAmount();
-    // console.log(response);
+    let instance = new FiatAPI();
 
-    // response = await createOrder();
-    // console.log(response);
+    // GET
+    // Fiat currencies
+    // https://api.changenow.io/v2/fiat-currencies/fiat
 
-    // response = await getTransactionStatus();
-    // console.log(response);
-    let instance = await new ChangeNowIntegration()
-    let meh = await instance.retrieveFilteredMoneroCurrencyData().then(response => {
-        console.log(response);
-    })
+    // response = await instance.getAvailableFiatCurrencies();
 
-    console.log('after start');
+
+    // GET
+    // Crypto currencies
+    // https://api.changenow.io/v2/fiat-currencies/crypto
+
+    // response = await instance.getAvailableCryptocurrencies();
+    
+    
+    // GET
+    // Estimate
+    // https://api.changenow.io/v2/fiat-estimate?from_currency=&from_network=&from_amount=&to_currency=&to_network=&deposit_type=&payout_type=    
+    // response = await instance.getTransactionEstimate(200, "USD", "XMR");
+
+    // GET
+    // Transaction status
+    // https://api.changenow.io/v2//fiat-transaction/?id=id
+    response = await instance.getTransactionStatus("4771173146");
+    
+    
+
+    // GET
+    // MarketInfo
+    // https://api.changenow.io/v2/fiat-market-info/min-max-range/{fromto}
+
+    //response = await instance.getMinMaxRange("USD", "XMR");
+    //response = await instance.getMinMaxRange("USD", "BTC");
+
+    // GET
+    // Fiat helthcheck service
+    // https://api.changenow.io/v2/fiat-status
+
+    //response = await instance.getFiatAPIStatus();
+
+    // POST
+    // Create fiat transaction
+    // https://api.changenow.io/v2/fiat-transaction
+
+    //response = await instance.createExchangeTransaction(500, "EUR", "XMR", "488ti8HzaWE9gyCS94YGqeJ735acPErGCWxBid5osQhJRe9pipvzrBRV4oBEVxJuLvfVZyW2J9qt1T2dB14XLejB14Kaq3o");
+
+    console.log(response);
+
 })();
 
