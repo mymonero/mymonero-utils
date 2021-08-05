@@ -1,10 +1,102 @@
 
 const { it } = require('mocha');
-const ChangeNowIntegration = require('../../ChangeNowIntegration');
+const CryptoAPI = require('../../CryptoAPI');
 const expect = require("chai").expect;
-var instance = new ChangeNowIntegration();
+var instance = new CryptoAPI();
 
-describe('ChangeNow API integration', async function() {
+/**
+ * 
+ * Fiat operations
+ * POST - https://api.changenow.io/v2/fiat-transaction
+ * 
+POST
+Create exchange transaction with fiat
+https://api.changenow.io/v2/fiat-transaction
+BODY PARAMETERS:
+  "from_amount": 1200.24,
+  "from_currency": "EUR",
+  "to_currency": "BTC",
+  "from_network": null,
+  "to_network": "BNB",
+  "payout_address": "mtXWDB6k5yC5v7TcwKZHB89SUp85yCKshy",
+  "payout_extra_id": "1",
+  "deposit_type": "SEPA_1",
+  "payout_type": "SEPA_1",
+  "external_partner_link_id": ""
+
+
+RESPONSE PARAMETERS: 
+{
+  "id": "4496229738",
+  "status": "new",
+  "email": null,
+  "errors": [],
+  "status_details": null,
+  "from_currency": "EUR",
+  "from_network": null,
+  "from_currency_with_network": null,
+  "from_amount": "0",
+  "deposit_type": "SEPA_1",
+  "payout_type": "CRYPTO_THROUGH_CN",
+  "expected_from_amount": "1200.24",
+  "to_currency": "TRX",
+  "to_network": null,
+  "to_currency_with_network": null,
+  "to_amount": null,
+  "output_hash": null,
+  "expected_to_amount": "23445.66041",
+  "location": "DE",
+  "created_at": "2021-07-14T10:36:40.273Z",
+  "updated_at": "2021-07-14T10:36:40.273Z",
+  "partner_id": "6437862205",
+  "external_partner_link_id": null,
+  "estimate_breakdown": {
+    "toAmount": "23445.66041",
+    "fromAmount": 1200.24,
+    "serviceFees": [
+      {
+        "name": "Service fee",
+        "amount": "2.49",
+        "currency": "EUR"
+      }
+    ],
+    "convertedAmount": {
+      "amount": "1197.75",
+      "currency": "EUR"
+    },
+    "estimatedExchangeRate": "19.57475300",
+    "networkFee": {
+      "amount": "0.1",
+      "currency": "TRX"
+    }
+  },
+  "payout": {
+    "address": "0x7cC3BD073c6d9564bb67ffCb86f76D36e48ce3F1",
+    "extra_id": "1"
+  },
+  "redirect_url": "https://payments.guardarian.com/checkout?tid=4496229738"
+}
+GET
+Transaction status
+https://api.changenow.io/v2//fiat-transaction/?id=id
+GET
+Estimate
+https://api.changenow.io/v2/fiat-estimate?from_currency=&from_network=&from_amount=&to_currency=&to_network=&deposit_type=&payout_type=
+GET
+MarketInfo
+https://api.changenow.io/v2/fiat-market-info/min-max-range/{fromto}
+GET
+Fiat helthcheck service
+https://api.changenow.io/v2/fiat-status
+GET
+Fiat currencies
+https://api.changenow.io/v2/fiat-currencies/fiat
+GET
+Crypto currencies
+https://api.changenow.io/v2/fiat-currencies/crypto
+ */
+
+describe('ChangeNow cryptocurrency API integration', async function() {
     describe('Validate cryptocurrency addresses', function() {
         
         describe('Test valid XMR address is reported as valid by ChangeNow', () => {
@@ -60,7 +152,7 @@ describe('ChangeNow API integration', async function() {
 
     describe('Return filtered Monero data', function() {
         it('should return a JSON object containing Monero-specific data', () => {
-            //this.timeout(5000)
+            this.timeout(5000)
             console.log("try retrieve");
             return instance.retrieveFilteredMoneroCurrencyData().then(response => {
                 console.log(response);
@@ -173,10 +265,11 @@ describe('ChangeNow API integration', async function() {
     })
     
 
-    describe('get minimal exchange amount', function(done) {
+    describe('get minimal exchange amount using standard rate', function(done) {
+        this.timeout(5000)
         it('should return a JSON object describing the minimum exchange amount between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
-                this.timeout(5000)
+
                 expect(response).to.have.all.keys(
                     "fromCurrency",
                     "fromNetwork",
@@ -189,10 +282,27 @@ describe('ChangeNow API integration', async function() {
         })
     })
 
-    describe('get current exchange range for currency', function(done) {
+    describe('get minimal exchange amount using fixed rate', function(done) {
+        this.timeout(5000)
+        it('should return a JSON object describing the minimum exchange amount between a specified fromCurrency and a toCurrency', () => {
+            return instance.getExchangeRange('xmr', 'btc', 'fixed-rate').then(response => {
+
+                expect(response).to.have.all.keys(
+                    "fromCurrency",
+                    "fromNetwork",
+                    "toCurrency",
+                    "toNetwork",
+                    "flow",
+                    "minAmount"
+                );
+            })    
+        })
+    })
+
+    describe('get current exchange range for currency using standard rate', function(done) {
+        this.timeout(5000)
         it('should return a JSON object describing the current exchange rate between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
-                this.timeout(5000)
                 expect(response).to.have.all.keys(
                     "fromCurrency",
                     "fromNetwork",
@@ -206,5 +316,21 @@ describe('ChangeNow API integration', async function() {
         })
     })
 
+    describe('get current exchange range for currency using fixed rate', function(done) {
+        this.timeout(5000)
+        it('should return a JSON object describing the current exchange rate between a specified fromCurrency and a toCurrency', () => {
+            return instance.getExchangeRange('xmr', 'btc', 'fixed-rate').then(response => {
+                expect(response).to.have.all.keys(
+                    "fromCurrency",
+                    "fromNetwork",
+                    "toCurrency",
+                    "toNetwork",
+                    "flow",
+                    "maxAmount",
+                    "minAmount",
+                );
+            })
+        })
+    })
 
 });
