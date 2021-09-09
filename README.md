@@ -1,7 +1,7 @@
 #MyMonero client-side ChangeNow integration
 ##Introduction
 
-This npm module is used to facilitate the exchange of XMR into other cryptocurrencies via ChangeNow. Anyone can make use of it to facilitate cryptocurrency exchange.
+This npm module is used to facilitate the purchase of XMR using fiat currencies, as well as exchanging XMR into other cryptocurrencies via ChangeNow.
  
 If you would like to integrate cryptocurrency exchange in your own software and earn an affiliate fee, please contact us via email at [info@mymonero.com](mailto://info@mymonero.com)
 
