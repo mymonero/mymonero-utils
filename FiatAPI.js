@@ -119,7 +119,6 @@ class FiatAPI {
                 url: `${this.getApiPath()}fiat-status`,
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
             };
@@ -138,15 +137,11 @@ class FiatAPI {
         // id: 5218373135, 4771173146
         return new Promise((resolve, reject) => {
             var axios = require('axios');
-
-            // API key headers are duplicated because the fiat exchange expects x-api-key, while the crypto exchange expects x-changenow-api-key.
-            // We don't want to run into a situation where a change to the variable name breaks compatibility, so we send both headers
             var config = {
                 method: 'get',
                 url: `${this.getApiPath()}/fiat-transaction/`,
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
                 params: { 
@@ -165,15 +160,11 @@ class FiatAPI {
     getAvailableFiatCurrencies() {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
-
-            // API key headers are duplicated because the fiat exchange expects x-api-key, while the crypto exchange expects x-changenow-api-key.
-            // We don't want to run into a situation where a change to the variable name breaks compatibility, so we send both headers
             var config = {
                 method: 'get',
                 url: 'https://api.changenow.io/v2/fiat-currencies/fiat',
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
             };
@@ -195,7 +186,6 @@ class FiatAPI {
                 url: `${this.getApiPath()}fiat-currencies/crypto`,
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
             };
@@ -220,7 +210,6 @@ class FiatAPI {
                 url: `${this.getApiPath()}fiat-market-info/min-max-range/${fromTo}`,
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
             };
@@ -251,7 +240,6 @@ class FiatAPI {
                 params,
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
             };
@@ -267,37 +255,8 @@ class FiatAPI {
 
     getEstimateAmount(from_amount, from_currency, to_currency, payout_address, ) {
         return new Promise((resolve, reject) => {
-
-            /* Works --------------------------------
-                        curl --location --request POST 'https://api.changenow.io/v2/fiat-transaction' \
-            --header 'Content-Type: application/json' \
-            --header 'x-api-key: b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9' \
-            --data-raw '{
-            "from_amount": 1200.24,
-            "from_currency": "EUR",
-            "to_currency": "XMR",
-            "from_network": null,
-            "to_network": null,
-            "payout_address": "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9",
-            "payout_extra_id": "1",
-            "deposit_type": "SEPA_1",
-            "payout_type": "SEPA_1",
-            "external_partner_link_id": ""
-            }'
-
-            */
             var axios = require('axios');
             var data = JSON.stringify({
-                // "from_amount": 1200.24,
-                // "from_currency": "EUR",
-                // "to_currency": "XMR",
-                // "from_network": null,
-                // "to_network": null,
-                // "payout_address": "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9",
-                // "payout_extra_id": "1",
-                // "deposit_type": "SEPA_1",
-                // "payout_type": "SEPA_1",
-                // "external_partner_link_id": ""
                 from_amount,
                 from_currency,
                 to_currency,
@@ -305,8 +264,6 @@ class FiatAPI {
                 "from_network": null,
                 "to_network": null,
                 "payout_extra_id": "1",
-                //"deposit_type": "SEPA_1",
-                //"payout_type": "SEPA_1",
                 "external_partner_link_id": ""
             });
 
@@ -315,90 +272,24 @@ class FiatAPI {
                 url: 'https://api.changenow.io/v2//fiat-transaction',
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
                 data : data
             };
 
-            axios(config)
-            .then(function (response) {
+            axios(config).then(function (response) {
                 console.log(JSON.stringify(response.data));
                 resolve(response.data);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 reject(error);
             });
-            // const data = {
-            //         "from_amount": 1200.24,
-            //         "from_currency": "EUR",
-            //         "to_currency": "BTC",
-            //         "from_network": null,
-            //         "to_network": null,
-            //         "payout_address": "mtXWDB6k5yC5v7TcwKZHB89SUp85yCKshy",
-            //         "payout_extra_id": "1",
-            //         "deposit_type": "VISA_MC1",
-            //         "payout_type": "",
-            //         "external_partner_link_id": ""
-            // }
-
-            // let config = {
-            //     method: 'post',
-            //     url: `${this.getApiPath()}fiat-transaction`,
-            //     headers: {
-            //         'x-changenow-api-key': `${this.apiKey}`
-            //     },
-            //     data
-            // };
-
-            // axios(config)
-            //     .then(function (response) {
-            //         console.log(response);
-            //         console.log(response.data);
-            //         resolve(response.data);
-            //     })
-            //     .catch((error) => {
-            //         console.log(data);
-            //         console.log(error);
-            //         //reject(error);
-            //     });
-            // })
         })
     }
 
     createExchangeTransaction(from_amount, from_currency, to_currency, payout_address) {
         return new Promise((resolve, reject) => {
-
-            /* Works --------------------------------
-                        curl --location --request POST 'https://api.changenow.io/v2/fiat-transaction' \
-            --header 'Content-Type: application/json' \
-            --header 'x-api-key: b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9' \
-            --data-raw '{
-            "from_amount": 1200.24,
-            "from_currency": "EUR",
-            "to_currency": "XMR",
-            "from_network": null,
-            "to_network": null,
-            "payout_address": "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9",
-            "payout_extra_id": "1",
-            "deposit_type": "SEPA_1",
-            "payout_type": "SEPA_1",
-            "external_partner_link_id": ""
-            }'
-
-            */
             var axios = require('axios');
             var data = JSON.stringify({
-                // "from_amount": 1200.24,
-                // "from_currency": "EUR",
-                // "to_currency": "XMR",
-                // "from_network": null,
-                // "to_network": null,
-                // "payout_address": "47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9",
-                // "payout_extra_id": "1",
-                // "deposit_type": "SEPA_1",
-                // "payout_type": "SEPA_1",
-                // "external_partner_link_id": ""
                 from_amount,
                 from_currency,
                 to_currency,
@@ -406,8 +297,6 @@ class FiatAPI {
                 "from_network": null,
                 "to_network": null,
                 "payout_extra_id": "1",
-                //"deposit_type": "SEPA_1",
-                //"payout_type": "SEPA_1",
                 "external_partner_link_id": ""
             });
 
@@ -416,7 +305,6 @@ class FiatAPI {
                 url: 'https://api.changenow.io/v2//fiat-transaction',
                 headers: { 
                     'Content-Type': 'application/json', 
-                    //'x-changenow-api-key': `${this.apiKey}`,
                     'x-api-key': `${this.apiKey}`
                 },
                 data : data
@@ -424,47 +312,11 @@ class FiatAPI {
 
             axios(config)
             .then(function (response) {
-                console.log(JSON.stringify(response.data));
                 resolve(response.data);
             })
-            .catch((error) => {
-                console.log(error);
+            .catch((error) => {                
                 reject(error);
             });
-            // const data = {
-            //         "from_amount": 1200.24,
-            //         "from_currency": "EUR",
-            //         "to_currency": "BTC",
-            //         "from_network": null,
-            //         "to_network": null,
-            //         "payout_address": "mtXWDB6k5yC5v7TcwKZHB89SUp85yCKshy",
-            //         "payout_extra_id": "1",
-            //         "deposit_type": "VISA_MC1",
-            //         "payout_type": "",
-            //         "external_partner_link_id": ""
-            // }
-
-            // let config = {
-            //     method: 'post',
-            //     url: `${this.getApiPath()}fiat-transaction`,
-            //     headers: {
-            //         'x-changenow-api-key': `${this.apiKey}`
-            //     },
-            //     data
-            // };
-
-            // axios(config)
-            //     .then(function (response) {
-            //         console.log(response);
-            //         console.log(response.data);
-            //         resolve(response.data);
-            //     })
-            //     .catch((error) => {
-            //         console.log(data);
-            //         console.log(error);
-            //         //reject(error);
-            //     });
-            // })
         })
     }
 }
