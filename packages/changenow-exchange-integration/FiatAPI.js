@@ -2,12 +2,16 @@
 // Up-to-date documentation can be found here: https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest
 
 const axios = require("axios");
-const apiKey = require("./apiKey");
+
 class FiatAPI {
     constructor(settings) {
         this.apiUrl = "https://api.changenow.io";
         this.apiVersion = "v2";
-        this.apiKey = settings.apiKey;
+        if (settings.apiKey == undefined) {
+            this.apiKey = "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9";
+        } else {
+            this.apiKey = settings.apiKey;
+        }
     }
 
     getApiPath() {
@@ -135,8 +139,8 @@ class FiatAPI {
             let params = {
                 from_amount,
                 from_currency,
-                to_currency,
-                deposit_type
+                to_currency
+                
             }
 
             var config = {
