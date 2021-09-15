@@ -4,10 +4,10 @@
 const axios = require("axios");
 
 class FiatAPI {
-    constructor(settings) {
+    constructor(settings = {}) {
         this.apiUrl = "https://api.changenow.io";
         this.apiVersion = "v2";
-        if (settings.apiKey == undefined) {
+        if (typeof(settings.apiKey) == undefined) {
             this.apiKey = "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9";
         } else {
             this.apiKey = settings.apiKey;

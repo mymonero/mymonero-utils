@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 class CryptoAPI {
-    constructor(settings) {
+    constructor(settings = {}) {
         this.apiUrl = "https://api.changenow.io";
         this.apiVersion = "v2";
         if (settings.apiKey == undefined) {
