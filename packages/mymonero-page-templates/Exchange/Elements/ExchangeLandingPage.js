@@ -2,13 +2,6 @@ import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "./ExchangeNavigationController";
 import ChangenowAPI from "@mymonero/changenow-exchange-integration"
 
-console.log(ChangenowAPI);
-require("./ProviderCard");
-require("./ChangenowBuyWithFiatView");
-require("./ChangenowFixedRateView")
-require("./ChangenowFloatingRateView");
-
-
 export class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
 
     connectedCallback() {
