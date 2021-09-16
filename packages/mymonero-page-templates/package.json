@@ -28,6 +28,9 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@mymonero/mymonero-web-components": "^1.1.17",
+    "lit": "*",
+    "lit-html": "^1.4.1"    
   },
   "publishConfig": {
     "access": "public"

@@ -28,6 +28,8 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
+    "lit": "*",
+    "lit-html": "^1.4.1"
   },
   "publishConfig": {
     "access": "public"
