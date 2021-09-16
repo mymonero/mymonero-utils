@@ -2,12 +2,12 @@
 require("@mymonero/mymonero-web-components");
 
 /* Require various view elements */
-require("./Components/Exchange/ChangenowBuyWithFiatView");
-require("./Components/Exchange/ChangenowFixedRateView")
-require("./Components/Exchange/ChangenowFloatingRateView");
+require("./Exchange/Elements/ChangenowBuyWithFiatView");
+require("./Exchange/Elements/ChangenowFixedRateView")
+require("./Exchange/Elements/ChangenowFloatingRateView");
 
 /* Import exchange landing page class */
-let ExchangeLandingPage = require("./Components/Exchange/ExchangeLandingPage");
+let ExchangeLandingPage = require("./Exchange/ExchangeLandingPage");
 
 
 /* Export page templates */
