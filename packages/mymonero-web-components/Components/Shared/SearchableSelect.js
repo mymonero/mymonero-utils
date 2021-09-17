@@ -1,8 +1,6 @@
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
 
-
-export class SearchableSelect extends ExchangeNavigationController(LitElement) {
+export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
     /* Dropdown Button */
@@ -120,32 +118,9 @@ export class SearchableSelect extends ExchangeNavigationController(LitElement) {
     `;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    console.log(this.destinationView);
-    console.log("Page Template view connected to DOM");
-    console.log(this);
-    console.log(this.service);
-    this.addEventListener('click', () => {
-        console.log(this.service);
-        if (this.service.navigationType == 'externalUrl') {
-            this.openExternal(this.service.destination);
-        } else if (this.service.navigationType == 'internalLink') {
-            this.navigateToPage(this.service.destination)
-        }
-    });
-    // add event listener
-
-  }
-
-  openExternal(url) {
-    // Determine whether we're running as a browser (existence of window.location)
-    if (typeof(window.location) !== 'undefined') {
-      window.open(url, "_blank");
-    } else if (typeof(global) !== "undefined") {
-      
+    connectedCallback() {
+        super.connectedCallback();
     }
-  }
 
     toggleElement() {
         this.showDropdown = !this.showDropdown;
@@ -187,17 +162,11 @@ export class SearchableSelect extends ExchangeNavigationController(LitElement) {
 //   }
 
     willUpdate(changedProperties) {
-        // only need to check changed properties for an expensive computation.
-        super.willUpdate(changedProperties);
-        console.log("Will update");
-        console.log(this);
-        console.log(changedProperties);
         if (changedProperties.get("values")?.length > 0) {
             //this.showDropdown = false;
             this.filteredValues = this.values;
 
         }
-        console.log(this.values);
         this.filteredvalues = this.values;
     }
 
@@ -236,45 +205,9 @@ export class SearchableSelect extends ExchangeNavigationController(LitElement) {
     this.showDropdown = false;
     this.searchString = "";
     this.buttonText = "---";
-    //this.values = [];
-    // this.providerServices = [
-    //     {
-    //         service_provider: "changenow",
-    //         title: "Exchange Monero for other cryptocurrencies (floating rate)",
-    //         description: `
-    //             Exchange your Monero for any of a number of cryptocurrencies using ChangeNow's floating rate exchange. 
-    //             The floating rate allows you to exchange smaller amounts of Monero than fixed rates. 
-    //             With this method of exchange, due to the volitility of cryptocurrency, you may receive an amount that is slightly different to what you expect.`,
-    //         clickHandler: this.clickHandler
-    //     },
-    //     {
-    //         service_provider: "changenow",
-    //         title: "Exchange Monero for other cryptocurrencies (fixed rate)",
-    //         description: `
-    //             Use a fixed rate when you want to avoid the risk of a fluctuating exchange rate. 
-    //             Due to the inherent risk, fixed rate exchanges have a higher minimum. 
-    //             With this method of exchange, you are guaranteed to receive the amount you are quoted.`,
-    //         clickHandler: this.clickHandler
-    //     },
-    //     {
-    //         service_provider: "changenow",
-    //         title: "Buy Monero using fiat currency",
-    //         description: `
-    //             No Monero? No problem! Seamlessly purchase Monero using your debit / credit card, and get your purchased Monero automatically paid into your wallet.`,
-    //         clickHandler: this.clickHandler
-    //     },
-    //     {
-    //         service_provider: "localmonero",
-    //         title: "Buy Monero using LocalMonero",
-    //         description: `
-    //             LocalMonero is a marketplace that allows you to buy and sell Monero person-to-person. They act as an escrow service, ensuring that deals between buyers and sellers are concluded safely`,
-    //         clickHandler: this.clickHandler
-    //     }
-
-    // ];
   }
 
-  handleSelectionEvent(event) {
+    handleSelectionEvent(event) {
         let selectObject = this.selectedElement;
         let options = {
             detail: { 
@@ -288,7 +221,7 @@ export class SearchableSelect extends ExchangeNavigationController(LitElement) {
         this.buttonText = event.path[0].value;
         this.dispatchEvent(selectOptionUpdated, options)
         this.toggleElement();
-  }
+    }   
 
     updateSearchTextValue(event) {
         console.log(event);
@@ -308,27 +241,6 @@ export class SearchableSelect extends ExchangeNavigationController(LitElement) {
                 })}           
             </div>
         </div>`
-
-    // return html`
-    //     <div class="provider-card">
-    //         <div class="hoverable-cell utility">
-    //             <div class="changenow-logo provider-logo">
-
-    //             </div>
-    //         </div>    
-    //         <div class="title-label">Exchange Monero for other cryptocurrencies (floating rate)</div>
-    //         <div class="description-label">Exchange your Monero for any of a number of cryptocurrencies using ChangeNow's floating rate exchange. The floating rate allows you to exchange smaller amounts of Monero than fixed rates. With this method of exchange, due to the volitility of cryptocurrency, you may receive an amount that is slightly different to what you expect.</div>
-    //     </div>
-    //     <div class="provider-card">
-    //         <div class="hoverable-cell utility">
-    //             <div class="localmonero-logo provider-logo">
-
-    //             </div>
-    //         </div>    
-    //         <div class="title-label">Buy Monero with LocalMonero</div>
-    //         <div class="description-label">LocalMonero is a marketplace that allows a user to buy and sell their Monero to others.</div>
-    //     </div>
-    // `;
   }
 
 }

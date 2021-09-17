@@ -1,8 +1,6 @@
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
 
-
-export class ActivityIndicator extends ExchangeNavigationController(LitElement) {
+export class ActivityIndicator extends LitElement {
   static get styles() {
     return css`
 
@@ -115,31 +113,6 @@ export class ActivityIndicator extends ExchangeNavigationController(LitElement) 
 
   connectedCallback() {
     super.connectedCallback();
-    console.log(this.destinationView);
-    console.log("Page Template view connected to DOM");
-    console.log(this);
-    console.log(this.service);
-    console.log(this.context);
-    // TODO -- refactor context passing to navigateToPage to an event listener
-    this.addEventListener('click', () => {
-        console.log(this.service);
-        if (this.service.navigationType == 'externalUrl') {
-            this.openExternal(this.service.destination);
-        } else if (this.service.navigationType == 'internalLink') {
-            this.navigateToPage(this.service.destination)
-        }
-    });
-    // add event listener
-
-  }
-
-  openExternal(url) {
-    // Determine whether we're running as a browser (existence of window.location)
-    if (typeof(window.location) !== 'undefined') {
-      window.open(url, "_blank");
-    } else if (typeof(global) !== "undefined") {
-
-    }
   }
 
   static get properties() {
@@ -151,9 +124,6 @@ export class ActivityIndicator extends ExchangeNavigationController(LitElement) 
 
   constructor() {
     super();
-    this.service = {};
-    this.context = {};
-    this.destinationView = "";
     this.showLoader = true;
   }
 

@@ -1,8 +1,8 @@
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
+//import ExchangeNavigationController from "../../../mymonero-page-templates";
+//console.log(ExchangeNavigationController);
 
-
-export class ExchangeServiceProviderCard extends ExchangeNavigationController(LitElement) {
+export class ExchangeServiceProviderCard extends LitElement {
   static get styles() {
     return css`
         .provider-card {
@@ -69,17 +69,31 @@ export class ExchangeServiceProviderCard extends ExchangeNavigationController(Li
     console.log(this.service);
     console.log(this.context);
     // TODO -- refactor context passing to navigateToPage to an event listener
-    this.addEventListener('click', () => {
-        console.log(this.service);
-        if (this.service.navigationType == 'externalUrl') {
-            this.openExternal(this.service.destination);
-        } else if (this.service.navigationType == 'internalLink') {
-            this.navigateToPage(this.service.destination)
-        }
-    });
+    // this.addEventListener('click', () => {
+    //     console.log(this.service);
+    //     if (this.service.navigationType == 'externalUrl') {
+    //         this.openExternal(this.service.destination);
+    //     } else if (this.service.navigationType == 'internalLink') {
+    //         this.navigateToPage(this.service.destination)
+    //     }
+    // });
     // add event listener
 
   }
+
+  handleClickEvent(event) {
+    //let selectObject = this.selectedElement;
+    let options = {
+        detail: this.service,
+        bubbles: true,
+        composed: true
+    };
+    console.log(this.service);
+    console.log(options);
+    let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
+    this.dispatchEvent(providerCardClickedEvent, options);
+  }
+
 
   openExternal(url) {
     // Determine whether we're running as a browser (existence of window.location)
@@ -149,7 +163,7 @@ export class ExchangeServiceProviderCard extends ExchangeNavigationController(Li
 
   render() {
     return html` 
-        <div class="provider-card" data-test="lol">
+        <div class="provider-card" @click=${this.handleClickEvent}>
              <div class="hoverable-cell utility">
                  <div class="${this.service.service_provider}-logo provider-logo">
 
