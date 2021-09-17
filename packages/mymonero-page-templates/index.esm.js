@@ -8,8 +8,10 @@ require("./Components/Exchange/ChangenowFloatingRateView");
 
 /* Import exchange landing page class */
 import ExchangeLandingPage from "./Components/Exchange/ExchangeLandingPage";
+import ExchangeNavigationController from "./Components/Controllers/ExchangeNavigationController";
 
 /* Export page templates */
 export default { 
-    ExchangeLandingPage
+    ExchangeLandingPage,
+    ExchangeNavigationController
 }
