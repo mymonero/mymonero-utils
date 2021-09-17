@@ -1,13 +1,11 @@
 /* Require reusable components */
+require("./Components/Shared/ActivityIndicator");
 require("./Components/Shared/ProviderCard");
-require("./Components/Exchange/ChangenowBuyWithFiatView");
-require("./Components/Exchange/ChangenowFixedRateView")
-require("./Components/Exchange/ChangenowFloatingRateView");
+require("./Components/Shared/SearchableSelect")
+require("./Components/Shared/WalletSelector");
 
 /* Import page templates */
-import ExchangeLandingPage from "./Components/Exchange/ExchangeLandingPage";
+// import ExchangeLandingPage from "./Components/Exchange/ExchangeLandingPage";
 
 /* Export page templates */
-export default { 
-    ExchangeLandingPage
-}
+export default { }
