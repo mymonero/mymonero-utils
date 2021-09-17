@@ -1,14 +1,11 @@
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
-import ChangenowAPI from "@mymonero/changenow-exchange-integration"
+import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 
 export class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
 
     connectedCallback() {
         super.connectedCallback();
         console.log("ELP Template view connected to DOM");
-        console.log(this);
-        console.log(this.context);
         // TODO: disable fiat options if fiat api status returns an error
     }
     
@@ -17,16 +14,6 @@ export class ExchangeLandingPage extends ExchangeNavigationController(LitElement
         this.clickHandler = this.clickHandler;
         this.context = {};
         this.providerServices = [
-            // {
-            //     service_provider: "changenow",
-            //     title: "Exchange Monero for other cryptocurrencies (floating rate)",
-            //     description: `
-            //         Exchange your Monero for any of a number of cryptocurrencies using ChangeNow's floating rate exchange. 
-            //         The floating rate allows you to exchange smaller amounts of Monero than fixed rates. 
-            //         With this method of exchange, due to the volitility of cryptocurrency, you may receive an amount that is slightly different to what you expect.`,
-            //     navigationType: "internalLink",
-            //     destination: "changenowFloatingRateView"
-            // },
             {
                 service_provider: "changenow",
                 title: "Exchange Monero for other cryptocurrencies (fixed rate)",
@@ -54,8 +41,8 @@ export class ExchangeLandingPage extends ExchangeNavigationController(LitElement
                 navigationType: "externalUrl",
                 destination: "https://localmonero.co?rc=h2t1",
             }
-    
         ];
+        this.addEventListener('provider-card-clicked', this.handleProviderCardClicked);
     }
     
     static get properties() {
@@ -64,16 +51,30 @@ export class ExchangeLandingPage extends ExchangeNavigationController(LitElement
         }
       }
 
-    clickHandler(event) {
-        console.log(event);
+    handleProviderCardClicked(event) {
+        if (event.detail.navigationType == 'externalUrl') {
+            this.openExternal(event.detail.destination);
+        } else if (event.detail.navigationType == 'internalLink') {
+            this.navigateToPage(event.detail.destination)
+        }
     }
     
+    openExternal(url) {
+        // Determine whether we're running as a browser (existence of window.location)
+        if (typeof(window.location) !== 'undefined') {
+          window.open(url, "_blank");
+        } else if (typeof(global) !== "undefined") {
+    
+        }
+    }
+
     render() {
         return html`
         <div id="exchange-landing-page">
             <div></div>
             ${this.providerServices.map((service) => {
-                return html`<provider-card .service=${service} .context=${this.context} @click=${this.clickHandler}></provider-card>`
+                //return html`<provider-card .service=${service} .context=${this.context} @click=${this.clickHandler}></provider-card>`
+                return html`<provider-card .service=${service} .context=${this.context}></provider-card>`
             })}            
             </div>
         </div>
