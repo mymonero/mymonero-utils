@@ -1,15 +1,15 @@
 
 
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
+import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 
 // Legacy imports for fixed rate exchange
-const Utils = require('../Javascript/ExchangeUtilityFunctions')
-const ExchangeUtils = require('../Javascript/ExchangeUtilityFunctions')
-const ValidationLibrary = require('wallet-address-validator')
-const View = require('../../Views/View.web')
-const commonComponents_navigationBarButtons = require('../../MMAppUICommonComponents/navigationBarButtons.web')
-const commonComponents_activityIndicators = require('../../MMAppUICommonComponents/activityIndicators.web')
+const Utils = require("../Utils/ExchangeUtilityFunctions")
+const ExchangeUtils = require("../Utils/ExchangeUtilityFunctions")
+// const ValidationLibrary = require('wallet-address-validator')
+//const View = require('../../Views/View.web')
+// const commonComponents_navigationBarButtons = require('../../MMAppUICommonComponents/navigationBarButtons.web')
+// const commonComponents_activityIndicators = require('../../MMAppUICommonComponents/activityIndicators.web')
 const JSBigInt = require('@mymonero/mymonero-bigint').BigInteger // important: grab defined export
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
 const ExchangeHelper = require("@mymonero/mymonero-exchange-helper")
