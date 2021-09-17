@@ -1,6 +1,5 @@
 import { html, css, LitElement } from 'lit';
-import ExchangeNavigationController from "./ExchangeNavigationController";
-//require("./ProviderCard");
+import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 
 export class ChangenowFloatingRateView extends ExchangeNavigationController(LitElement) {
 
