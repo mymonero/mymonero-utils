@@ -2,12 +2,12 @@
   "name": "@mymonero/mymonero-web-components",
   "version": "1.1.17",
   "description": "This npm package contains a number of Lit web components.",
-  "main": "index.js",
   "exports": {
-    "require": "./index.js",
+    "require": "./src/index.js",
     "import": "./index.esm.js"
   },
   "scripts": {
+    "prepublish": "babel --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -33,5 +33,15 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
