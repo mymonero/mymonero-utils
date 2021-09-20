@@ -2,12 +2,12 @@
   "name": "@mymonero/mymonero-page-templates",
   "version": "1.1.17",
   "description": "This npm package contains a number of Lit element templates that MyMonero uses for various page layouts.",
-  "main": "index.js",
   "exports": {
-    "require": "./index.js",
+    "require": "./src/index.js",
     "import": "./index.esm.js"
   },
   "scripts": {
+    "prepublish": "babel --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -30,7 +30,13 @@
   "dependencies": {
     "@mymonero/mymonero-web-components": "^1.1.17",
     "lit": "*",
-    "lit-html": "^1.4.1"    
+    "lit-html": "^1.4.1",
+    "@mymonero/changenow-exchange-integration": "https://gitpkg.now.sh/mymonero/mymonero-utils/packages/changenow-exchange-integration?6bee74e"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5"
   },
   "publishConfig": {
     "access": "public"
