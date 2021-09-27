@@ -2,8 +2,9 @@
   "name": "@mymonero/mymonero-web-components",
   "version": "1.1.17",
   "description": "This npm package contains a number of Lit web components.",
+  "main": "./lib/index",
   "exports": {
-    "require": "./src/index.js",
+    "require": "./lib/index.js",
     "import": "./index.esm.js"
   },
   "scripts": {
