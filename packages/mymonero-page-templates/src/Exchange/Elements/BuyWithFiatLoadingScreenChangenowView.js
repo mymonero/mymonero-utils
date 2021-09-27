@@ -4,7 +4,7 @@ import { FiatApi } from "@mymonero/changenow-exchange-integration";
 let fiatApi = new FiatApi({ apiKey: "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9" })
 
 
-export class BuyWithFiatLoadingScreenChangenowView extends ExchangeNavigationController(LitElement) {
+export default class BuyWithFiatLoadingScreenChangenowView extends ExchangeNavigationController(LitElement) {
     static get styles() {
         return css`
         .form-field-title {
