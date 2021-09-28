@@ -661,11 +661,11 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
 
     handleCurrencyInput(event) {
         this.clearEstimate();
-        this.displayErrorResponse = false;
-        if (event.path[0].id == "inCurrencyValue") {
-            this.inCurrencyValue = event.path[0].value;
-        } else if (event.path[0].id == "outCurrencyValue") {
-            this.outCurrencyValue = event.path[0].value;
+        var eventPath = event.path || (event.composedPath && event.composedPath());
+        if (eventPath[0].id == "inCurrencyValue") {
+            this.inCurrencyValue = eventPath[0].value;
+        } else if (eventPath[0].id == "outCurrencyValue") {
+            this.outCurrencyValue = eventPath[0].value;
         }
 
         if (this.estimateRequestTimer !== 'undefined') {
@@ -673,20 +673,11 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         }
 
         this.estimateRequestTimer = setTimeout(() => {
-            console.log(this);
-            console.log("User input event finished -- get estimate");
             if (this.inCurrencyCode.length > 0) {
-                console.log("Looks legit");
                 // TODO: Put this into standalone function 
                 this.handleCurrencyInputResponse();
             }
         }, 2000);
-        console.log(this);
-        console.log(event);
-        // We would invoke a timer, and when the timer expires, do a GET (giving the user a chance to finish typing)
-        console.log(this.inCurrencyCode);
-        console.log(this.inCurrencyValue);
-        console.log(this.inCurrencyValue,this.outCurrencyValue)
     }
 
     async handleCurrencyInputResponse() {
