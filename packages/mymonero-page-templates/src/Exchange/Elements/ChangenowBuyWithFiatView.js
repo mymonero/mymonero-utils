@@ -367,12 +367,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     }
 
     async fireEstimateEvent(event) {
-        // console.log("handle estimate POST fired");
-        // console.log("Test?");
-        // console.log(this);
-        // console.log(this.inCurrencyCode);
-        // console.log(this.inCurrencyValue);
-        // console.log(event);
         let options = {
             detail: { 
                 
@@ -427,8 +421,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     }
 
     renderStyles() {
-        // These styles are necessary for if we ever have a top-right action button
-        console.log("Should append styles");
+        // These styles are necessary in instances where we have a top-right action button
         let styleElement = document.getElementById("lit-styles");
         typeof(styleElement);
         if (styleElement === null) {
@@ -613,22 +606,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             "name": "Euro",
             "networks": [],
             "ticker": "EUR",
-        },
-        {
-            "block_explorer_url_mask": null,
-            "currency_type": "FIAT",
-            "default_exchange_value": "300",
-            "enabled": true,
-            "has_external_id": false,
-            "id": "4881817401",
-            "is_available": null,
-            "is_featured": null,
-            "is_stable": null,
-            "logo_url": "",
-            "name": "Rand",
-            "networks": [],
-            "ticker": "ZAR",
-        }    
+        }
     ];
         this.selectedFiatCurrency = "";
         //this.setScreenTitle("Buy Monero With Fiat");
