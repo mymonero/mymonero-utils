@@ -1,7 +1,7 @@
 import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 
-export class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
+export default class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
 
     connectedCallback() {
         super.connectedCallback();
