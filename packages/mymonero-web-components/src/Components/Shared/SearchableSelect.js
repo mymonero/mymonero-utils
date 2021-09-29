@@ -170,42 +170,24 @@ export class SearchableSelect extends LitElement {
         this.filteredvalues = this.values;
     }
 
-    attributeChangedCallback() {
-        super.attributeChangedCallback();
-        console.log("attributeChangedCallback");
-        console.log(this);
-    }
-
-    myHasChanged(obj) {
-        console.log("myHasChanged");
-        console.log(this);
-        console.log(obj);
-    }
-
-    // hasChanged() {
-    //     super.hasChanged();
-    //     console.log("hasChanged")
-    //     console.log(this)
-    // }
-
-  connectedCallback() {
+    connectedCallback() {
         super.connectedCallback();
         //this.allValues = [];
         this.filteredValues = this.values;
         console.log(this);
         this.addEventListener("input", this.handleInputEvent);
-  }
+    }
 
-  handleInputEvent(event) {
-      this.filterSelect(event.value);
-  }
+    handleInputEvent(event) {
+        this.filterSelect(event.value);
+    }
 
-  constructor() {
-    super();
-    this.showDropdown = false;
-    this.searchString = "";
-    this.buttonText = "---";
-  }
+    constructor() {
+        super();
+        this.showDropdown = false;
+        this.searchString = "";
+        this.buttonText = "---";
+    }
 
   handleSelectionEvent(event) {
         let selectObject = this.selectedElement;
@@ -231,24 +213,19 @@ export class SearchableSelect extends LitElement {
         this.filterSelect();
     }
 
-  render() {
-    return html` 
-        <div class="dropdown">
-            <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
-            <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
-                <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
-                ${this.filteredValues.map((object) => {
-                    return html`<option value="${object.ticker}" @click=${this.handleSelectionEvent}>${object.name} - ${object.ticker}</option>`
-                })}           
-            </div>
-        </div>`
-  }
-
+    render() {
+        return html` 
+            <div class="dropdown">
+                <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
+                <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
+                    <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
+                    ${this.filteredValues.map((object) => {
+                        return html`<option value="${object.ticker}" @click=${this.handleSelectionEvent}>${object.name} - ${object.ticker}</option>`
+                    })}           
+                </div>
+            </div>`
+    }
 }
-
-/*
-
-*/
 
 customElements.define('searchable-select', SearchableSelect);
 
