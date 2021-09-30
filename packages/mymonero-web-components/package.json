@@ -1,0 +1,48 @@
+{
+  "name": "@mymonero/mymonero-web-components",
+  "version": "1.1.17",
+  "description": "This npm package contains a number of Lit web components.",
+  "main": "./lib/index",
+  "exports": {
+    "require": "./lib/index.js",
+    "import": "./index.esm.js"
+  },
+  "scripts": {
+    "prepublish": "babel --presets=@babel/preset-env src -d lib",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web-components",
+    "lit-components",
+    "custom-elements",
+    "shareable-components"
+  ],
+  "author": "Karl Buys (MyMonero Pty Ltd)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mymonero/mymonero-utils.git"
+  },
+  "homepage": "https://mymonero.com",
+  "bugs": {
+    "url": "https://github.com/mymonero/mymonero-utils/issues",
+    "email": "info@mymonero.com"
+  },
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "lit": "*",
+    "lit-html": "^1.4.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
+}
