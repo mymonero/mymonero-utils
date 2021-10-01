@@ -411,7 +411,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.displayPurchaseRedirectIndicator = true;
         try {
             let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
-            window.open(estimateResponse.redirectUrl);
+            window.open(estimateResponse.redirect_url);
+            console.log(estimateResponse.redirect_url);
             this.displayPurchaseRedirectIndicator = false;
         } catch (error) {
             // Error communicating with server to retrieve response -- show error
