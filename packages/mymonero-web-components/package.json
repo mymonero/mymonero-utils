@@ -8,13 +8,14 @@
     "import": "./index.esm.js"
   },
   "scripts": {
-    "prepare": "babel-cli --presets=@babel/preset-env src -d lib",
+    "prepublish": "babel --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "web-components",
     "lit-components",
     "custom-elements",
+    "form-components",
     "shareable-components"
   ],
   "author": "Karl Buys (MyMonero Pty Ltd)",
@@ -41,5 +42,5 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.5.5"
   },
-  "gitHead": "534c652494ce10d0a0050f501ae0d199c91a9c02"
+  "gitHead": "b88eae9be8a3efdd6065777b61282df629e31d63"
 }
