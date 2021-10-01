@@ -8,7 +8,7 @@
     "import": "./index.esm.js"
   },
   "scripts": {
-    "prepare": "npx babel-cli --presets=@babel/preset-env src -d lib",
+    "prepare": "babel-cli --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -41,5 +41,5 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.5.5"
   },
-  "gitHead": "a957c6a4e2529ed008e915c7c969bf23f8c055d6"
+  "gitHead": "534c652494ce10d0a0050f501ae0d199c91a9c02"
 }
