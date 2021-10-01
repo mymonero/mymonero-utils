@@ -8,7 +8,7 @@
     "import": "./index.esm.js"
   },
   "scripts": {
-    "postinstall": "babel --presets=@babel/preset-env src -d lib",
+    "postinstall": "npx babel --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
