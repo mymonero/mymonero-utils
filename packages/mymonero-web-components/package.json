@@ -8,7 +8,7 @@
     "import": "./index.esm.js"
   },
   "scripts": {
-    "prepublish": "babel --presets=@babel/preset-env src -d lib",
+    "prepare": "babel --presets=@babel/preset-env src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
