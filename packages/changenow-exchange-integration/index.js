@@ -1,11 +1,15 @@
-import CryptoAPI from "./CryptoAPI";
-import FiatAPI from "./FiatAPI";
+'use strict';
+
+const CryptoAPI = require("./CryptoAPI");
+const FiatApi = require("./FiatAPI");
 
 class ChangenowAPI {
-    constructor() {
-        this.FiatAPI = new FiatAPI();
-        this.CryptoAPI = new CryptoAPI();
+    static get CryptoAPI() {
+        return CryptoAPI;
+    }
+    static get FiatAPI() {
+        return FiatAPI;
     }
 }
 
-module.exports = ChangenowAPI
+module.exports = { ChangenowAPI, FiatApi, CryptoAPI };
