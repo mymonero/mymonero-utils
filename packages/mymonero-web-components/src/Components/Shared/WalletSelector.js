@@ -192,11 +192,6 @@ export class WalletSelector extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    console.log("Wallet selector view connected to DOM");
-    console.log(this);
-    console.log(this.wallet);
-    console.log(this.context);
-    console.log(this.wallets);
     let options = {
         detail: { 
             wallet: this.wallets[0]
@@ -205,6 +200,7 @@ export class WalletSelector extends LitElement {
         composed: true
     };
     let walletOptionUpdated = new CustomEvent("wallet-selector-update", options)
+    this.selectedWallet = this.wallet[0];
     this.dispatchEvent(walletOptionUpdated, options)
     // We need to emit an event to provide other web components with the initial wallet data
     //this.displayOptionsDropdown = false;
@@ -233,13 +229,9 @@ export class WalletSelector extends LitElement {
   }
 
   updateSelectedWallet(event) {
-    console.log("Update the wallet");
     this.displayOptionsDropdown = false;
-    console.log(event);
-    console.log(this);
     let offset = event.path[0].dataset.walletoffset;
-    this.selectedWallet = this.wallets
-        
+    this.selectedWallet = this.wallet[offset];
     let options = {
         detail: { 
             wallet: this.wallets[offset]
