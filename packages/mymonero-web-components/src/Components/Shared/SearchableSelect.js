@@ -16,7 +16,7 @@ export class SearchableSelect extends LitElement {
     /* The search field */
     input {
         display: block;
-        width: 100%;
+        width: calc(100% - 20px);
         box-sizing: border-box;      
         background-position: 14px 12px;
         background-repeat: no-repeat;
