@@ -75,16 +75,10 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
 
     connectedCallback() {
         super.connectedCallback();
-        console.log("Fixed rate view connected to DOM");
-        console.log(this.context)
-        console.log(exchangeHelper);
         exchangeHelper.doInit(this.context);
-        //this.sendFunds = ExchangeUtils.default.sendFunds
-        console.log(this);
     }
     
     sendFunds() {
-        console.log("sendFunds invoked");
         const in_amount = document.getElementById('in_amount_remaining').innerHTML
         const send_address = document.getElementById('receiving_subaddress').innerHTML
         const in_amount_str = '' + in_amount
@@ -124,7 +118,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
 
         return html`
         <div id="exchange-landing-page">
-            <div id="explanatory-message">Landing page</div>
+            <div id="explanatory-message" style="color: #ffffff;">&nbsp;</div>
             ${exchangeFormHtml}
             </div>
         </div>
@@ -133,6 +127,18 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
         </div>
         <button id="exchange-xmr" class="button" @click=${this.sendFunds}>Exchange</button>
         <style>
+            #explanatory-message {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+                color: #ffffff;
+                margin: 20px;
+                font-size: 13px;
+            }
+            .exchangeScreen {
+                border: none !important;
+            }
+            .exchange-page-panel {
+                margin: 42px 0px 42px 0px !important;
+            }
             #order-button, #exchange-xmr {
                 cursor: default;
                 border-radius: 3px;
@@ -155,7 +161,9 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
                 float: right;
                 margin-top: 5px;
                 -webkit-app-region: no-drag;
-                right: 30px;
+                right: 16px;
+                position: absolute;
+                bottom: 10px;
             }
         </style>
         `;

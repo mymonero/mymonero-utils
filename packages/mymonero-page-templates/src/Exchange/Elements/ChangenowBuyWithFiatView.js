@@ -12,6 +12,9 @@ let fiatApi = new FiatApi({ apiKey: "b1c7ed0a20710e005b65e304b74dce3253cd9ac1600
 export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitElement) {
     static get styles() {
         return css`
+        #changenow-buy-with-fiat {
+            margin: 20px;
+        }
         .submit-button-wrapper {
             position: fixed;
             top: -45px;
@@ -28,6 +31,9 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             font-weight: bold;
             top: -40px;
             z-index: 10000;
+        }
+        .exchange-screen-panel {
+            margin: 15px;
         }
         .submit-button, .confirmation-button {
             cursor: default;
@@ -423,6 +429,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
 
     renderStyles() {
         // These styles are necessary in instances where we have a top-right action button
+        console.log("Render styles");
         let styleElement = document.getElementById("lit-styles");
         typeof(styleElement);
         if (styleElement === null) {
