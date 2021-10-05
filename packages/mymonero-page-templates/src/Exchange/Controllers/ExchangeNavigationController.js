@@ -4,16 +4,13 @@
 const ExchangeNavigationController = (superClass) => class extends superClass {
     /* class fields & methods to extend superClass with */
     navigateToPage(destination) {
-        console.log(this);
-        console.log("Navigate to page");
-        console.log(this.context);
         let routeMap = {
             "changenowBuyWithFiatView": "changenow-buy-with-fiat-view",
             "changenowFixedRateView": "changenow-fixed-rate-view",
             "changenowFloatingRateView": "changenow-floating-rate-view",
             "landingPageView": "exchange-landing-page"
         }
-        console.log("We want to navigate to " + destination)
+        //console.log("We want to navigate to " + destination)
         let contentView = document.getElementById('exchange-content-container');
         contentView.innerHTML = "";
         let pageElement = document.createElement(routeMap[destination]);
@@ -40,9 +37,8 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
     }
 
     renderStyles() {
-        console.log("WTF");
         let styleElement = document.getElementById("lit-styles");
-        if (typeof(styleElement) === "undefined") {
+        if (styleElement == null) {
             let styles = document.createElement("style");
             styles.innerHTML = `
 
@@ -52,11 +48,33 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
                 #navigation-bar-view-sub-wrapper {
                     display: none;
                 } 
+                .exchangeScreen .empty-page-content-container {
+                    transform: translateY(0px) !important;
+                }
+                #exchange-landing-page {
+                    margin: 20px !important;
+                }
+                #exchange-landing-page .exchange-page-panel {
+                    margin: 0 auto !important;
+                }
+                #exchange-landing-page .exchangeScreen {
+
+                }
+                .exchange-page-panel {
+                    position: relative;
+                    margin: 0 auto;
+                    display: table;
+                    border-radius: 5px;
+                    width: 100% !important;
+                    border: none !important;
+                }
+                .exchange-page-panel .exchange-page-content-container {
+                    margin: 20px 0px !important;
+                }
             `
             styles.id = "lit-styles";
-            let navigationView = document.getElementById("NavigationBarView");
-            navigationView.appendChild(styles);
-            console.log("Append those styles");
+            let body = document.body;
+            body.appendChild(styles);
         }
     }
 
@@ -78,10 +96,6 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
             "changenowFixedRateView": "changenow-fixed-rate-view",
             "changenowFloatingRateView": "changenow-floating-rate-view"
         }
-        
-        console.log(this.context);
-        //let destination = event.path[0].dataset.pageDestination;
-        console.log("We want to navigate to " + page)
         let contentView = document.querySelector('content-view');
         contentView.innerHTML = "";
         let pageElement = document.createElement(routeMap[page]);
@@ -89,12 +103,6 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
         contentView.appendChild(pageElement);
     }
 
-    // initialiseContent() {
-    //     let contentView = document.querySelector('content-view');
-    //     let landingPage = document.createElement('landing-page-greeting');
-    //     landingPage.context = this.context;
-    //     contentView.appendChild(landingPage);
-    // }
 }
 
 module.exports = ExchangeNavigationController;
