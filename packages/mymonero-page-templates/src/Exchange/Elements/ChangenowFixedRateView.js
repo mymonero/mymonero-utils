@@ -110,11 +110,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
     
     render() {
         let exchangeFormTemplate = exchangeHelper.htmlFormTemplate();
-        console.log(exchangeFormTemplate);
         let exchangeFormHtml = exchangeFormTemplate.content.firstElementChild.cloneNode(true);
-        console.log(exchangeFormHtml);
-
-
 
         return html`
         <div id="exchange-landing-page">
