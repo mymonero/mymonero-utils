@@ -2,10 +2,17 @@ import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 
 export default class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
-
+    static get styles() {
+        return css`
+            #exchange-landing-page {
+                margin-top: 20px;
+            }
+        `
+    }
     connectedCallback() {
         super.connectedCallback();
-        console.log("ELP Template view connected to DOM");
+        this.renderStyles();
+        //console.log("ELP Template view connected to DOM");
         // TODO: disable fiat options if fiat api status returns an error
     }
     
