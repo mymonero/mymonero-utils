@@ -30,7 +30,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@mymonero/changenow-exchange-integration": "^1.3.0-alpha.14",
-    "@mymonero/mymonero-web-components": "^1.3.0-alpha.18",
+    "@mymonero/mymonero-web-components": "^1.3.0-alpha.19",
     "lit": "*",
     "lit-html": "^1.4.1"
   },
