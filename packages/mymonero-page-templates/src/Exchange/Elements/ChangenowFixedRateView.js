@@ -135,6 +135,9 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
             .exchange-page-panel {
                 margin: 42px 0px 42px 0px !important;
             }
+            #order-button {
+                display: none;
+            }
             #order-button, #exchange-xmr {
                 cursor: default;
                 border-radius: 3px;

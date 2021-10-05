@@ -472,6 +472,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         loaderPage.classList.remove('active')
         exchangePage.classList.add('active')
       }).finally(() => {
+        let orderBtn = document.getElementById('order-button');
+        orderBtn.style.display = "block";
         let message = document.getElementById('explanatory-message');
         message.innerText = "";
         exchangeHelper.exchangeFunctions.initialiseExchangeConfiguration().then((response) => {
