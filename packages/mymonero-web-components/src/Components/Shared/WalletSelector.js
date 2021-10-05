@@ -46,6 +46,7 @@ export class WalletSelector extends LitElement {
         #wallet-selector {
             position: relative;
             padding: 0px;
+            margin: 5px;
         }
         .WalletSelectView .selectionDisplayCellView, .WalletSelectView .options_containerView {
             border-radius: 5px;
@@ -200,7 +201,7 @@ export class WalletSelector extends LitElement {
         composed: true
     };
     let walletOptionUpdated = new CustomEvent("wallet-selector-update", options)
-    this.selectedWallet = this.wallet[0];
+    this.selectedWallet = this.wallets[0];
     this.dispatchEvent(walletOptionUpdated, options)
     // We need to emit an event to provide other web components with the initial wallet data
     //this.displayOptionsDropdown = false;
@@ -231,7 +232,7 @@ export class WalletSelector extends LitElement {
   updateSelectedWallet(event) {
     this.displayOptionsDropdown = false;
     let offset = event.path[0].dataset.walletoffset;
-    this.selectedWallet = this.wallet[offset];
+    this.selectedWallet = this.wallets[offset];
     let options = {
         detail: { 
             wallet: this.wallets[offset]
@@ -263,8 +264,8 @@ export class WalletSelector extends LitElement {
                 <!-- selected wallet -->
                 <div data-walletoffset="0" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView">
                 <div data-walletoffset=${0} class="wallet-icon medium-32"></div>                        
-                    <div data-walletoffset=${0} class="wallet-label">${this.wallets[0].walletLabel}</div>
-                    <div data-walletoffset=${0} class="description-label">${this.wallets[0].Balance_FormattedString()} XMR</div>
+                    <div data-walletoffset=${0} class="wallet-label">${this.selectedWallet.walletLabel}</div>
+                    <div data-walletoffset=${0} class="description-label">${this.selectedWallet.Balance_FormattedString()} XMR</div>
                 </div>
 
                 <!-- wallet options selector -->
