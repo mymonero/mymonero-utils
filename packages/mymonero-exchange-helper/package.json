@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-exchange-helper",
-  "version": "1.3.0-alpha.17",
+  "version": "1.3.0-alpha.18",
   "description": "A library of helper functions used for rendering the in-app exchange",
   "main": "index.js",
   "scripts": {
