@@ -1,14 +1,9 @@
 import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
-//import { FiatApi } from "@mymonero/changenow-exchange-integration";
 import { FiatApi } from "@mymonero/changenow-exchange-integration";
+
 let fiatApi = new FiatApi({ apiKey: "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9" })
 
-/** These should already be invoked and in scope on a global level -- check and remove */
-// require("./WalletSelector");
-// require("./BuyWithFiatLoadingScreenChangenowView");
-// require("./SearchableSelect");
-// require("./ActivityIndicator");
 export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitElement) {
     static get styles() {
         return css`
@@ -418,7 +413,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         try {
             let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
             window.open(estimateResponse.redirect_url);
-            console.log(estimateResponse.redirect_url);
             this.displayPurchaseRedirectIndicator = false;
         } catch (error) {
             // Error communicating with server to retrieve response -- show error
@@ -429,9 +423,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
 
     renderStyles() {
         // These styles are necessary in instances where we have a top-right action button
-        console.log("Render styles");
         let styleElement = document.getElementById("lit-styles");
-        typeof(styleElement);
         if (styleElement === null) {
             let styles = document.createElement("style");
             styles.innerHTML = `
@@ -454,13 +446,11 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             styles.id = "lit-styles";
             let navigationView = document.getElementById("NavigationBarView");
             navigationView.appendChild(styles);
-            console.log("Append those styles");
         }
     }
 
     updateSelectedWallet(event) {
-        console.log("Update wallet on form");
-        console.log(event);
+        // Updates wallet on primary form 
         this.selectedWallet = event.detail.wallet;
     }
 
@@ -473,12 +463,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.addEventListener('searchable-select-update', this.updateSelectedCurrency);
         this.addEventListener('wallet-selector-update', this.updateSelectedWallet);
         
-        //this.addEventListener('fire-estimate-event', this.handleEstimateEvent);
-        //let orderBtn = document.getElementById("order-button");
-        //this.fireEstimateEvent.bind(this);
-        //document.addEventListener('click', this.fireEstimateEvent, false);
         this.displayLoadingScreen = true;
-        // TODO: DELETE NEXT LINE AFTER DEBUGGING
         this.displayOrderScreen = true;
         this.displayMinMaxLoadingIndicator = false;
         let apiIsAvailable = await this.checkAPIIsAvailable();
@@ -488,7 +473,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             try {
                 let fiatCurrencies = await this.fiatApi.getAvailableFiatCurrencies();
                 this.fiatCurrencies = fiatCurrencies;
-                this.requestUpdate(); // Check if this is necessary
+                this.requestUpdate(); // TODO: Check if this is necessary
                 //this.displayLoadingScreen = false;
                 this.displayCurrencyLoadingIndicator = false;
                 this.displayOrderScreen = true;
@@ -497,8 +482,9 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                 this.displayErrorString = error.message;
             }
         } else {
-            // Show 'not available'
+            console.error("Our exchange partner is temporarily unavailable. Please try again later.");
         }
+
         // 1. checkAPIIsAvailable
         // -- If available, go to step 2
         // -- If unavailable, show 'Unavailaility' message (Maybe we should grey out the panel on the previous page)
