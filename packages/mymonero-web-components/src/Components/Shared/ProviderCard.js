@@ -9,7 +9,7 @@ export class ExchangeServiceProviderCard extends LitElement {
             position: relative;
             left: 16px;
             top: 0px;
-            width: calc(100% - 32px);
+            width: calc(100%);
             min-height: 80px;
             height: auto;
             background: rgb(56, 54, 56);
