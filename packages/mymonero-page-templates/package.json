@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-page-templates",
-  "version": "1.3.0-alpha.21",
+  "version": "1.3.0-alpha.22",
   "description": "This npm package contains a number of Lit element templates that MyMonero uses for various page layouts.",
   "main": "./lib/index",
   "exports": {
