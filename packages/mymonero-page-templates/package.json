@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-page-templates",
-  "version": "1.3.0-alpha.22",
+  "version": "1.3.0-alpha.23",
   "description": "This npm package contains a number of Lit element templates that MyMonero uses for various page layouts.",
   "main": "./lib/index",
   "exports": {
@@ -30,7 +30,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@mymonero/changenow-exchange-integration": "^1.3.0-alpha.14",
-    "@mymonero/mymonero-web-components": "^1.3.0-alpha.22",
+    "@mymonero/mymonero-web-components": "^1.3.0-alpha.23",
     "lit": "*",
     "lit-html": "^1.4.1"
   },
