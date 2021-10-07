@@ -66,12 +66,34 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         }
     }
     
+    openClickableLink(event, context) {
+        // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
+        let referrer_id = event.srcElement.getAttribute("referrer_id");
+        let url = event.srcElement.getAttribute("url");
+        let paramStr = event.srcElement.getAttribute("param_str");
+        if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context
+            if (referrer_id.length > 0) {
+                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+                context.shell.openExternal(urlToOpen);
+            } else {
+                context.shell.openExternal("https://localmonero.co");
+            }
+        } else { // Web (and Capacitor?) codebase
+            if (referrer_id.length > 0) {
+                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+                window.open(urlToOpen);
+            } else {
+                window.open("https://localmonero.co");
+            }
+        }
+    }
+
     openExternal(url) {
-        // Determine whether we're running as a browser (existence of window.location)
-        if (typeof(window.location) !== 'undefined') {
-          window.open(url, "_blank");
-        } else if (typeof(global) !== "undefined") {
-    
+        // Check whether we're on desktop, or web and Android
+        if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context            
+            this.context.shell.openExternal(url);            
+        } else { // Web (and Capacitor?) codebase            
+            window.open(url, "_blank");
         }
     }
 

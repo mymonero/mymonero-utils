@@ -412,12 +412,22 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.displayPurchaseRedirectIndicator = true;
         try {
             let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
-            window.open(estimateResponse.redirect_url);
+            //window.open(estimateResponse.redirect_url);
+            this.openExternal(estimateResponse.redirect_url)
             this.displayPurchaseRedirectIndicator = false;
         } catch (error) {
             // Error communicating with server to retrieve response -- show error
             this.errorString = error.message;
             console.log(error);
+        }
+    }
+
+    openExternal(url) {
+        // Check whether we're on desktop, or web and Android
+        if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context            
+            this.context.shell.openExternal(url);            
+        } else { // Web (and Capacitor?) codebase            
+            window.open(url, "_blank");
         }
     }
 
