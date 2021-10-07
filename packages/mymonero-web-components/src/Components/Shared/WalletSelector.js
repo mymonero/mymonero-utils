@@ -286,7 +286,7 @@ export class WalletSelector extends LitElement {
             <div id="wallet-selector" class="WalletSelectView ListCustomSelectView form_field" data-walletchosen="true" @click=${this.showOptionsDropdown} ?hidden=${this.displayOptionsDropdown}>
                 <!-- selected wallet -->
                 <div data-walletoffset="0" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView">
-                <div data-walletoffset=${0} class="wallet-icon medium-32 ${ "wallet-" + this.wallets[i].swatch.substr(1)}"></div>                        
+                <div data-walletoffset=${0} class="wallet-icon medium-32 ${ "wallet-" + this.selectedWallet[i].swatch.substr(1)}"></div>                        
                     <div data-walletoffset=${0} class="wallet-label">${this.selectedWallet.walletLabel}</div>
                     <div data-walletoffset=${0} class="description-label">${this.selectedWallet.Balance_FormattedString()} XMR</div>
                 </div>
