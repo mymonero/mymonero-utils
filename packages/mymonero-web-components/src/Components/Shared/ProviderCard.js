@@ -59,6 +59,24 @@ export class ExchangeServiceProviderCard extends LitElement {
             height: 69px;
             margin-left: 
         }
+        @media screen and (max-width: 548px) {
+          .description-label {
+            padding: 0px 10px 10px 0px;
+            margin-top: 10px;
+            margin-left: 10px;
+          }
+          .title-label {
+            padding: 0px 10px 10px 0px;
+            margin-top: 70px;
+            margin-left: 10px;
+          }
+          .changenow-logo, .localmonero-logo {
+            width: 100% !important;
+            height: 69px !important;
+            background-position: top !important;
+            background-repeat: no-repeat !important;
+          }
+        }
     `;
   }
 
