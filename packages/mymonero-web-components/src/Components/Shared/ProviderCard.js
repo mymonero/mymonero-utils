@@ -7,7 +7,6 @@ export class ExchangeServiceProviderCard extends LitElement {
     return css`
         .provider-card {
             position: relative;
-            left: 16px;
             top: 0px;
             width: calc(100% - 30px);
             min-height: 80px;
@@ -16,7 +15,7 @@ export class ExchangeServiceProviderCard extends LitElement {
             box-shadow: rgb(22 20 22) 0px 0.5px 1px 0px, rgb(73 71 73) 0px 0.5px 0px 0px inset;
             border-radius: 5px;
             overflow: hidden;
-            margin: 0px 0px 12px;
+            margin: 0 auto 10px auto;
         }
 
         .hoverable-cell {
@@ -57,24 +56,47 @@ export class ExchangeServiceProviderCard extends LitElement {
             top: 4px;
             width: 120px;
             height: 69px;
-            margin-left: 
         }
         @media screen and (max-width: 548px) {
           .description-label {
-            padding: 0px 10px 10px 0px;
-            margin-top: 10px;
-            margin-left: 10px;
+            padding: 0px 10px 10px 0px !important;
+            margin-top: 10px !important;
+            margin-left: 10px !important;
+            text-align: justify !important;
+            line-height: 14px !important;
+            font-size: 12px !important;
+            max-width: 100% !important;
           }
           .title-label {
-            padding: 0px 10px 10px 0px;
-            margin-top: 70px;
-            margin-left: 10px;
+            padding: 0px 10px 10px 0px !important;
+            margin-top: 80px !important;
+            margin-right: 10px !important;
+            border-top: 1px solid #CDCDCD !important;
+            padding-top: 10px !important;
+            max-width: 100% !important;
+            margin-left: 10px !important;
           }
           .changenow-logo, .localmonero-logo {
             width: 100% !important;
             height: 69px !important;
             background-position: top !important;
             background-repeat: no-repeat !important;
+            left: 0px !important;
+          }
+          .localmonero-logo {
+            top: 4px !important;
+            height: 65px !important;
+          }
+          .provider-card {
+            left: 0px !important;
+            max-width: calc(100% - 16px);
+            margin: 0 auto 10px auto !important;
+          }
+          .provider-card .description-label, .provider-card .title-label {
+            font-size: 12px !important;
+            color: #ffffff;
+            line-height: 14px !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif !important; 
           }
         }
     `;
