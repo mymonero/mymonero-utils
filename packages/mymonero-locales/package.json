@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "mocha": "^8.3.2"
+    "mocha": "^9.1.2"
   },
   "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }
