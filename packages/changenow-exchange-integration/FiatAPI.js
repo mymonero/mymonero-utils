@@ -172,7 +172,6 @@ class FiatAPI {
                 payout_address,
                 "from_network": null,
                 "to_network": null,
-                "payout_extra_id": "1",
                 "external_partner_link_id": ""
             });
 
