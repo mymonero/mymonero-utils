@@ -173,7 +173,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
         it('should return a JSON array describing the transaction that has the specified transaction id', () => {
             return instance.getTransactionStatus('659fc992aa5bfd').then(response => {
                 expect(response).to.be.an('object');
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "actionsAvailable",
                     "amountFrom",
                     "amountTo",
@@ -213,7 +213,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
             let fromAmount = "0.5";
             let toAmount = "";
             return instance.getEstimatedAmount(fromCurrency, toCurrency, flow, fromAmount, toAmount).then(response => {
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromCurrency",
                     "fromNetwork",
                     "toCurrency",
@@ -246,7 +246,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
             return instance.createTransaction(fromCurrency, toCurrency, flow, fromAmount, toAmount, destinationAddress, refundAddress).then(response => {
                 expect(response).to.be.an('object');
                 // note -- while the official docs specify payoutExtraId and refundExtraId return, they don't
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromAmount",
                     "toAmount",
                     "flow",
@@ -270,7 +270,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
         it('should return a JSON object describing the minimum exchange amount between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
 
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromCurrency",
                     "fromNetwork",
                     "toCurrency",
@@ -287,7 +287,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
         it('should return a JSON object describing the minimum exchange amount between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'fixed-rate').then(response => {
 
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromCurrency",
                     "fromNetwork",
                     "toCurrency",
@@ -303,7 +303,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
         this.timeout(5000)
         it('should return a JSON object describing the current exchange rate between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'standard').then(response => {
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromCurrency",
                     "fromNetwork",
                     "toCurrency",
@@ -320,7 +320,7 @@ describe('ChangeNow cryptocurrency API integration', async function() {
         this.timeout(5000)
         it('should return a JSON object describing the current exchange rate between a specified fromCurrency and a toCurrency', () => {
             return instance.getExchangeRange('xmr', 'btc', 'fixed-rate').then(response => {
-                expect(response).to.have.all.keys(
+                expect(response).to.include.keys(
                     "fromCurrency",
                     "fromNetwork",
                     "toCurrency",
