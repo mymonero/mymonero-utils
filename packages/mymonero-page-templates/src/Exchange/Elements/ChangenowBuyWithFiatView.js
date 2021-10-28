@@ -314,6 +314,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             displayPurchaseButton: { type: Boolean },
             displayPurchaseRedirectIndicator: { type: Boolean },
             displayErrorString: { type: Boolean },
+            displayEnterCurrencyPrompt: { type: Boolean },
             errorString: { type: String },
             fiatCurrencies: { 
                 type: Array,
@@ -347,12 +348,21 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     // It uses the details to update the desired currency
     async updateSelectedCurrency(event) {
         this.clearEstimate();
+        let prepopulatedCurrencyValueExists = false;
+        // Handle case where the user has input the amount already
+        if ((this.inCurrencyCode === "") && (this.inCurrencyValue.length > 0)) {
+            prepopulatedCurrencyValueExists = true;
+        }
+        this.fiatMinMaxString = "";
         this.inCurrencyCode = event.detail.selectValue;
         this.inCurrencyName = event.detail.selectText;
         this.displayMinMaxLoadingIndicator = true;
+        if (prepopulatedCurrencyValueExists) {
+            this.handleCurrencyInputResponse();
+        }
         let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
-        this.displayMinMaxLoadingIndicator = false;
         let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray);
+        this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
         this.estimatedCryptoRange = estimatedCryptoRange;
         this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
@@ -462,6 +472,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     updateSelectedWallet(event) {
         // Updates wallet on primary form 
         this.selectedWallet = event.detail.wallet;
+        this.displayEnterCurrencyPrompt = false;
+
     }
 
     async connectedCallback() {
@@ -477,12 +489,28 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.displayOrderScreen = true;
         this.displayMinMaxLoadingIndicator = false;
         let apiIsAvailable = await this.checkAPIIsAvailable();
+        let enabledCurrencies = [];
         if (apiIsAvailable) {
             this.displayLoadingScreen = false;
             this.displayOrderScreen = true;
             try {
                 let fiatCurrencies = await this.fiatApi.getAvailableFiatCurrencies();
-                this.fiatCurrencies = fiatCurrencies;
+                
+                for (let i = 0; i < fiatCurrencies.length; i++) {
+                    var hasValidPaymentMethod = false;
+                    let paymentMethodArray = fiatCurrencies[i].payment_methods;
+                    for (let j = 0; j < paymentMethodArray.length; j++) {
+                        if (paymentMethodArray[j].deposit_enabled === true) {
+                            hasValidPaymentMethod = true;
+                        }
+                    }
+                    if (hasValidPaymentMethod) {
+                        enabledCurrencies.push(fiatCurrencies[i]);
+                    } else {
+                    }
+                }
+                console.log(enabledCurrencies);
+                this.fiatCurrencies = enabledCurrencies;
                 this.requestUpdate(); // TODO: Check if this is necessary
                 //this.displayLoadingScreen = false;
                 this.displayCurrencyLoadingIndicator = false;
@@ -607,22 +635,21 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             "is_featured": null,
             "is_stable": null,
             "logo_url": "",
-            "name": "Euro",
+            "name": "",
             "networks": [],
-            "ticker": "EUR",
+            "ticker": "",
         }
     ];
         this.selectedFiatCurrency = "";
         //this.setScreenTitle("Buy Monero With Fiat");
         this.wallets = [
-            {},
-            {},
             {}
         ];
     }
     
     clearEstimate() {
         // We cannot unset the keys on this object because rendering depends on it
+        this.displayPurchaseButton = true;
         this.estimateDetails = {
             convertedAmount: "",
             expected_to_amount: "",
@@ -658,6 +685,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             if (this.inCurrencyCode.length > 0) {
                 // TODO: Put this into standalone function 
                 this.handleCurrencyInputResponse();
+            } else {
+                this.displayEnterCurrencyPrompt = true;
             }
         }, 2000);
     }
@@ -693,7 +722,11 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             this.estimateDetails = estimateDetails;
         } catch (error) {
             console.error(error, error.message);
-            this.errorString = error.message;
+            if (error.isAxiosError && typeof(error.response.data) === "object" && typeof(error.response.data.message) === "string") {
+                this.errorString = error.response.data.message;
+            } else {
+                this.errorString = error.message;
+            }
             this.displayErrorResponse = true;
         }
         this.displayEstimateRetrieval = false;
@@ -735,13 +768,15 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                                                 </div>
                                             </div>
                                             <div id="transaction-range">
-                                                <span id="transaction-range" class="field_title form-field-title" style="margin-top: 8px; color: rgb(158, 156, 158); display: inline-block;">${this.fiatMinMaxString}</span>
+                                                <span id="transaction-range" class="field_title form-field-title">${this.fiatMinMaxString}</span>
                                                 <div id="currency-loader">
                                                     <activity-indicator .loadingText=${"Loading supported currencies"} ?hidden=${!this.displayCurrencyLoadingIndicator}></activity-indicator>
-                                                    <activity-indicator .loadingText=${"Please wait while we load the minimum and maximum transaction amount limits"} ?hidden=${!this.displayMinMaxLoadingIndicator}></activity-indicator>
+                                                    <activity-indicator .loadingText=${"Retrieving minimum and maximum transaction amount limits"} ?hidden=${!this.displayMinMaxLoadingIndicator}></activity-indicator>
                                                     <activity-indicator .loadingText=${"Busy retrieving estimate"} ?hidden=${!this.displayEstimateRetrieval}></activity-indicator>
                                                     <div id="errorResponse" ?hidden=${!this.displayErrorResponse}>
-                                                        <span id="errorResponseText">${this.errorString}</span>
+                                                        <span id="errorResponseText" class="form-field-title">
+                                                            ${this.errorString}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
