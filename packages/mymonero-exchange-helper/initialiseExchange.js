@@ -21,11 +21,13 @@ function outCurrencyValueKeydownListener(event, exchangeHelper) {
   // We need to handle two different use cases here: Android app, or desktop / web apps
   // Android sends an InputEvent where event.which is undefined
   // Traditional platforms send a Key
-
+  
   // We need to check in this fashion because isNaN will return true for a string containing commas
   let allowableCharacters = [
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ","
   ]
+
+  var eventPath = event.path || (event.composedPath && event.composedPath());
   if (event.inputType == "insertText") {
     if (allowableCharacters.includes(event.data)) {
       return true;
@@ -37,8 +39,8 @@ function outCurrencyValueKeydownListener(event, exchangeHelper) {
   if ((event.inputType == "deleteContentForward" || 
       event.inputType == "deleteContentBackward" ||
       event.inputType == "insertFromPaste") && 
-      event.path[0].value.length > 0) {
-    let valueToTest = event.path[0].value;
+      eventPath[0].value.length > 0) {
+    let valueToTest = eventPath[0].value;
     if (!isNaN(valueToTest)) {
       return true;
     } else {
