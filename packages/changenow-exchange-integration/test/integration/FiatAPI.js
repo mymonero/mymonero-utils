@@ -42,12 +42,26 @@ describe('ChangeNow fiat API integration', async function() {
     })
 
     describe('Get an estimate for a specified exchange transaction', () => {
+        this.timeout(20000);
         it('fiat-api: should return a JSON object ', () => {
             let from_amount = "100";
             let from_currency = "USD";
             let to_currency = "XMR";
             return instance.getTransactionEstimate(from_amount, from_currency, to_currency).then(response => {
                 //expect(response.message).to.equal("OK")
+                expect(response.to.include.keys(
+                    "to_currency",
+                    "from_currency",
+                    "value",
+                    "service_fees",
+                    "estimated_exchange_rate",
+                    "converted_amount",
+                    "network_fee"
+                ))
+                              
+            }).catch(error => {
+                console.log(error);
+                console.log(error.message);
             })
         })
     })
