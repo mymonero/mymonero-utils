@@ -693,6 +693,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
 
     async handleCurrencyInputResponse() {
         this.displayEstimateRetrieval = true;
+        this.displayErrorResponse = false;
         try {
             let response = await this.fiatApi.getTransactionEstimate(this.inCurrencyValue, this.inCurrencyCode, "XMR");
             let estimateDetails = {};
