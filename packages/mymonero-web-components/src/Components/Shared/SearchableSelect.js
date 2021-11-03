@@ -1,5 +1,4 @@
 import { html, css, LitElement } from 'lit';
-
 export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
@@ -214,7 +213,8 @@ export class SearchableSelect extends LitElement {
     }
 
     render() {
-        return html` 
+        if (this.filteredValues.length > 0 && this.filteredValues[0].name !== "") {
+            return html` 
             <div class="dropdown">
                 <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
@@ -224,6 +224,16 @@ export class SearchableSelect extends LitElement {
                     })}           
                 </div>
             </div>`
+        } else {
+            return html` 
+            <div class="dropdown">
+                <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
+                <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
+                    <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
+                        <option value="${object.ticker}">Loading</option>
+                </div>
+            </div>`
+        }
     }
 }
 
