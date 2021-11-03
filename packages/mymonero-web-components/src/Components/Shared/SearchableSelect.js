@@ -230,7 +230,7 @@ export class SearchableSelect extends LitElement {
                 <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
                     <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
-                        <option value="${object.ticker}">Loading</option>
+                        <option>Loading</option>
                 </div>
             </div>`
         }
