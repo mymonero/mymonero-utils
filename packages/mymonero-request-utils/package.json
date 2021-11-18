@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/mymonero/mymonero-utils.git"
   },
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "publishConfig": {
     "access": "public"
   },
