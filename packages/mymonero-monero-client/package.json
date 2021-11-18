@@ -1,0 +1,20 @@
+{
+  "name": "@mymonero/mymonero-monero-client",
+  "version": "1.0.2",
+  "description": "The JS library containing the JS transpilation of the shared library behind the MyMonero apps",
+  "main": "./src/index.js",
+  "scripts": {
+    "dev": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk ./bin/archive-emcpp-dev.sh",
+    "build": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk ./bin/archive-emcpp.sh",
+    "test": "mocha --recursive"
+  },
+  "devDependencies": {
+    "mocha": "^8.4.0",
+    "chai": "^4.3.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Devin Pearson <devin@mymonero.com> (https://github.com/devinpearson/)",
+  "license": "BSD-3-Clause"
+}
