@@ -1,0 +1,1 @@
+This NPM module contains a number of page templates for the [MyMonero](https://mymonero.com) desktop, Android and web applications.

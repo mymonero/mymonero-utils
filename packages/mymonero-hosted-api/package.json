@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-hosted-api",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Connector for MyMonero compatible services",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/mymonero/mymonero-utils.git"
   },
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "publishConfig": {
     "access": "public"
   },

@@ -1,0 +1,34 @@
+{
+  "name": "@mymonero/mymonero-openalias",
+  "version": "1.1.6",
+  "description": "Connector for converting openalias addresses to monero addresses",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive test"
+  },
+  "author": "MyMonero <info@mymonero.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mymonero/mymonero-utils.git"
+  },
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.19.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^8.4.0",
+    "standard": "^16.0.3"
+  },
+  "standard": {
+    "ignore": [
+      "/test"
+    ]
+  },
+  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
+}

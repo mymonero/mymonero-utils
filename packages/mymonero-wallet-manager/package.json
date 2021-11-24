@@ -1,0 +1,26 @@
+{
+  "name": "@mymonero/mymonero-wallet-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/WalletManager.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Devin Pearson <devin@mymonero.com> (https://github.com/devinpearson/)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@mymonero/mymonero-lws-client": "^1.0.1",
+    "@mymonero/mymonero-monero-client": "^1.0.2",
+    "bignumber.js": "^9.0.1"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.20.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^8.4.0",
+    "standard": "^16.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

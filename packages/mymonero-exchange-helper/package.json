@@ -1,0 +1,46 @@
+{
+  "name": "@mymonero/mymonero-exchange-helper",
+  "version": "1.3.0-alpha.28",
+  "description": "A library of helper functions used for rendering the in-app exchange",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@mymonero/mymonero-bigint": "^1.1.15",
+    "@mymonero/mymonero-exchange": "^1.1.17",
+    "@mymonero/mymonero-money-format": "^1.1.15",
+    "axios": "^0.21.1"
+  },
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.esm.js"
+  },
+  "keywords": [
+    "cryptocurrency-conversion",
+    "cryptocurrency-exchange",
+    "mymonero",
+    "xmrtobtc",
+    "xmr-to-btc",
+    "xmr-to-ltc",
+    "xmr-to-eth",
+    "monerotobitcoin",
+    "monero-to-bitcoin",
+    "monero-to-litecoin",
+    "monero-to-ethereum"
+  ],
+  "author": "MyMonero",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mymonero/mymonero-utils.git"
+  },
+  "homepage": "https://mymonero.com",
+  "bugs": {
+    "url": "https://github.com/mymonero/mymonero-utils/issues",
+    "email": "info@mymonero.com"
+  },
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "access": "public"
+  }
+}

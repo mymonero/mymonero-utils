@@ -1,0 +1,5 @@
+build/
+**/node_modules
+**/src/submodules
+**/.DS_Store
+.vscode
