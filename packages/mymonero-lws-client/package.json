@@ -1,0 +1,30 @@
+{
+  "name": "@mymonero/mymonero-lws-client",
+  "version": "1.0.1",
+  "description": "Connector for using a Monero compliant light wallet api",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "author": "Devin Pearson <devin@mymonero.com> (https://github.com/devinpearson/)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bignumber.js": "^9.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.19.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^8.4.0",
+    "standard": "^16.0.3"
+  },
+  "standard": {
+    "ignore": [
+      "/test"
+    ]
+  }
+}
