@@ -2,7 +2,7 @@
 //  SendFundsFormSubmissionController.cpp
 //  MyMonero
 //
-//  Copyright (c) 2014-2019, MyMonero.com
+//  Copyright (c) 2014-2021, MyMonero.com
 //
 //  All rights reserved.
 //
@@ -81,11 +81,7 @@ string FormSubmissionController::prepare()
 			return error_ret_json_from_message("Amount too low.");
 		}
 	}
-	bool manuallyEnteredPaymentID_exists = this->parameters.manuallyEnteredPaymentID != boost::none && !this->parameters.manuallyEnteredPaymentID->empty();
-	optional<string> paymentID_toUseOrToNilIfIntegrated = boost::none; // may be nil
 	string xmrAddress_toDecode = this->parameters.enteredAddressValue;
-	// we don't care whether it's an integrated address or not here since we're not going to use its payment id
-	paymentID_toUseOrToNilIfIntegrated = this->parameters.manuallyEnteredPaymentID.get();
 
 	auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
 	if (decode_retVals.did_error) {
@@ -93,7 +89,6 @@ string FormSubmissionController::prepare()
 	}
 	if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
 		this->to_address_string = xmrAddress_toDecode; // for integrated addrs, we don't want to extract the payment id and then use the integrated addr as well (TODO: unless we use fluffy's patch?)
-		this->payment_id_string = boost::none;
 		this->isXMRAddressIntegrated = true;
 		this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
 
@@ -102,37 +97,8 @@ string FormSubmissionController::prepare()
 	
 		return ret_json_from_root(root);
 	}
-	// since we may have a payment ID here (which may also have been entered manually), validate
-	// if (monero_paymentID_utils::is_a_valid_or_not_a_payment_id(paymentID_toUseOrToNilIfIntegrated) == false) { // convenience function - will be true if nil pid
-	// 	return error_ret_json_from_message("Invalid payment id");
-	// }
-	if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false) { // short pid / integrated address coersion
-		if (decode_retVals.isSubaddress != true) { // this is critical or funds will be lost!!
-			if (paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) { // a short one
-				THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
-				optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
-					xmrAddress_toDecode, // the monero one
-					*paymentID_toUseOrToNilIfIntegrated, // short pid
-					this->parameters.nettype
-				);
-				if (fabricated_integratedAddress_orNone == boost::none) {
-					return error_ret_json_from_message("Could not construct integrated address");
-				}
-				this->to_address_string = *fabricated_integratedAddress_orNone;
-				this->payment_id_string = boost::none; // must now zero this or Send will throw a "pid must be blank with integrated addr"
-				this->isXMRAddressIntegrated = true;
-				this->integratedAddressPIDForDisplay = *paymentID_toUseOrToNilIfIntegrated; // a short pid
 
-				// return early to prevent fall-through to non-short or zero pid case
-				boost::property_tree::ptree root;
-				root.put("retVal", "true");
-			
-				return ret_json_from_root(root);
-			}
-		}
-	}
 	this->to_address_string = xmrAddress_toDecode; // therefore, non-integrated normal XMR address
-	this->payment_id_string = paymentID_toUseOrToNilIfIntegrated; // may still be nil
 	this->isXMRAddressIntegrated = false;
 	this->integratedAddressPIDForDisplay = boost::none;
 	
@@ -213,7 +179,7 @@ bool FormSubmissionController::_reenterable_construct_and_send_tx()
 	monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 		step1_retVals,
 		//
-		this->payment_id_string,
+		boost::none,
 		this->sending_amount,
 		this->parameters.is_sweeping,
 		this->parameters.priority,
@@ -261,7 +227,7 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.sec_viewKey_string,
 		this->parameters.sec_spendKey_string,
 		this->to_address_string,
-		this->payment_id_string,
+		boost::none,
 		*(this->step1_retVals__final_total_wo_fee),
 		*(this->step1_retVals__change_amount),
 		*(this->step1_retVals__using_fee),
@@ -319,17 +285,13 @@ string FormSubmissionController::cb_III__submitted_tx()
 	success_retVals.total_sent = *(this->step1_retVals__final_total_wo_fee) + *(this->step1_retVals__using_fee);
 	success_retVals.mixin = *(this->step1_retVals__mixin);
 	{
-		optional<string> returning__payment_id = this->payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args
-		if (returning__payment_id == boost::none) {
-			auto decoded = monero::address_utils::decodedAddress(this->to_address_string, this->parameters.nettype);
-			if (decoded.did_error) { // would be very strange...
-				return error_ret_json_from_message("Invalid destinationAddress");
-			}
-			if (decoded.paymentID_string != boost::none) {
-				returning__payment_id = std::move(*(decoded.paymentID_string)); // just preserving this as an original return value - this can probably eventually be removed
-			}
-		}
-		success_retVals.final_payment_id = returning__payment_id;
+		auto decoded = monero::address_utils::decodedAddress(this->to_address_string, this->parameters.nettype);
+ 		if (decoded.did_error) { // would be very strange...
+ 			return error_ret_json_from_message("Invalid destinationAddress");
+ 		}
+ 		if (decoded.paymentID_string != boost::none) {
+ 			success_retVals.final_payment_id = std::move(*decoded.paymentID_string);
+ 		}
 	}
 	success_retVals.signed_serialized_tx_string = *(this->step2_retVals__signed_serialized_tx_string);
 	success_retVals.tx_hash_string = *(this->step2_retVals__tx_hash_string);
