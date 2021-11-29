@@ -137,7 +137,7 @@ class Wallet {
     if (recipientAddress == null) {
       throw Error('contact not found')
     }
-    options.recipientAddress = recipientAddress
+    options.destinations = [{ to_address: recipientAddress, send_amount: options.amount }]
     return await self.transfer(options)
   }
 
@@ -157,15 +157,13 @@ class Wallet {
       const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
 
       const params = {
-        amount: options.amount,
-        recipientAddress: options.recipientAddress,
+        destinations: options.destinations,
         priority: options.priority,
         address: self.address,
         privateViewKey: self.privateViewKey,
         publicSpendKey: self.publicSpendKey,
         privateSpendKey: self.privateSpendKey,
         shouldSweep: options.shouldSweep,
-        paymentId: options.paymentId,
         nettype: self.netType,
         unspentOuts: unspentOuts,
         randomOutsCb: function (numberOfOuts) {

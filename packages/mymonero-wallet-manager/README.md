@@ -111,14 +111,6 @@ Estimates the send fee
 wallet.estimateFee()
 ```
 
-### Estimate Transaction fee
-
-Estimates the send fee
-
-```js
-wallet.estimateFee()
-```
-
 generatePaymentId
 decodeAddress
 transferToContact
