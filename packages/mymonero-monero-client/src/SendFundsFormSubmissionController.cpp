@@ -65,43 +65,56 @@ string FormSubmissionController::prepare()
 	using namespace std;
 	using namespace boost;
 	
+	this->sending_amounts.clear();
+ 	if (this->parameters.send_amount_strings.size() != this->parameters.enteredAddressValues.size()) {
+ 		return error_ret_json_from_message("Amounts don't match recipients.");
+ 	}
+	
 	if (this->parameters.is_sweeping) {
-		this->sending_amount = 0;
+		if (this->parameters.enteredAddressValues.size() != 1) {
+ 			return error_ret_json_from_message("Only one recipient allowed when sweeping.");
+ 		}
 	} else {
-		if (this->parameters.send_amount_double_string == boost::none || this->parameters.send_amount_double_string->empty()) {
-			if (this->parameters.is_sweeping == false) {
-				return error_ret_json_from_message("Amount too low.");
+		this->sending_amounts.reserve(this->parameters.send_amount_strings.size());
+ 		for (const auto& amount : this->parameters.send_amount_strings) {
+ 			uint64_t parsed_amount;
+ 			if (!cryptonote::parse_amount(parsed_amount, amount)) {
+ 				return error_ret_json_from_message("Cannot parse amount.");
+ 			}
+ 			if (parsed_amount == 0) {
+ 				return error_ret_json_from_message("Amount cannot be zero.");
+ 			}
+ 			this->sending_amounts.push_back(parsed_amount);
+		}
+	}
+		
+	this->isXMRAddressIntegrated = false;
+ 	this->integratedAddressPIDForDisplay = boost::none;
+ 	this->to_address_strings.clear();
+ 	this->to_address_strings.reserve(this->parameters.enteredAddressValues.size());
+ 	for (string& xmrAddress_toDecode : this->parameters.enteredAddressValues) {
+ 		auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
+ 		if (decode_retVals.did_error) {
+ 			return error_ret_json_from_message("Invalid address");
+ 		}
+ 		this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
+		if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
+			if (this->isXMRAddressIntegrated) {
+				return error_ret_json_from_message("Only one integrated address allowed per transaction");
 			}
-		}
-		bool ok = cryptonote::parse_amount(this->sending_amount, this->parameters.send_amount_double_string.get());
-		if (!ok) {
-			return error_ret_json_from_message("Cannot parse amount.");
-		}
-		if (this->sending_amount <= 0) {
-			return error_ret_json_from_message("Amount too low.");
-		}
-	}
-	string xmrAddress_toDecode = this->parameters.enteredAddressValue;
 
-	auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
-	if (decode_retVals.did_error) {
-		return error_ret_json_from_message("Invalid address");
-	}
-	if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
-		this->to_address_string = xmrAddress_toDecode; // for integrated addrs, we don't want to extract the payment id and then use the integrated addr as well (TODO: unless we use fluffy's patch?)
-		this->isXMRAddressIntegrated = true;
-		this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
+			this->isXMRAddressIntegrated = true;
+			this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
+		}
+ 	}
 
+	if (this->isXMRAddressIntegrated) {
+		// XXX: why does the integrated address case return early??
 		boost::property_tree::ptree root;
 		root.put("retVal", "true");
-	
 		return ret_json_from_root(root);
 	}
 
-	this->to_address_string = xmrAddress_toDecode; // therefore, non-integrated normal XMR address
-	this->isXMRAddressIntegrated = false;
-	this->integratedAddressPIDForDisplay = boost::none;
-	
 	const bool step1 = this->cb_I__got_unspent_outs(this->parameters.unspentOuts);
 	if (!step1) {
 		return error_ret_json_from_message(this->failureReason);
@@ -180,7 +193,7 @@ bool FormSubmissionController::_reenterable_construct_and_send_tx()
 		step1_retVals,
 		//
 		boost::none,
-		this->sending_amount,
+		this->sending_amounts,
 		this->parameters.is_sweeping,
 		this->parameters.priority,
 		this->use_fork_rules,
@@ -218,6 +231,9 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->failureReason = "Expected non-0 using_outs";
 		return false;
 	}
+	const vector<uint64_t> &sending_amounts = this->parameters.is_sweeping ?
+		vector<uint64_t>{*this->step1_retVals__final_total_wo_fee}
+ 		: this->sending_amounts;
 	Send_Step2_RetVals step2_retVals;
 	uint64_t unlock_time = 0; // hard-coded for now since we don't ever expose it, presently
 	monero_transfer_utils::send_step2__try_create_transaction(
@@ -226,9 +242,9 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.from_address_string,
 		this->parameters.sec_viewKey_string,
 		this->parameters.sec_spendKey_string,
-		this->to_address_string,
+		this->to_address_strings,
 		boost::none,
-		*(this->step1_retVals__final_total_wo_fee),
+		sending_amounts,
 		*(this->step1_retVals__change_amount),
 		*(this->step1_retVals__using_fee),
 		this->parameters.priority,
@@ -280,44 +296,32 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 
 string FormSubmissionController::cb_III__submitted_tx()
 {
-	Success_RetVals success_retVals;
-	success_retVals.used_fee = *(this->step1_retVals__using_fee); // NOTE: not the same thing as step2_retVals.fee_actually_needed
-	success_retVals.total_sent = *(this->step1_retVals__final_total_wo_fee) + *(this->step1_retVals__using_fee);
-	success_retVals.mixin = *(this->step1_retVals__mixin);
-	{
-		auto decoded = monero::address_utils::decodedAddress(this->to_address_string, this->parameters.nettype);
- 		if (decoded.did_error) { // would be very strange...
- 			return error_ret_json_from_message("Invalid destinationAddress");
- 		}
- 		if (decoded.paymentID_string != boost::none) {
- 			success_retVals.final_payment_id = std::move(*decoded.paymentID_string);
- 		}
-	}
-	success_retVals.signed_serialized_tx_string = *(this->step2_retVals__signed_serialized_tx_string);
-	success_retVals.tx_hash_string = *(this->step2_retVals__tx_hash_string);
-	success_retVals.tx_key_string = *(this->step2_retVals__tx_key_string);
-	success_retVals.tx_pub_key_string = *(this->step2_retVals__tx_pub_key_string);
-	success_retVals.final_total_wo_fee = *(this->step1_retVals__final_total_wo_fee);
-	success_retVals.isXMRAddressIntegrated = this-isXMRAddressIntegrated;
-	success_retVals.integratedAddressPIDForDisplay = this->integratedAddressPIDForDisplay;
-	success_retVals.target_address = this->to_address_string;
+	// Success_RetVals success_retVals;
+	// success_retVals.used_fee = *(this->step1_retVals__using_fee); // NOTE: not the same thing as step2_retVals.fee_actually_needed
+	// success_retVals.total_sent = *(this->step1_retVals__final_total_wo_fee) + *(this->step1_retVals__using_fee);
+	// success_retVals.mixin = *(this->step1_retVals__mixin);
+	// success_retVals.signed_serialized_tx_string = *(this->step2_retVals__signed_serialized_tx_string);
+	// success_retVals.tx_hash_string = *(this->step2_retVals__tx_hash_string);
+	// success_retVals.tx_key_string = *(this->step2_retVals__tx_key_string);
+	// success_retVals.tx_pub_key_string = *(this->step2_retVals__tx_pub_key_string);
+	// success_retVals.final_total_wo_fee = *(this->step1_retVals__final_total_wo_fee);
+	// success_retVals.isXMRAddressIntegrated = this-isXMRAddressIntegrated;
+	// success_retVals.integratedAddressPIDForDisplay = this->integratedAddressPIDForDisplay;
+	// XXX success_retVals.target_address = this->to_address_string;
 
 	boost::property_tree::ptree root;
-	root.put(ret_json_key__send__used_fee(), std::move(RetVals_Transforms::str_from(success_retVals.used_fee)));
-	root.put(ret_json_key__send__total_sent(), std::move(RetVals_Transforms::str_from(success_retVals.total_sent)));
-	root.put(ret_json_key__send__mixin(), success_retVals.mixin); // this is a uint32 so it can be sent in JSON
-	if (success_retVals.final_payment_id) {
-		root.put(ret_json_key__send__final_payment_id(), std::move(*(success_retVals.final_payment_id)));
-	}
-	root.put(ret_json_key__send__serialized_signed_tx(), std::move(success_retVals.signed_serialized_tx_string));
-	root.put(ret_json_key__send__tx_hash(), std::move(success_retVals.tx_hash_string));
-	root.put(ret_json_key__send__tx_key(), std::move(success_retVals.tx_key_string));
-	root.put(ret_json_key__send__tx_pub_key(), std::move(success_retVals.tx_pub_key_string));
-	root.put("target_address", std::move(success_retVals.target_address));
-	root.put("final_total_wo_fee", std::move(RetVals_Transforms::str_from(success_retVals.final_total_wo_fee)));
-	root.put("isXMRAddressIntegrated", std::move(RetVals_Transforms::str_from(success_retVals.isXMRAddressIntegrated)));
-	if (success_retVals.integratedAddressPIDForDisplay) {
-		root.put("integratedAddressPIDForDisplay", std::move(*(success_retVals.integratedAddressPIDForDisplay)));
+	root.put("used_fee", std::move(RetVals_Transforms::str_from(*(this->step1_retVals__using_fee))));  // NOTE: not the same thing as step2_retVals.fee_actually_needed
+	root.put("total_sent", std::move(RetVals_Transforms::str_from(*(this->step1_retVals__final_total_wo_fee) + *(this->step1_retVals__using_fee))));
+	root.put("mixin", *(this->step1_retVals__mixin)); // this is a uint32 so it can be sent in JSON
+	root.put("serialized_signed_tx", std::move(*(this->step2_retVals__signed_serialized_tx_string)));
+	root.put("tx_hash", std::move(*(this->step2_retVals__tx_hash_string)));
+	root.put("tx_key", std::move(*(this->step2_retVals__tx_key_string)));
+	root.put("tx_pub_key", std::move(*(this->step2_retVals__tx_pub_key_string)));
+	root.put("target_address", "XXX fix me"); // XXX
+	root.put("final_total_wo_fee", std::move(RetVals_Transforms::str_from(*(this->step1_retVals__final_total_wo_fee))));
+	root.put("isXMRAddressIntegrated", std::move(RetVals_Transforms::str_from(this-isXMRAddressIntegrated)));
+	if (this->integratedAddressPIDForDisplay) {
+		root.put("integratedAddressPIDForDisplay", std::move(*(this->integratedAddressPIDForDisplay)));
 	}
 
 	return ret_json_from_root(root).c_str();
