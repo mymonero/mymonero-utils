@@ -18,7 +18,7 @@
 ### Installation
 
 ```bash
-npm i @mymonero/mymonero-wallet
+npm i @mymonero/mymonero-wallet-manager
 ```
 
 ### Initialize
@@ -111,18 +111,27 @@ Estimates the send fee
 wallet.estimateFee()
 ```
 
-### Estimate Transaction fee
+### Transfer
 
-Estimates the send fee
+Send funds to a single or multiple destinations
 
 ```js
-wallet.estimateFee()
+const options = {
+  destinations: [
+    { 
+      to_address: '55zEF8bGuQVSSCeg5Bnh5G6CZoJKDLUWE7q91hxABeaJCb9VUpFrKro6np9tuHEG1uMM1st9b2xJDa7pgTBRRkvu7p3Y9U5', 
+      send_amount: '0.1' 
+    }
+  ],
+  shouldSweep: false,
+  priority: 1
+}
+const hash = await wallet.transfer(options).catch(err => {
+  console.log(err.message)
+})
 ```
-
-generatePaymentId
 decodeAddress
 transferToContact
-transfer
 serialize
 
 ContactManager

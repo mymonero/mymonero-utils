@@ -201,8 +201,12 @@ This Tx needs to be sent on to the light wallet server for broadcast.
 
 ```js
 const options = {
-    amount:'0.0001',
-    recipientAddress: '42ddLnxquN84kpfmEpL8FxdBw32BGuwagXSz6xRSAUA2e7dupTS1FxP3vo1iPBA2doHPwJUpE7WVCMutnfwVMtVAKoaEA8X',
+    destinations: [
+      { 
+        'to_address': '42ddLnxquN84kpfmEpL8FxdBw32BGuwagXSz6xRSAUA2e7dupTS1FxP3vo1iPBA2doHPwJUpE7WVCMutnfwVMtVAKoaEA8X', 
+        'send_amount': '0.0001'
+      }
+    ],
     priority: 1,
     address: '46kDcL7a9uVQojKQWqxqZUg9cKuffJvjYhbjbybxV46oNZm3Pa7qX9YWXC6vjAnyr3NrMFWvGjj7GUNVrQM9itGC5npKFD8',
     privateViewKey: 'f9f3aa647a5cce9ed896936b7f500b6bf87f48d4e092692c07fe824743a2d402',

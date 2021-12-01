@@ -15,19 +15,18 @@ class WABridge {
   /**
    * Creates a transfer of funds to the recipient address and returns the raw signed tx.
    * @param {object} options
-   * @param {number} options.amount 
-   * @param {string} options.recipientAddress 
-   * @param {number} options.priority 
-   * @param {string} options.address 
-   * @param {string} options.privateViewKey 
-   * @param {string} options.publicSpendKey 
-   * @param {string} options.privateSpendKey 
-   * @param {boolean} options.shouldSweep 
-   * @param {?string} options.paymentId - The payment id for the transaction. can be null. 
+   * @param {number} options.amount
+   * @param {string} options.recipientAddress
+   * @param {number} options.priority
+   * @param {string} options.address
+   * @param {string} options.privateViewKey
+   * @param {string} options.publicSpendKey
+   * @param {string} options.privateSpendKey
+   * @param {boolean} options.shouldSweep
    * @param {string} options.nettype - The network name eg MAINNET.
    * @param {object} options.unspentOuts - List of unspent outs as well as per byte fee.
    * @param {randomOutsCallback} options.randomOutsCb - Used to fetch the random outs from the light wallet service.
-   * @returns 
+   * @returns
    */
   async createTransaction (options) {
     const self = this
@@ -45,14 +44,27 @@ class WABridge {
     if (typeof options.randomOutsCb !== 'function') {
       throw Error('Invalid randomsOutCB not a function')
     }
-    if (options.shouldSweep && options.amount !== 0) {
-      throw Error('Invalid amount when sweeping amount must be 0')
+    if (!options.destinations.isArray()) {
+      throw Error('Invalid destinations')
     }
-    
+    for (var destination in options.destinations) {
+      if (!destination.hasOwnProperty(to_address) || !destination.hasOwnProperty(send_amount)) {
+        throw Error('Invalid destinations')
+      }
+    }
+    if (options.shouldSweep) {
+      if (options.destinations.length !== 1) {
+        throw Error('Invalid number of destinations must be 1')
+      }
+      if (options.destinations[0].send_amount !== 0) {
+        throw Error('Invalid amount when sweeping amount must be 0')
+      }
+    }
+
+    // check if destinations is set correctly
     const args =
     {
-      sending_amount_double_string: '' + options.amount,
-      enteredAddressValue: options.recipientAddress,
+      destinations: options.destinations,
       is_sweeping: options.shouldSweep,
       from_address_string: options.address,
       sec_viewKey_string: options.privateViewKey,
@@ -60,12 +72,11 @@ class WABridge {
       pub_spendKey_string: options.publicSpendKey,
       priority: '' + options.priority,
       nettype_string: options.nettype,
-      manuallyEnteredPaymentID: options.paymentId,
       unspentOuts: options.unspentOuts
     }
-    
+
     try {
-      // WebAssembly keeps state between calls so we can prepare the tx before getting the random out and signing tx 
+      // WebAssembly keeps state between calls so we can prepare the tx before getting the random out and signing tx
       const retString = this.Module.prepareTx(JSON.stringify(args, null, ''))
       const ret = JSON.parse(retString)
       // check for any errors passed back from WebAssembly
@@ -74,7 +85,7 @@ class WABridge {
       }
       // fetch random decoys
       const randomOuts = await self._getRandomOuts(ret.amounts.length, options.randomOutsCb)
-      // send random decoys on and complete the tx creation 
+      // send random decoys on and complete the tx creation
       const retString2 = this.Module.createAndSignTx(JSON.stringify(randomOuts))
       const rawTx = JSON.parse(retString2)
       // check for any errors passed back from WebAssembly
@@ -88,9 +99,9 @@ class WABridge {
       return rawTx
     } catch (exception) {
       // check for exceptions thrown by WebAssembly that is only a pointer id
-      // this is for missed exceptions we havent handled in the code and returned in the err_msg response 
+      // this is for missed exceptions we havent handled in the code and returned in the err_msg response
       if (!isNaN(exception)) {
-        throw Error(this.Module.getExceptionMessage(exception));
+        throw Error(this.Module.getExceptionMessage(exception))
       } else {
         throw exception
       }
@@ -342,11 +353,11 @@ class WABridge {
    * @param {randomOutsCallback} randomOutsCb - The callback function to fetch random outs.
    * @returns {object} An object with a property amount_outs array.
    */
-   async _getRandomOuts (numberOfOuts, randomOutsCb) {
+  async _getRandomOuts (numberOfOuts, randomOutsCb) {
     const randomOuts = await randomOutsCb(numberOfOuts)
 
-    if (typeof randomOuts.amount_outs == "undefined" || !Array.isArray(randomOuts.amount_outs)) {
-      throw Error("Invalid amount_outs in randomOutsCb response")
+    if (typeof randomOuts.amount_outs === 'undefined' || !Array.isArray(randomOuts.amount_outs)) {
+      throw Error('Invalid amount_outs in randomOutsCb response')
     }
 
     return randomOuts
