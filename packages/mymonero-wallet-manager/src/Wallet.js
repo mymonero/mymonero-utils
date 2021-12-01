@@ -121,27 +121,6 @@ class Wallet {
   }
 
   /**
-   * Transfers funds to a contact.
-   * @param {object} options
-   * @returns
-   */
-  async transferToContact (options) {
-    const self = this
-    let recipientAddress = null
-    for (let i = 0; i < self.contactManager.contacts.length; i++) {
-      if (options.contact === self.contactManager.contacts[i].name) {
-        recipientAddress = self.contactManager.contacts[i].address
-        break
-      }
-    }
-    if (recipientAddress == null) {
-      throw Error('contact not found')
-    }
-    options.destinations = [{ to_address: recipientAddress, send_amount: options.amount }]
-    return await self.transfer(options)
-  }
-
-  /**
    * Generates the raw transaction and broadcasts it to the network.
    * @param {object} options
    * @returns
@@ -152,7 +131,27 @@ class Wallet {
     if (self.isSendingFunds === true) {
       throw Error('Currently already sending funds. Please try again when complete.')
     }
+
+    options.destinations.forEach(function (destination) {
+      try {
+        self.decodeAddress(destination.to_address)
+      } catch (err) {
+        let recipientAddress = null
+        for (let i = 0; i < self.contactManager.contacts.length; i++) {
+          if (destination.to_address === self.contactManager.contacts[i].name) {
+            recipientAddress = self.contactManager.contacts[i].address
+            break
+          }
+        }
+        if (recipientAddress == null) {
+          throw Error('contact not found')
+        }
+        destination.to_address = recipientAddress
+      }  
+    })
+
     self.isSendingFunds = true
+
     try {
       const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
 
