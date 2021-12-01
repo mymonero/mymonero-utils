@@ -1,6 +1,6 @@
 //
 //  emscr_async_bridge_index.cpp
-//  Copyright (c) 2014-2019, MyMonero.com
+//  Copyright (c) 2014-2021, MyMonero.com
 //
 //  All rights reserved.
 //
@@ -62,7 +62,7 @@ SendFunds::FormSubmissionController *controller_ptr = NULL;
 //
 // From-JS function decls
 string emscr_SendFunds_bridge::send_funds(const string &args_string)
-{	
+{
 	boost::property_tree::ptree json_root;
 
 	std::istringstream ss(args_string);
@@ -74,15 +74,26 @@ string emscr_SendFunds_bridge::send_funds(const string &args_string)
 string emscr_SendFunds_bridge::prepare_send(const string &args_string)
 {
 	boost::property_tree::ptree json_root;
-	// if (!parsed_json_root(args_string, json_root)) {
-	// 	// (it will already have thrown an exception)
-	// 	return error_ret_json_from_message("Invalid JSON");
-	// }
+
 	std::istringstream ss(args_string);
 	boost::property_tree::read_json(ss, json_root);
 	
+	if (json_root.get_child_optional("manuallyEnteredPaymentID")) {
+ 		return error_ret_json_from_message("Long payment IDs are obsolete.");
+ 	}
+	
+	const auto& destinations = json_root.get_child("destinations");
+ 	vector<string> dest_addrs, dest_amounts;
+ 	dest_addrs.reserve(destinations.size());
+ 	dest_amounts.reserve(destinations.size());
+
+ 	for (const auto& dest : destinations) {
+ 		dest_addrs.emplace_back(dest.second.get<string>("to_address"));
+ 		dest_amounts.emplace_back(dest.second.get<string>("send_amount"));
+ 	}
+
 	Parameters parameters{
-		json_root.get<string>("sending_amount_double_string"),
+		std::move(dest_amounts),
 		json_root.get<bool>("is_sweeping"),
 		(uint32_t)stoul(json_root.get<string>("priority")),
 		//
@@ -92,9 +103,8 @@ string emscr_SendFunds_bridge::prepare_send(const string &args_string)
 		json_root.get<string>("sec_spendKey_string"),
 		json_root.get<string>("pub_spendKey_string"),
 		//
-		json_root.get<string>("enteredAddressValue"),
+		std::move(dest_addrs),
 		//
-		json_root.get_optional<string>("manuallyEnteredPaymentID"),
 		json_root.get_child("unspentOuts")
 	};
 	controller_ptr = new FormSubmissionController{parameters}; // heap alloc
