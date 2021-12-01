@@ -33,8 +33,8 @@
     "coverage": "nyc report $npm_package_options_coverage | coveralls",
     "lint": "standard --fix $npm_package_options_standard",
     "bootstrap": "lerna bootstrap --hoist --force-local",
-    "test": "cross-env NODE_ENV=test nyc mocha packages/*/test/unit $npm_package_options_mocha --timeout 10000",
-    "test:lite": "cross-env NODE_ENV=test mocha packages/*/test/unit $npm_package_options_mocha --timeout 10000"
+    "test": "cross-env NODE_ENV=test nyc mocha packages/*/test/unit $npm_package_options_mocha --timeout 20000",
+    "test:lite": "cross-env NODE_ENV=test mocha packages/*/test/unit $npm_package_options_mocha --timeout 20000"
   },
   "dependencies": {
     "coveralls": "^3.1.0",
