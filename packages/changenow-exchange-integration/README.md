@@ -7,8 +7,23 @@
 </svg>
 </p>
 
-#MyMonero client-side ChangeNow integration
-##Introduction
+<p align="center">
+  MyMonero client-side ChangeNow integration
+</p>
+
+> :warning: This project is under heavy development. Expect bugs & breaking changes.
+
+-----
+
+## Usage
+
+### Installation
+
+```bash
+npm i @mymonero/mymonero-exchange-changenow-integration
+```
+
+## Introduction
 
 This npm module is used to facilitate the purchase of XMR using fiat currencies, as well as exchanging XMR into other cryptocurrencies via ChangeNow.
  
@@ -21,3 +36,8 @@ If you would like to integrate cryptocurrency exchange in your own software and 
 
 For examples of how to use the module, refer to examples.js
 
+## License
+
+See `LICENSE.txt` for license.
+
+All source code copyright © 2021 by MyMonero. All rights reserved.
