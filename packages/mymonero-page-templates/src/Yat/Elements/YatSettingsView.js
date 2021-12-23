@@ -204,6 +204,7 @@ export class YatSettingsView extends LitElement {
             </div> -->
             <div class="form-field">
                 <span class="field-title">
+                    <!-- Yat<mym-tooltip allowHTML="true" tooltipContent="Yat lets you use emojis as your universal username and identity on the internet.">?</mym-tooltip> -->
                     Yat<mym-tooltip allowHTML="true" tooltipContent="Yat lets you use emojis as your universal username and identity on the internet.">?</mym-tooltip>
                 </span>
             </div>
