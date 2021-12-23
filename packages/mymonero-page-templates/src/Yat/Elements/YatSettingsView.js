@@ -40,8 +40,8 @@ export class YatSettingsView extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this.wallets = this.context.walletsListController.records;
-        // this.partnerPath = "https://y.at/partner/mymonero"
-        this.partnerPath = "https://yat.fyi/partner/mymonero"
+        // this.partnerPath = "https://yat.fyi/partner/mymonero"
+        this.partnerPath = "https://y.at/partner/mymonero"
     }
         
     constructor() {
@@ -82,6 +82,7 @@ export class YatSettingsView extends LitElement {
         this.openExternal(partnerPath);
     }
 
+    // Presently not used while additional integration is in progress
     async handleConnectAYatClickEvent() {
         // params:
         // eid
@@ -141,7 +142,7 @@ export class YatSettingsView extends LitElement {
             if (address) {
                 let addressString = encodeURIComponent(`0x1001=${address}`);
                 let refreshToken = "todolol"
-                let partnerPath = `https://y.a.bblat/partner/{partner_path}/link-email?addresses=${addressString}&refresh_token=${refreshToken}`
+                let partnerPath = `${this.partnerPath}/link-email?addresses=${addressString}&refresh_token=${refreshToken}`
                 this.openExternal(partnerPath);
             }
             
@@ -183,17 +184,18 @@ export class YatSettingsView extends LitElement {
         } else if (this.context.walletsListController.records.length === 1) {
             // immediate redirect
             let addressString = `0x1001=${this.wallets.records[0]}`
-            let partnerPath = `https://y.at/partner/{partner_path}/link-email`
+            let partnerPath = `${this.partnerPath}}/link-email`
             this.openExternal(partnerPath);    
         } else {
             // please log into wallet
         }
     }
 
+    // Presently not used while additional integration is in progress
     handleManageAYatClickEvent() {
         // refresh_token:  User's refresh token that was received in the response body of redirection to Yat web or as a deep link query parameter in redirection from Yat web in Get a Yat (Flow 1A).
         // addresses: YAT_TAG_1=ADDRESS_1|YAT_TAG_2=ADDRESS_2|...|YAT_TAG_N=ADDRESS_N
-        let partnerPath = "https://y.at/partner/{partner_path}/manage"
+        let partnerPath = `${this.partnerPath}/manage`
         this.openExternal(partnerPath);
     }
 
