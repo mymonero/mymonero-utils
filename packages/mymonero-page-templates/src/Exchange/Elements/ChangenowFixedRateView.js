@@ -180,4 +180,8 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
 
 }
 
-customElements.define('changenow-fixed-rate-view', ChangenowFixedRateView);
+try {
+    customElements.define('changenow-fixed-rate-view', ChangenowFixedRateView);
+} catch (error) {
+    // already defined
+}

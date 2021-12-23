@@ -30,4 +30,8 @@ export class ChangenowFloatingRateView extends ExchangeNavigationController(LitE
 
 }
 
-customElements.define('changenow-floating-rate-view', ChangenowFloatingRateView);
+try {
+    customElements.define('changenow-floating-rate-view', ChangenowFloatingRateView);
+} catch (error) {
+    // already defined
+}

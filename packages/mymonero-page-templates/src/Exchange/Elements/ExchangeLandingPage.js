@@ -112,4 +112,8 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
 
 }
 
-customElements.define('exchange-landing-page', ExchangeLandingPage);
+try {
+    customElements.define('exchange-landing-page', ExchangeLandingPage);
+} catch (error) {
+    // already defined
+}
