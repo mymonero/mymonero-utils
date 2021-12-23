@@ -3,8 +3,6 @@ import {ref, createRef} from 'lit/directives/ref.js';
 
 import tippy from "tippy.js";
 import 'tippy.js/dist/tippy.css';
-console.log("tooltip imported");
-
 
 export class Tooltip extends LitElement {
   static get styles() {
