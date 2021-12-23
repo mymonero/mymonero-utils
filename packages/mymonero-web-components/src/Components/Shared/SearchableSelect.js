@@ -237,6 +237,10 @@ export class SearchableSelect extends LitElement {
     }
 }
 
-customElements.define('searchable-select', SearchableSelect);
+try {
+    customElements.define('searchable-select', SearchableSelect);
+} catch (error) {
+    // already defined
+}
 
 

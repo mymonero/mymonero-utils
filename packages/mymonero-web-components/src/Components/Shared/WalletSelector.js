@@ -346,4 +346,10 @@ ${this.wallets.map((wallet) => {
                         })}  
 
 */
-customElements.define('wallet-selector', WalletSelector);
+
+try {
+    customElements.define('wallet-selector', WalletSelector);
+} catch (error) {
+    // already defined
+}
+
