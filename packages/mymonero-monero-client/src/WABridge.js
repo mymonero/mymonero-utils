@@ -44,7 +44,7 @@ class WABridge {
     if (typeof options.randomOutsCb !== 'function') {
       throw Error('Invalid randomsOutCB not a function')
     }
-    if (!options.destinations.isArray()) {
+    if (!Array.isArray(options.destinations)) {
       throw Error('Invalid destinations')
     }
     for (var destination in options.destinations) {
