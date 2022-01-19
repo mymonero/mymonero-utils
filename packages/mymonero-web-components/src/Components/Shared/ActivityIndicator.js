@@ -111,7 +111,7 @@ export class ActivityIndicator extends LitElement {
     `;
   }
 
-  connectedCallback() {
+  connectedCallbacasdk() {
     super.connectedCallback();
   }
 
@@ -145,6 +145,10 @@ export class ActivityIndicator extends LitElement {
 
 */
 
-customElements.define('activity-indicator', ActivityIndicator);
 
 
+try {
+  customElements.define('activity-indicator', ActivityIndicator);
+} catch (error) {
+  // already defined
+}

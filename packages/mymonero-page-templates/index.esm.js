@@ -5,6 +5,7 @@ require("@mymonero/mymonero-web-components");
 require("./src/Exchange/Elements/ChangenowBuyWithFiatView");
 require("./src/Exchange/Elements/ChangenowFixedRateView")
 require("./src/Exchange/Elements/ChangenowFloatingRateView");
+require("./src/Yat/Elements/YatSettingsView");
 
 /* Import exchange landing page class */
 import ExchangeLandingPage from "./src/Exchange/Elements/ExchangeLandingPage";

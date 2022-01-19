@@ -903,4 +903,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
 
 }
 
-customElements.define('changenow-buy-with-fiat-view', ChangenowBuyWithFiatView);
+try {
+    customElements.define('changenow-buy-with-fiat-view', ChangenowBuyWithFiatView);
+} catch (error) {
+    // already defined
+}

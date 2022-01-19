@@ -7,6 +7,7 @@
 require("./Exchange/Elements/ChangenowBuyWithFiatView");
 require("./Exchange/Elements/ChangenowFixedRateView")
 require("./Exchange/Elements/ChangenowFloatingRateView");
+require("./Yat/Elements/YatSettingsView");
 
 /* Import exchange landing page class */
 let ExchangeLandingPage = require("./Exchange/Elements/ExchangeLandingPage");

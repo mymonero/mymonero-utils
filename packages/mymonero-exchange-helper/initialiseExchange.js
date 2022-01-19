@@ -445,6 +445,13 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       // We attempt to retrieve enabled currency pairs from the server
       exchangeHelper.exchangeFunctions.getCurrencyPairs().then((response) => {
         
+        response = {"out_currencies":[
+          {"name":"Bitcoin","symbol":"BTC"},
+          {"name":"Ether","symbol":"ETH"},
+          {"name":"Litecoin","symbol":"LTC"},
+          {"name":"Bitcoin Cash","symbol":"BCH"},
+          {"name":"Polkadot","symbol":"DOT"}
+        ]}
         let outCurrencySelectList = document.getElementById('outCurrencySelectList')
         let length = outCurrencySelectList.length;
         for (let i = length - 1; i >= 0; i--) {
