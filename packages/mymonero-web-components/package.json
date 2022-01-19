@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-web-components",
-  "version": "1.3.0",
+  "version": "1.3.1-alpha.2",
   "description": "This npm package contains a number of Lit web components.",
   "main": "./lib/index",
   "exports": {
@@ -31,7 +31,8 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "lit": "*",
-    "lit-html": "^1.4.1"
+    "lit-html": "^1.4.1",
+    "tippy.js": "^6.3.7"
   },
   "publishConfig": {
     "access": "public"

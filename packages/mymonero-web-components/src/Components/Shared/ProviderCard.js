@@ -178,6 +178,9 @@ export class ExchangeServiceProviderCard extends LitElement {
 
 */
 
-customElements.define('provider-card', ExchangeServiceProviderCard);
-
+try {
+  customElements.define('provider-card', ExchangeServiceProviderCard);
+} catch (error) {
+  // already defined
+}
 

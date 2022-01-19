@@ -18,7 +18,27 @@ currencyMetadata = {
         name: "Monero",
         symbol: "XMR",
         precision: 12
-    }
+    },
+    "BCH": {
+        name: "Bitcoin Cash",
+        symbol: "BCH",
+        precision: 8
+    },
+    "USDT": {
+        name: "Tether",
+        symbol: "USDT",
+        precision: 6
+    },
+    "USDC": {
+        name: "Tether2",
+        symbol: "USDC",
+        precision: 6
+    },
+    "DOT": {
+        name: "Polkadot",
+        symbol: "DOT",
+        precision: 16
+    },
 }
 
 module.exports = currencyMetadata
