@@ -1,12 +1,11 @@
 import {html, css, LitElement } from 'lit';
-import {ref, createRef} from 'lit/directives/ref.js';
-
 import tippy from "tippy.js";
-import 'tippy.js/dist/tippy.css';
+// For backwards-compatibility with CommonJS (desktop MyMonero), instead of doing `import 'tippy.js/dist/tippy.css'`, we incorporate the tippy dist CSS in our component
 
 export class Tooltip extends LitElement {
   static get styles() {
     return css`
+        .tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:#333;color:#fff;border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:"";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}
         .tippy-box {
             color: rgb(17, 187, 236);
             cursor: pointer;
@@ -58,14 +57,13 @@ export class Tooltip extends LitElement {
   
   connectedCallback() {
       super.connectedCallback();
-      console.log("Bind to tooltip hover / click events")        
     }
     
     async firstUpdated() {
         // Give the browser a chance to paint
-        const element = this.inputRef;
-        console.log(this.useHTML);
-        tippy(element.value, {
+        let shadowRoot = this.shadowRoot;
+        let tooltipElement = shadowRoot.getElementById("tooltipLink");
+        tippy(tooltipElement, {
             content: this.tooltipContent,
             allowHTML: this.allowHTML,
             theme: "mym"
@@ -75,13 +73,11 @@ export class Tooltip extends LitElement {
     constructor() {
         super();
         this.clickHandler = this.clickHandler;
-        this.inputRef = createRef();
     }
         
     static get properties() {
         return {
             context: Object,
-            tooltipHeader: String, 
             tooltipContent: String,
             allowHTML: Boolean
         }
@@ -89,7 +85,7 @@ export class Tooltip extends LitElement {
     
     render() {
         return html`
-            <span id="tooltipLink" class="clickableLinkButton" ${ref(this.inputRef)}>
+            <span id="tooltipLink" class="clickableLinkButton">
                 <slot></slot>
             </span>
         `
@@ -100,6 +96,6 @@ export class Tooltip extends LitElement {
 try {
     customElements.define('mym-tooltip', Tooltip);
 } catch (error) {
-    // already defined
+    // mym-tooltip is already defined by some other npm package
 }
 
