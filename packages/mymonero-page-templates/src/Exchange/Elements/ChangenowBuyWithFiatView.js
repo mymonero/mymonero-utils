@@ -498,7 +498,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                 
                 for (let i = 0; i < fiatCurrencies.length; i++) {
                     var hasValidPaymentMethod = false;
-                    let paymentMethodArray = fiatCurrencies[i].payment_methods;
+                    let paymentMethodArray = fiatCurrencies[i].networks[0].payment_methods;
                     for (let j = 0; j < paymentMethodArray.length; j++) {
                         if (paymentMethodArray[j].deposit_enabled === true) {
                             hasValidPaymentMethod = true;
