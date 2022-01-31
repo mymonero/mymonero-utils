@@ -22,7 +22,6 @@ class FiatAPI {
     getFiatAPIStatus() {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
-
             var config = {
                 method: 'get',
                 url: `${this.getApiPath()}fiat-status`,
