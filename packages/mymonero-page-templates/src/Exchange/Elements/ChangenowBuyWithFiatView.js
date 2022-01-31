@@ -428,7 +428,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         } catch (error) {
             // Error communicating with server to retrieve response -- show error
             this.errorString = error.message;
-            console.log(error);
         }
     }
 
@@ -436,7 +435,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         // Check whether we're on desktop, or web and Android
         if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context            
             this.context.shell.openExternal(url);            
-        } else { // Web (and Capacitor?) codebase            
+        } else { // Web and Capacitor codebase            
             window.open(url, "_blank");
         }
     }
@@ -509,7 +508,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                     } else {
                     }
                 }
-                console.log(enabledCurrencies);
                 this.fiatCurrencies = enabledCurrencies;
                 this.requestUpdate(); // TODO: Check if this is necessary
                 //this.displayLoadingScreen = false;
@@ -554,7 +552,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     async checkAPIIsAvailable() {
         try {
             let response = await this.fiatApi.getFiatAPIStatus();
-            console.log(response);
             if (response.message == "OK") {
                 return true;
             } else {
@@ -563,14 +560,12 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         } catch(error) {
             // TODO: build out better error handling
             console.error("API not available -- network error or unexpected error or ChangeNow response object's format changed")
-            console.log(error);
         }
     }
     
     async getTransactionEstimate() {
         try {
             let response = await this.fiatApi.getTransactionEstimate();
-            console.log(response);
             if (response.message == "OK") {
                 return true;
             } else {
@@ -579,7 +574,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         } catch(error) {
             // TODO: build out better error handling
             console.error("API not available -- network error or unexpected error or ChangeNow response object's format changed")
-            console.log(error);
         }
     }
 
