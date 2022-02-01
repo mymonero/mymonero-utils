@@ -75,9 +75,7 @@ class CryptoAPI {
     async retrieveFilteredMoneroCurrencyData(arrayToFilter) {
         // Expect json string
         var axios = require('axios');
-        console.log(this);
         try {
-            console.log("Attempting to retrieve parameters");
             const parameters = await Promise.allSettled([this.getFixedFlowCurrencies(), this.getStandardFlowParameters()])
             let parameterObj = {}
             if (parameters[0].status == "fulfilled") {
@@ -86,7 +84,6 @@ class CryptoAPI {
             if (parameters[1].status == "fulfilled") {
                 parameterObj.standardRateParameters = this.filterMoneroCurrencyData(parameters[1].value);
             }
-            console.log(parameterObj);
             //let arrayToFilter = await this.getFixedFlowCurrencies();
             return parameterObj;
         } catch (error) {
@@ -106,7 +103,6 @@ class CryptoAPI {
 
         //     // axios(config)
         //     //     .then(function (response) {
-        //     //         console.log("then");
         //     //         let newArr = response.data.filter(responseObj => {
         //     //             if (responseObj.ticker == 'xmr') {
         //     //                 return true
@@ -121,7 +117,6 @@ class CryptoAPI {
     }
 
     getApiPath() {
-        console.log(this);
         return `${this.apiUrl}/${this.apiVersion}/`
     }
 
@@ -139,27 +134,14 @@ class CryptoAPI {
         return new Promise((resolve, reject) => {
             axios(config)
                 .then(function (response) {
-                    //console.log("then");
-                    //console.log(JSON.stringify(response.data));
-                    //console.log(response.data);
-                    //console.log(typeof(response.data));
-                    //console.log(response.data);
                     let newArr = response.data.filter(responseObj => {
                         if (responseObj.ticker == 'xmr') {
                             return true
                         }
                     })
-                    //console.log("newArr:", newArr);
-                    //resolve("wtf?");
                     resolve(newArr);
-                    
-                    // let jsonObject = JSON.parse(response.data);
-                    // console.log(jsonObject[0]);
-                    // //console.log(JSON.stringify(response.data));
-                    // return JSON.stringify(response.data);
                 })
                 .catch(function (error) {
-                    console.log("error");
                     reject(error);
                 });
         })
@@ -170,7 +152,6 @@ class CryptoAPI {
     getMinimalExchangeAmount(fromCurrency, toCurrency, flow) {
         return new Promise((resolve, reject) => {
             var axios = require('axios');
-            //url: `${this.getApiPath()}exchange/min-amount?fromCurrency=btc&toCurrency=usdt&fromNetwork=btc&toNetwork=eth&flow=standard`,
             var config = {
                 method: 'get',
                 url: `${this.getApiPath()}exchange/min-amount`,
@@ -185,12 +166,10 @@ class CryptoAPI {
                     'x-changenow-api-key': `${this.apiKey}`
                 }
             };
-            console.log(config);
             axios(config).then(function (response) {
                 resolve(response.data);
             })
             .catch(function (error) {
-                console.log(error);
                 reject(error)
             });
         })
@@ -215,7 +194,6 @@ class CryptoAPI {
             };
             
             axios(config).then(function (response) {
-                console.log(response);
                 resolve(response.data);
             })
             .catch(function (error) {
@@ -303,9 +281,6 @@ class CryptoAPI {
                 data : data
             };
 
-            console.log("Payload for creating offer");
-            console.log(data)
-
             axios(config).then(function (response) {                
                 resolve(response.data);
             })
@@ -333,10 +308,8 @@ class CryptoAPI {
             */
             // axios(config)
             // .then(function (response) {
-            //     console.log(JSON.stringify(response.data));
             // })
             // .catch(function (error) {
-            //     console.log(error);
             // });
         })
     }
@@ -358,7 +331,6 @@ class CryptoAPI {
             };
 
             axios(config).then(function (response) {
-                console.log(JSON.stringify(response.data));
                 resolve(response.data);
             }).catch(function (error) {
                 reject(error);
@@ -369,7 +341,6 @@ class CryptoAPI {
     // Tested, working
     validateAddress(currencyTickerCode, address) {
         return new Promise((resolve, reject) => {
-            console.log("Running validate address");
             var axios = require('axios');
             var config = {
                 method: 'get',
@@ -419,7 +390,6 @@ class CryptoAPI {
     //                 self.exchangeConfiguration = response;
     //                 resolve(response);
     //             }).catch((error) => {
-    //                 console.log("Unable to retrieve exchange configuration -- assume defaults");
     //                 let data = {
     //                     "referrer_info": {
     //                         "indacoin": {
@@ -474,13 +444,11 @@ class CryptoAPI {
     //     return new Promise((resolve, reject) => {
     //         axios.post(endpoint, data)
     //             .then(function (response) {
-    //                 console.log('outAmount', response);
     //                 self.offer = response.data;
     //                 self.offer.out_amount = out_amount;
     //                 resolve(self.offer);
     //             })
     //             .catch(function (error) {
-    //                 console.log(error);
     //                 reject(error);
     //             });
     //     });
@@ -499,12 +467,10 @@ class CryptoAPI {
     //     return new Promise((resolve, reject) => {
     //         axios.post(endpoint, data)
     //             .then(function (response) {
-    //                 console.log('resp from getOfferwithtinamount', response);
     //                 self.offer = response.data;
     //                 resolve(self.offer);
     //             })
     //             .catch(function (error) {
-    //                 console.log(error);
     //                 reject(error);
     //             });
     //     });
@@ -526,7 +492,6 @@ class CryptoAPI {
     //                 resolve(self.orderStatus);
     //             })
     //             .catch(function (error) {
-    //                 console.log(error);
     //                 reject(error);
     //             });
     //     });
@@ -558,7 +523,6 @@ class CryptoAPI {
     //     } else if (self.offer_type == "in_amount") {
     //         delete data.out_amount;
     //     }
-    //     console.log(data);
     //     return new Promise((resolve, reject) => {
     //         try {
     //             axios.post(endpoint, data)

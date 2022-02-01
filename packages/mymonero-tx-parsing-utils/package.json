@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-tx-parsing-utils",
-  "version": "1.3.1-alpha.0",
+  "version": "1.3.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,10 +16,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^1.3.1-alpha.0",
-    "@mymonero/mymonero-keyimage-cache": "^1.3.1-alpha.0",
-    "@mymonero/mymonero-monero-config": "^1.3.1-alpha.0",
-    "@mymonero/mymonero-money-format": "^1.3.1-alpha.0",
+    "@mymonero/mymonero-bigint": "^1.3.2",
+    "@mymonero/mymonero-keyimage-cache": "^1.3.2",
+    "@mymonero/mymonero-monero-config": "^1.3.2",
+    "@mymonero/mymonero-money-format": "^1.3.2",
     "moment": "^2.29.1"
   },
   "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
