@@ -2,9 +2,13 @@ import { html, css, LitElement } from 'lit';
 //import ExchangeNavigationController from "../../../mymonero-page-templates";
 //console.log(ExchangeNavigationController);
 
+console.log("Da fuq bra");
 export class ExchangeServiceProviderCard extends LitElement {
   static get styles() {
     return css`
+    * {
+      touch-action: none;
+    }
         .provider-card {
             position: relative;
             top: 0px;
@@ -22,7 +26,9 @@ export class ExchangeServiceProviderCard extends LitElement {
 
         }
         .title-label {
-            position: relative; box-sizing: border-box; padding: 8px 38px 4px 80px; display: block; word-break: break-word; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; -webkit-font-smoothing: subpixel-antialiased; font-size: 12px; font-weight: 400; letter-spacing: 0.5px; color: rgb(252, 251, 252); cursor: default;
+            position: relative; box-sizing: border-box; padding: 8px 38px 4px 80px; 
+            // display: block; 
+            word-break: break-word; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; -webkit-font-smoothing: subpixel-antialiased; font-size: 12px; font-weight: 400; letter-spacing: 0.5px; color: rgb(252, 251, 252); cursor: default;
             margin-left: 50px;
             text-align: left;
         }
@@ -41,7 +47,7 @@ export class ExchangeServiceProviderCard extends LitElement {
         .provider-logo {
             height: 48px;
             min-width: 48px;
-            display: block;
+            // display: block;
             position: absolute; 
             left: 6px; 
             top: 16px;
@@ -102,15 +108,50 @@ export class ExchangeServiceProviderCard extends LitElement {
     `;
   }
 
-  handleClickEvent(event) {
-    //let selectObject = this.selectedElement;
+  connectedCallback() {
+    super.connectedCallback();
+    
+    this.addEventListener('touchstart', this.ffsApple);
+    this.addEventListener('touchstart', () => {
+      console.log("PC: Touch start");
+    });
+
+    this.addEventListener('touchend', () => {
+        console.log("PC: Touch end");
+    });
+    //this.fuckingApple = document.addEventListener("touchstart", this.fuckYouApple.bind(this));
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    //document.removeEventListener("touchstart", this.fuckYouApple.bind(this));
+  }
+
+  fuckYouApple(obj, event) {
+    console.log(obj)
+    console.log("Touch start in PC");
+    console.log(event);
+    console.log(this);
     let options = {
-        detail: this.service,
-        bubbles: true,
-        composed: true
+      detail: this.service,
+      bubbles: true,
+      composed: true
     };
     let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
     this.dispatchEvent(providerCardClickedEvent, options);
+    console.log("Dispatch click event from provider card fuck you apple:", event);
+  }
+  
+  handleClickEvent(event) {
+    //let selectObject = this.selectedElement;
+    let options = {
+      detail: this.service,
+      bubbles: true,
+      composed: true
+    };
+    let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
+    this.dispatchEvent(providerCardClickedEvent, options);
+    console.log("Dispatch click event from provider card:", event);
   }
 
 
@@ -138,10 +179,34 @@ export class ExchangeServiceProviderCard extends LitElement {
     this.destinationView = "";
   }
 
+  createRenderRoot() {
+    const root = super.createRenderRoot();
+    root.addEventListener(
+      'click',
+      (e) => { console.log('click from PC'); this.shadowName = e.target.localName }
+    );
+    root.addEventListener(
+      'touchend',
+      (e) => { 
+        console.log('touchend from PC'); 
+        console.log(e); 
+        let options = {
+          detail: this.service,
+          bubbles: true,
+          composed: true
+        };
+        let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
+        this.dispatchEvent(providerCardClickedEvent, options);
+        //this.shadowName = e.target.localName 
+      }
+    );
+    return root;
+  }
+
   render() {
     return html` 
-        <div class="provider-card" @click=${this.handleClickEvent}>
-             <div class="hoverable-cell utility">
+        <div class="provider-card" @click=${this.handleClickEvent} ontouchstart=${this.handleClickEvent} ontouchend="alert('1234')">
+             <div class="utility">
                  <div class="${this.service.service_provider}-logo provider-logo">
 
                  </div>
