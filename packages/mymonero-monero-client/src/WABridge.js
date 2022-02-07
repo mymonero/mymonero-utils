@@ -48,7 +48,7 @@ class WABridge {
       throw Error('Invalid destinations')
     }
     for (var destination in options.destinations) {
-      if (!destination.hasOwnProperty(to_address) || !destination.hasOwnProperty(send_amount)) {
+      if (!destination.hasOwnProperty('to_address') || !destination.hasOwnProperty('send_amount')) {
         throw Error('Invalid destinations')
       }
     }
