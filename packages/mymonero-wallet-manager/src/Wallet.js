@@ -144,7 +144,7 @@ class Wallet {
           }
         }
         if (recipientAddress == null) {
-          throw Error('contact not found')
+          throw Error('contact or address not found')
         }
         destination.to_address = recipientAddress
       }
