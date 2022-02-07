@@ -147,7 +147,7 @@ class Wallet {
           throw Error('contact not found')
         }
         destination.to_address = recipientAddress
-      }  
+      }
     })
 
     self.isSendingFunds = true
