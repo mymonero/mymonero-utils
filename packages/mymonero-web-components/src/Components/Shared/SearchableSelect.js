@@ -209,8 +209,10 @@ export class SearchableSelect extends LitElement {
     createRenderRoot() {
         const root = super.createRenderRoot();
         root.addEventListener('click', (e) => { 
-            console.log('click from SS'); 
-            this.shadowName = e.target.localName
+            if (e.target.classList.contains("currencyOption")) {
+                this.handleSelectionEvent(e);
+            }
+            this.toggleElement();
         });
         root.addEventListener('touchend', (e) => { 
             if (e.target.classList.contains("currencyOption")) {

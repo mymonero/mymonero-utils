@@ -268,8 +268,11 @@ export class WalletSelector extends LitElement {
     createRenderRoot() {
         const root = super.createRenderRoot();
         root.addEventListener('click', (event) => { 
-            console.log('click from WS'); 
-            this.shadowName = event.target.localName 
+            if (event.target.id == "wallet-selector") {
+                this.showOptionsDropdown();
+            } else if (event.target.classList.contains("performUpdate")) {
+                this.updateSelectedWallet(event);
+            }
         });
         root.addEventListener('touchend', (event) => { 
             if (event.target.id == "wallet-selector") {

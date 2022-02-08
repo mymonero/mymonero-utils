@@ -163,8 +163,13 @@ export class ExchangeServiceProviderCard extends LitElement {
     const root = super.createRenderRoot();
     // We still need to flesh this out for clicks
     root.addEventListener('click', (event) => { 
-      console.log('click from PC'); 
-      this.shadowName = event.target.localName 
+      let options = {
+        detail: this.service,
+        bubbles: true,
+        composed: true
+      };
+      let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
+      this.dispatchEvent(providerCardClickedEvent, options);
     });
     root.addEventListener('touchend', (event) => { 
       let options = {
