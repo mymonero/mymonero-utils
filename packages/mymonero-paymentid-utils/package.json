@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-paymentid-utils",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "description": "Used to validate Monero payment ids",
   "main": "index.js",
   "scripts": {
