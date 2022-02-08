@@ -1,4 +1,5 @@
 import { html, css, LitElement } from 'lit';
+console.log("SS FFS");
 export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
@@ -153,13 +154,6 @@ export class SearchableSelect extends LitElement {
         }
     }
 
-//   clickHandler(event) {
-//     console.log("Hi from clickhandler");  
-//     console.log(event);
-//     console.log(this);
-
-//   }
-
     willUpdate(changedProperties) {
         if (changedProperties.get("values")?.length > 0) {
             //this.showDropdown = false;
@@ -173,7 +167,6 @@ export class SearchableSelect extends LitElement {
         super.connectedCallback();
         //this.allValues = [];
         this.filteredValues = this.values;
-        console.log(this);
         this.addEventListener("input", this.handleInputEvent);
     }
 
@@ -194,22 +187,48 @@ export class SearchableSelect extends LitElement {
         var eventPath = event.path || (event.composedPath && event.composedPath());
         let options = {
             detail: { 
-                selectValue: eventPath[0].value,
+                selectValue: eventPath[0].dataset.value,
                 selectText: eventPath[0].innerText
             },
             bubbles: true,
             composed: true
         };
         let selectOptionUpdated = new CustomEvent("searchable-select-update", options)
-        this.buttonText = eventPath[0].value;
+        this.buttonText = eventPath[0].dataset.value;
         this.dispatchEvent(selectOptionUpdated, options)
-        this.toggleElement();
+        // this.toggleElement();
     }
 
     updateSearchTextValue(event) {
+        console.log(event);
         var eventPath = event.path || (event.composedPath && event.composedPath());
         this.searchString = eventPath[0].value;
         this.filterSelect();
+    }
+
+    createRenderRoot() {
+        const root = super.createRenderRoot();
+        root.addEventListener(
+          'click',
+          (e) => { console.log('click from SS'); this.shadowName = e.target.localName }
+        );
+        root.addEventListener(
+          'touchend',
+          (e) => { 
+            console.log('touchend from SS'); 
+            console.log(e); 
+            console.log(e.target.className);
+            console.log(e.target.localName);
+            console.log(this.shadowName);
+            if (e.target.classList.contains("currencyOption")) {
+                this.handleSelectionEvent(e);
+            }
+            this.toggleElement();
+            
+            //this.shadowName = e.target.localName 
+          }
+        );
+        return root;
     }
 
     render() {
@@ -220,8 +239,8 @@ export class SearchableSelect extends LitElement {
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
                     <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
                     ${this.filteredValues.map((object) => {
-                        return html`<option value="${object.ticker}" @click=${this.handleSelectionEvent}>${object.name} - ${object.ticker}</option>`
-                    })}           
+                        return html`<div data-value="${object.ticker}" class="currencyOption" @click=${this.handleSelectionEvent}>${object.name} - ${object.ticker}</div>`
+                    })}     
                 </div>
             </div>`
         } else {
@@ -230,7 +249,7 @@ export class SearchableSelect extends LitElement {
                 <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
                     <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
-                        <option>Loading</option>
+                    <div data-value="" class="loading-placeholder">Loading</div>
                 </div>
             </div>`
         }
