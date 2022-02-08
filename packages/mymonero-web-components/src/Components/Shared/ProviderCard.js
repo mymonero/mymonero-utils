@@ -119,29 +119,12 @@ export class ExchangeServiceProviderCard extends LitElement {
     this.addEventListener('touchend', () => {
         console.log("PC: Touch end");
     });
-    //this.fuckingApple = document.addEventListener("touchstart", this.fuckYouApple.bind(this));
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    //document.removeEventListener("touchstart", this.fuckYouApple.bind(this));
   }
 
-  fuckYouApple(obj, event) {
-    console.log(obj)
-    console.log("Touch start in PC");
-    console.log(event);
-    console.log(this);
-    let options = {
-      detail: this.service,
-      bubbles: true,
-      composed: true
-    };
-    let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
-    this.dispatchEvent(providerCardClickedEvent, options);
-    console.log("Dispatch click event from provider card fuck you apple:", event);
-  }
-  
   handleClickEvent(event) {
     //let selectObject = this.selectedElement;
     let options = {
@@ -181,25 +164,19 @@ export class ExchangeServiceProviderCard extends LitElement {
 
   createRenderRoot() {
     const root = super.createRenderRoot();
-    root.addEventListener(
-      'click',
-      (e) => { console.log('click from PC'); this.shadowName = e.target.localName }
-    );
-    root.addEventListener(
-      'touchend',
-      (e) => { 
-        console.log('touchend from PC'); 
-        console.log(e); 
-        let options = {
-          detail: this.service,
-          bubbles: true,
-          composed: true
-        };
-        let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
-        this.dispatchEvent(providerCardClickedEvent, options);
-        //this.shadowName = e.target.localName 
-      }
-    );
+    // We still need to flesh this out for clicks
+    root.addEventListener('click', (event) => { 
+      console.log('click from PC'); this.shadowName = e.target.localName 
+    });
+    root.addEventListener('touchend', (event) => { 
+      let options = {
+        detail: this.service,
+        bubbles: true,
+        composed: true
+      };
+      let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
+      this.dispatchEvent(providerCardClickedEvent, options);
+    });
     return root;
   }
 
