@@ -205,7 +205,7 @@ export class ExchangeServiceProviderCard extends LitElement {
 
   render() {
     return html` 
-        <div class="provider-card" @click=${this.handleClickEvent} ontouchstart=${this.handleClickEvent} ontouchend="alert('1234')">
+        <div class="provider-card" @click=${this.handleClickEvent} ontouchstart=${this.handleClickEvent}>
              <div class="utility">
                  <div class="${this.service.service_provider}-logo provider-logo">
 
