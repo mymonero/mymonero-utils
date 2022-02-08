@@ -735,12 +735,12 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         
         root.addEventListener('click', (event) => { 
             console.log('click from WS'); 
-            this.shadowName = e.target.localName 
+            this.shadowName = event.target.localName 
         });
         
         root.addEventListener('touchend', (event) => { 
-            if (e.target.localName == "input") {
-                e.target.focus();
+            if (event.target.localName == "input") {
+                event.target.focus();
             } else {
                 let inputs = this.querySelectorAll("input");
                 inputs.forEach((input) => {
@@ -748,7 +748,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                 })
             }
             
-            if (e.target.id == "confirmation-button") {
+            if (event.target.id == "confirmation-button") {
                 this.redirectToURL();
             }
         });

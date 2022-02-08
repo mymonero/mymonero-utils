@@ -1,8 +1,6 @@
 import { html, css, LitElement } from 'lit';
 //import ExchangeNavigationController from "../../../mymonero-page-templates";
-//console.log(ExchangeNavigationController);
 
-console.log("Da fuq bra");
 export class ExchangeServiceProviderCard extends LitElement {
   static get styles() {
     return css`
@@ -111,7 +109,6 @@ export class ExchangeServiceProviderCard extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     
-    this.addEventListener('touchstart', this.ffsApple);
     this.addEventListener('touchstart', () => {
       console.log("PC: Touch start");
     });
@@ -134,7 +131,7 @@ export class ExchangeServiceProviderCard extends LitElement {
     };
     let providerCardClickedEvent = new CustomEvent("provider-card-clicked", options)
     this.dispatchEvent(providerCardClickedEvent, options);
-    console.log("Dispatch click event from provider card:", event);
+    // console.log("Dispatch click event from provider card:", event);
   }
 
 
@@ -166,7 +163,8 @@ export class ExchangeServiceProviderCard extends LitElement {
     const root = super.createRenderRoot();
     // We still need to flesh this out for clicks
     root.addEventListener('click', (event) => { 
-      console.log('click from PC'); this.shadowName = e.target.localName 
+      console.log('click from PC'); 
+      this.shadowName = event.target.localName 
     });
     root.addEventListener('touchend', (event) => { 
       let options = {

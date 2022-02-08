@@ -66,7 +66,7 @@ export class SearchableSelect extends LitElement {
     }
 
     /* Options inside the dropdown */
-    .dropdown-content option {
+    .dropdown-content .currencyOption, .dropdown-content .loading-placeholder {
       padding: 12px 16px;
       text-decoration: none;
       display: block;
@@ -208,26 +208,16 @@ export class SearchableSelect extends LitElement {
 
     createRenderRoot() {
         const root = super.createRenderRoot();
-        root.addEventListener(
-          'click',
-          (e) => { console.log('click from SS'); this.shadowName = e.target.localName }
-        );
-        root.addEventListener(
-          'touchend',
-          (e) => { 
-            console.log('touchend from SS'); 
-            console.log(e); 
-            console.log(e.target.className);
-            console.log(e.target.localName);
-            console.log(this.shadowName);
+        root.addEventListener('click', (e) => { 
+            console.log('click from SS'); 
+            this.shadowName = e.target.localName
+        });
+        root.addEventListener('touchend', (e) => { 
             if (e.target.classList.contains("currencyOption")) {
                 this.handleSelectionEvent(e);
             }
             this.toggleElement();
-            
-            //this.shadowName = e.target.localName 
-          }
-        );
+        });
         return root;
     }
 

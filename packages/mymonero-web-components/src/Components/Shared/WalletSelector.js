@@ -97,7 +97,7 @@ export class WalletSelector extends LitElement {
             color: rgb(252, 251, 252);
             cursor: default;
         }
-        .description-label {
+        .wallet-description-label {
             position: relative;
             box-sizing: border-box;
             padding: 0px 38px 4px 66px;
@@ -242,12 +242,9 @@ export class WalletSelector extends LitElement {
 
   showOptionsDropdown() {
     if (this.displayOptionsDropdown == false) {
-        console.log("Show the options");
-        console.log(this.displayOptionsDropdown);
         //this.displayOptionsDropdown = false;
         this.displayOptionsDropdown = !this.displayOptionsDropdown;
     } else {
-        console.log("HuH");
         this.displayOptionsDropdown = !this.displayOptionsDropdown;
     }
   }
@@ -272,13 +269,13 @@ export class WalletSelector extends LitElement {
         const root = super.createRenderRoot();
         root.addEventListener('click', (event) => { 
             console.log('click from WS'); 
-            this.shadowName = e.target.localName 
+            this.shadowName = event.target.localName 
         });
         root.addEventListener('touchend', (event) => { 
-            if (e.target.id == "wallet-selector") {
+            if (event.target.id == "wallet-selector") {
                 this.showOptionsDropdown();
-            } else if (e.target.classList.contains("performUpdate")) {
-                this.updateSelectedWallet(e);
+            } else if (event.target.classList.contains("performUpdate")) {
+                this.updateSelectedWallet(event);
             }
         });
         return root;
