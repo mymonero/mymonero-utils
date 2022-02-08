@@ -276,13 +276,31 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
       })
       
-      // iOS is being a special child with the select dropdown -- binding to blur and touchend seems to make iOS's select picker work properly
+      // iOS is being a special child with the select dropdown
       outCurrencyTickerCodeDiv.addEventListener("blur", (event) => {
-        // 
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("touchstart", (event) => {
+        
+        // console.log("touchstart");
+        // console.log(event);
       })
 
       outCurrencyTickerCodeDiv.addEventListener("touchend", (event) => {
-        //
+        
+        // console.log("touchend");
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("change", (event) => {
+        
+        // console.log("change -- currency");
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("focus", (event) => {
+        //console.log("Focus fired");
       })
 
       outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
@@ -474,6 +492,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           option.value = value.symbol;
           option.text = value.symbol;
           outCurrencySelectList.options.add(option);
+          option.addEventListener("touchstart", (event) => {
+            console.log(event);
+          });
         }))
 
         // Once the get_pairs endpoint is updated to return precision, we can uncomment the line below to make the coin list fully server-controlled
