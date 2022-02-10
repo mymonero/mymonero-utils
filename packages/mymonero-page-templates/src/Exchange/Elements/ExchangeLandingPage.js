@@ -1,21 +1,66 @@
 import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
-
 export default class ExchangeLandingPage extends ExchangeNavigationController(LitElement) {
     static get styles() {
         return css`
             #exchange-landing-page {
                 margin-top: 20px;
+                touch-action: manipulation !important;
+            }
+            provider-card {
+                touch-action: manipulation !important;
+            }
+            * {
+                touch-action: none;
             }
         `
     }
+
     connectedCallback() {
         super.connectedCallback();
         this.renderStyles();
-        //console.log("ELP Template view connected to DOM");
-        // TODO: disable fiat options if fiat api status returns an error
+        
+        this.addEventListener('provider-card-clicked', this.handleProviderCardClicked);
+        // const shadow = this.shadowRoot;
+        // const childNodes = Array.from(shadow.childNodes);
+        // console.log(childNodes);
+        // console.log(this);
+        // console.log(this.shadowRoot);
+        // console.log(this.childNodes);
+        // setTimeout(() => {
+        //     childNodes.forEach((node, index) => {
+        //         // console.log(node);
+        //         // console.log(index);
+        //         if (typeof(node.id) !== "undefined" && node.id === "exchange-landing-page") {
+        //             let cN = node.children;
+        //             // console.log("Victory");
+        //             // console.log(cN);
+        //             Array.from(cN).forEach((childValue, index) => {
+        //                 // console.log(childValue);
+        //                 if (childValue.nodeName == "PROVIDER-CARD") {
+        //                     console.log("Victory 2");
+        //                 }
+        //                 // console.log("cN AEL")
+        //                 childValue.addEventListener('touchstart', (event) => {
+        //                     console.log("Touch start");
+        //                     console.log(event);
+        //                     this.handleAppleClick(event);
+        //                 })
+        //             });
+        //         }
+        //     })
+        // }, 600);
+        
     }
     
+    handleAppleClick(event) {
+        if (event.srcElement.service.navigationType == 'externalUrl') {
+            this.openExternal(this.service.destination);
+        } else if (event.srcElement.navigationType == 'internalLink') {
+            this.navigateToPage(this.service.destination)
+        }
+    }
+
     constructor() {
         super();
         this.clickHandler = this.clickHandler;
@@ -49,7 +94,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
                 destination: "https://localmonero.co?rc=h2t1",
             }
         ];
-        this.addEventListener('provider-card-clicked', this.handleProviderCardClicked);
     }
     
     static get properties() {
@@ -97,15 +141,24 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         }
     }
 
+    handleTouchEvent(event) {
+        console.log("Handle click event");
+        console.log(event);
+    }
+
+    handleClickEvent(event) {
+        console.log("Handle click event");
+        console.log(event);
+    }
+
     render() {
+
+        let i = 0;
         return html`
         <div id="exchange-landing-page">
-            <div></div>
-            ${this.providerServices.map((service) => {
-                //return html`<provider-card .service=${service} .context=${this.context} @click=${this.clickHandler}></provider-card>`
-                return html`<provider-card .service=${service} .context=${this.context}></provider-card>`
+            ${this.providerServices.map((service, index) => {
+                return html`<provider-card .service=${service} .context=${this.context} @click="${this.handleClickEvent}"></provider-card>`
             })}            
-            </div>
         </div>
         `;
     }

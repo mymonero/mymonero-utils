@@ -46,6 +46,12 @@ class Wallet {
     this.isSendingFunds = false
     this.appName = options.appName || 'MyMonero'
     this.appVersion = options.appVersion || '1.1.24'
+    this.cachedTransactions = []
+    if (Array.isArray(options.cachedTransactions)) {
+      for (let i = 0; options.cachedTransactions.length > i; i++) {
+        this.cachedTransactions[options.cachedTransactions[i].hash] = options.cachedTransactions[i]
+      }
+    }
   }
 
   /**
@@ -62,7 +68,7 @@ class Wallet {
     self.transactionHeight = data.transaction_height
     self.rawTransactions = data.transactions
     self.sinceTxId = data.since_tx_id
-    self.transactions = await self._parseTransactions(self.rawTransactions)
+    self.transactions = await self._parseTransactions(self.rawTransactions, self.cachedTransactions)
     // calculate current balances based on the transaction list
     self._calculateBalances()
     return self.transactions
@@ -144,10 +150,10 @@ class Wallet {
           }
         }
         if (recipientAddress == null) {
-          throw Error('contact not found')
+          throw Error('contact or address not found')
         }
         destination.to_address = recipientAddress
-      }  
+      }
     })
 
     self.isSendingFunds = true
@@ -196,7 +202,7 @@ class Wallet {
    */
   async _broadcastTransfer (options) {
     const self = this
-    // console.log(params)
+
     self.isSendingFunds = false
     // will need to now submit raw transaction here
     const result = await self.lwsClient.submitRawTx(options.serialized_signed_tx)
@@ -224,6 +230,7 @@ class Wallet {
     const transaction = new Transaction(params)
     // manually insert .. and subsequent fetches from the server will be
     // diffed against this, preserving the tx_fee, tx_key, target_address...
+    self.cachedTransactions[options.tx_hash] = transaction
     self.transactions.unshift(transaction)
 
     return transaction.hash // wont actually return at this point
@@ -243,9 +250,10 @@ class Wallet {
    * Parses Transactions. This removes mixins and spent outputs that are not related to the address.
    * @private
    * @param {array} rawTransactions - List of all transactions including mixins retrieved from the server.
+   * @param {array} cachedTransactions - List of all sent transactions with local data.
    * @returns {array} Clean set of transactions without mixins and foreign outputs
    */
-  _parseTransactions (rawTransactions) {
+  _parseTransactions (rawTransactions, cachedTransactions) {
     const self = this
     if (rawTransactions == null || Object.keys(rawTransactions).length === 0) {
       return {}
@@ -267,6 +275,12 @@ class Wallet {
         mixin: rawTransactions[i].mixin,
         spentOutputs: rawTransactions[i].spent_outputs || [],
         currentBlockHeight: self.blockHeight
+      }
+
+      if (cachedTransactions[rawTransactions[i].hash] !== undefined) {
+        options.contact = cachedTransactions[rawTransactions[i].hash].contact
+        options.txPublicKey = cachedTransactions[rawTransactions[i].hash].txPublicKey
+        options.destinationAddress = cachedTransactions[rawTransactions[i].hash].destinationAddress
       }
       const transaction = new Transaction(options)
 
@@ -372,6 +386,10 @@ class Wallet {
    */
   serialize () {
     const self = this
+    const tempCache = []
+    Object.keys(self.cachedTransactions).forEach((element) => {
+      tempCache.push(self.cachedTransactions[element])
+    })
     return {
       name: self.name,
       seed: self.seed,
@@ -395,7 +413,8 @@ class Wallet {
       transactions: self.transactions,
       balance: self.balance,
       balancePending: self.balancePending,
-      balanceUnlocked: self.balanceUnlocked
+      balanceUnlocked: self.balanceUnlocked,
+      cachedTransactions: tempCache
     }
   }
 }

@@ -422,21 +422,22 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.displayPurchaseRedirectIndicator = true;
         try {
             let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
-            //window.open(estimateResponse.redirect_url);
             this.openExternal(estimateResponse.redirect_url)
             this.displayPurchaseRedirectIndicator = false;
         } catch (error) {
+            console.error("Failure with redirect");
             // Error communicating with server to retrieve response -- show error
             this.errorString = error.message;
-            console.log(error);
         }
     }
 
-    openExternal(url) {
+    async openExternal(url) {
         // Check whether we're on desktop, or web and Android
         if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context            
             this.context.shell.openExternal(url);            
-        } else { // Web (and Capacitor?) codebase            
+        } else if (typeof(this.context.deviceInfo) !== "undefined" && this.context.deviceInfo.platform == "ios") {
+            await this.context.capacitorBrowser.open({ url: url });
+        } else { // Web and Android Capacitor codebase            
             window.open(url, "_blank");
         }
     }
@@ -498,7 +499,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                 
                 for (let i = 0; i < fiatCurrencies.length; i++) {
                     var hasValidPaymentMethod = false;
-                    let paymentMethodArray = fiatCurrencies[i].payment_methods;
+                    let paymentMethodArray = fiatCurrencies[i].networks[0].payment_methods;
                     for (let j = 0; j < paymentMethodArray.length; j++) {
                         if (paymentMethodArray[j].deposit_enabled === true) {
                             hasValidPaymentMethod = true;
@@ -509,7 +510,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                     } else {
                     }
                 }
-                console.log(enabledCurrencies);
                 this.fiatCurrencies = enabledCurrencies;
                 this.requestUpdate(); // TODO: Check if this is necessary
                 //this.displayLoadingScreen = false;
@@ -554,7 +554,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
     async checkAPIIsAvailable() {
         try {
             let response = await this.fiatApi.getFiatAPIStatus();
-            console.log(response);
             if (response.message == "OK") {
                 return true;
             } else {
@@ -563,14 +562,12 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         } catch(error) {
             // TODO: build out better error handling
             console.error("API not available -- network error or unexpected error or ChangeNow response object's format changed")
-            console.log(error);
         }
     }
     
     async getTransactionEstimate() {
         try {
             let response = await this.fiatApi.getTransactionEstimate();
-            console.log(response);
             if (response.message == "OK") {
                 return true;
             } else {
@@ -579,7 +576,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         } catch(error) {
             // TODO: build out better error handling
             console.error("API not available -- network error or unexpected error or ChangeNow response object's format changed")
-            console.log(error);
         }
     }
 
@@ -732,7 +728,33 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         }
         this.displayEstimateRetrieval = false;
     }
-    
+
+    // NB: Thoroughly test this code on Android
+    createRenderRoot() {
+        const root = super.createRenderRoot();
+        
+        root.addEventListener('click', (event) => { 
+            console.log('click from WS'); 
+            this.shadowName = event.target.localName 
+        });
+        
+        root.addEventListener('touchend', (event) => { 
+            if (event.target.localName == "input") {
+                event.target.focus();
+            } else {
+                let inputs = this.querySelectorAll("input");
+                inputs.forEach((input) => {
+                    input.blur();
+                })
+            }
+            
+            if (event.target.id == "confirmation-button") {
+                this.redirectToURL();
+            }
+        });
+        return root;
+    }
+
     render() {
         // We're going to use conditionals and classes to determine which elements to hide
         return html`
@@ -845,7 +867,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                     <div class="estimate-row even-row">
                         <div class="estimate-label"></div>
                         <div class="estimate-value">
-                            <a @click=${this.redirectToURL} ?hidden=${!this.displayPurchaseButton} class="confirmation-button">Buy XMR</a>
+                            <a @click=${this.redirectToURL} ?hidden=${!this.displayPurchaseButton} class="confirmation-button" id="confirmation-button">Buy XMR</a>
                             <activity-indicator .loadingText=${"Busy finalising estimate and redirecting you to our partner"} ?hidden=${!this.displayPurchaseRedirectIndicator}></activity-indicator>
                         </div>    
                     </div>

@@ -211,7 +211,8 @@ export class YatSettingsView extends LitElement {
                 </span>
             </div>
             <div>
-                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>            
+                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>       
+                <mym-tooltip tooltipContent="Yat is a platform that lets you buy a URL with emojis in it. You can use your unique URL to link your Monero wallet address, making it easier for people to pay you.">Test</mym-tooltip>     
             </div>
             <!-- <div>
                 <a id="connect-a-yat" class="clickable-link" @click=${this.handleConnectAYatClickEvent}>Connect a Yat</a>

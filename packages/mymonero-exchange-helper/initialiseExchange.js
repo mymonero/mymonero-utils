@@ -70,12 +70,14 @@ function currencyValueKeydownListener(event, exchangeHelper) {
   //   }
   // }
   
+  var eventPath = event.path || (event.composedPath && event.composedPath());
+
   if ((event.inputType == "deleteContentForward" || 
       event.inputType == "deleteContentBackward" ||
       event.inputType == "insertFromPaste" ||
       event.inputType == "insertText" ) && 
-      event.path[0].value.length > 0) {
-    let valueToTest = event.path[0].value;
+      eventPath[0].value.length > 0) {
+    let valueToTest = eventPath[0].value;
     if (!isNaN(valueToTest)) {
       return true;
     } else {
@@ -220,13 +222,8 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       const minimumFeeText = document.getElementById('minimum-fee-text');
       const txFee = document.getElementById('tx-fee');
       const orderCreationLoader = exchangeHelper.htmlHelper.getOrderCreationLoader();
-      console.log(orderCreationLoader);
-      console.log(typeof(orderCreationLoader));
       let offerRetrievalIsSlowTimer, offerType
       
-      console.log(exchangeHelper);
-
-
       // Check to see if we've created an order. If so, we exit here so that we don't fetch server config and render from scratch for a second time
       if (exchangePageDiv.classList.contains("active")) {
         return;
@@ -269,8 +266,6 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         orderCreationLoader
       }
 
-      console.log(exchangeElements);
-
       // Gets the initial minimum value
       Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
         // let minimumAmount = parseFloat(response.minAmount);
@@ -281,6 +276,33 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         exchangeElements.minimumFeeText.innerText = "An error was encountered when fetching the minimum: " + error.message;
       })
       
+      // iOS is being a special child with the select dropdown
+      outCurrencyTickerCodeDiv.addEventListener("blur", (event) => {
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("touchstart", (event) => {
+        
+        // console.log("touchstart");
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("touchend", (event) => {
+        
+        // console.log("touchend");
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("change", (event) => {
+        
+        // console.log("change -- currency");
+        // console.log(event);
+      })
+
+      outCurrencyTickerCodeDiv.addEventListener("focus", (event) => {
+        //console.log("Focus fired");
+      })
+
       outCurrencyTickerCodeDiv.addEventListener('change', function(event) {
         exchangeHelper.eventListeners.outCurrencySelectListChangeListener(event, exchangeElements);
         clearSlowCurrencyRetrievalTimer(exchangeElements);
@@ -470,6 +492,9 @@ function initialiseExchangeHelper(context, exchangeHelper) {
           option.value = value.symbol;
           option.text = value.symbol;
           outCurrencySelectList.options.add(option);
+          option.addEventListener("touchstart", (event) => {
+            console.log(event);
+          });
         }))
 
         // Once the get_pairs endpoint is updated to return precision, we can uncomment the line below to make the coin list fully server-controlled
