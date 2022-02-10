@@ -26,6 +26,7 @@ npm i @mymonero/mymonero-wallet-manager
 Initialize the WABridge class which loads and prepares the WebAssembly.
 
 ```js
+const WalletManager = await require('@mymonero/mymonero-wallet-manager')({})
 const walletManager = new WalletManager('STAGENET', 'https://stagenet-api.mymonero.rtfm.net')
 await walletManager.init()
 ```
@@ -130,20 +131,10 @@ const hash = await wallet.transfer(options).catch(err => {
   console.log(err.message)
 })
 ```
-decodeAddress
-transferToContact
-serialize
-
-ContactManager
-createContact
-loadContacts
-serializeContacts
-
 -----
 
 ## License
 
 See [`LICENSE.txt`](LICENSE.txt) for license.
 
-All source code copyright © 2021 by MyMonero. All rights reserved.
-
+All source code copyright © 2022 by MyMonero. All rights reserved.

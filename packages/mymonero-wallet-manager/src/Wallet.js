@@ -47,8 +47,10 @@ class Wallet {
     this.appName = options.appName || 'MyMonero'
     this.appVersion = options.appVersion || '1.1.24'
     this.cachedTransactions = []
-    for (let i = 0; options.cachedTransactions.length > i; i++) {
-      this.cachedTransactions[options.cachedTransactions[i].hash] = options.cachedTransactions[i]
+    if (Array.isArray(options.cachedTransactions)) {
+      for (let i = 0; options.cachedTransactions.length > i; i++) {
+        this.cachedTransactions[options.cachedTransactions[i].hash] = options.cachedTransactions[i]
+      }
     }
   }
 
