@@ -31,9 +31,33 @@ class HostedMoneroAPIClient {
     return self.options.apiUrl
   }
 
+  check (url, fn) {
+    const self = this
+
+    const parameters = {
+      address: '',
+      view_key: '',
+      create_account: false,
+      generated_locally: ''
+    }
+
+    const requestHandle = net_service_utils.HTTPRequest(
+      self.request,
+      url,
+      '/login',
+      parameters,
+      function (err, data) {
+        if (err) {
+          fn(err)
+        }
+      }
+    )
+
+    return requestHandle
+  }
+
   LogIn (address, privateViewKey, generatedLocally, fn) {
     const self = this
-    const endpointPath = 'login'
 
     const parameters = {
       address: address,
@@ -44,7 +68,7 @@ class HostedMoneroAPIClient {
 
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      endpointPath,
+      '/login',
       parameters,
       function (err, data) {
         if (err) {
@@ -65,14 +89,13 @@ class HostedMoneroAPIClient {
 
   AddressInfo_returningRequestHandle (address, privateViewKey, publicSpendKey, privateSpendKey, fn) {
     const self = this
-    const endpointPath = 'get_address_info'
     const parameters = {
       address: address,
       view_key: privateViewKey
     }
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      endpointPath,
+      '/get_address_info',
       parameters,
       function (err, data) {
         if (err) {
@@ -141,14 +164,13 @@ class HostedMoneroAPIClient {
 
   AddressTransactions_returningRequestHandle (address, privateViewKey, publicSpendKey, privateSpendKey, fn) {
     const self = this
-    const endpointPath = 'get_address_txs'
     const parameters = {
       address: address,
       view_key: privateViewKey
     }
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      endpointPath,
+      '/get_address_txs',
       parameters,
       function (err, data) {
         if (err) {
@@ -199,7 +221,6 @@ class HostedMoneroAPIClient {
 
   ImportRequestInfoAndStatus (address, privateViewKey, fn) {
     const self = this
-    const endpointPath = 'import_wallet_request'
     const parameters = {
       address: address,
       view_key: privateViewKey,
@@ -208,7 +229,7 @@ class HostedMoneroAPIClient {
     }
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      endpointPath,
+      '/import_wallet_request',
       parameters,
       function (err, data) {
         if (err) {
@@ -240,7 +261,7 @@ class HostedMoneroAPIClient {
     reqParams['app_version'] = self.appUserAgent_version
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      'get_unspent_outs',
+      '/get_unspent_outs',
       reqParams,
       function (err, data) {
         fn(err ? err.toString() : null, data)
@@ -255,7 +276,7 @@ class HostedMoneroAPIClient {
     reqParams['app_version'] = self.appUserAgent_version
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      'get_random_outs',
+      '/get_random_outs',
       reqParams,
       function (err, data) {
         fn(err ? err.toString() : null, data)
@@ -271,7 +292,7 @@ class HostedMoneroAPIClient {
 
     const requestHandle = net_service_utils.HTTPRequest(
       self._new_apiAddress_authority(),
-      'submit_raw_tx',
+      '/submit_raw_tx',
       reqParams,
       function (err, data) {
         fn(err ? err.toString() : null, data)
