@@ -350,7 +350,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.clearEstimate();
         let prepopulatedCurrencyValueExists = false;
         // Handle case where the user has input the amount already
-        if ((this.inCurrencyCode === "") && (this.inCurrencyValue.length > 0)) {
+        if ((this.inCurrencyCode !== "---") && (this.inCurrencyValue.length > 0)) {
             prepopulatedCurrencyValueExists = true;
         }
         this.fiatMinMaxString = "";
@@ -362,6 +362,36 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         }
         let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
         let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray);
+        this.displayMinMaxLoadingIndicator = false;
+        this.estimatedFiatRange = estimatedFiatRange;
+        this.estimatedCryptoRange = estimatedCryptoRange;
+        this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
+        let formatOptions = {
+            style: 'currency',
+            currency: this.inCurrencyCode
+        }
+        let currencyFormatter = new Intl.NumberFormat(undefined, formatOptions)
+        this.estimatedFiatRange.min = currencyFormatter.format(estimatedFiatRange.min);
+        this.estimatedFiatRange.max = currencyFormatter.format(estimatedFiatRange.max);
+        this.estimatedFiatRangeString = `${this.estimatedFiatRange.min} - ${this.estimatedFiatRange.max}`
+        this.fiatMinMaxString = `You can exchange between ${estimatedFiatRange.min} ${this.inCurrencyCode} and ${estimatedFiatRange.max} ${this.inCurrencyCode}`
+    }
+
+    /**
+     * This function initialises the selected currency and the input value
+     */
+    async initSelectedCurrency() {
+        this.fiatMinMaxString = "Busy loading minimum and maximum values for Euro";
+        this.inCurrencyCode = "EUR"
+        this.inCurrencyName = "Euro"
+        this.displayMinMaxLoadingIndicator = false;
+        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
+        let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray)
+            .catch(error => {
+                console.error(error);
+                console.error(error.message);
+                this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
+            });
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
         this.estimatedCryptoRange = estimatedCryptoRange;
@@ -476,21 +506,24 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.displayEnterCurrencyPrompt = false;
 
     }
-
+    
     async connectedCallback() {
         super.connectedCallback();
         this.renderStyles();
         this.fiatApi = fiatApi;
         this.wallets = this.context.walletsListController.records;
+        //this.initSelectedCurrency.bind(this);
         this.updateSelectedCurrency.bind(this);
+        this.handleCurrencyInputResponse();
         this.addEventListener('searchable-select-update', this.updateSelectedCurrency);
         this.addEventListener('wallet-selector-update', this.updateSelectedWallet);
         
         this.displayLoadingScreen = true;
         this.displayOrderScreen = true;
-        this.displayMinMaxLoadingIndicator = false;
+        this.displayMinMaxLoadingIndicator = true;
         let apiIsAvailable = await this.checkAPIIsAvailable();
         let enabledCurrencies = [];
+        this.initSelectedCurrency();
         if (apiIsAvailable) {
             this.displayLoadingScreen = false;
             this.displayOrderScreen = true;
@@ -507,7 +540,6 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                     }
                     if (hasValidPaymentMethod) {
                         enabledCurrencies.push(fiatCurrencies[i]);
-                    } else {
                     }
                 }
                 this.fiatCurrencies = enabledCurrencies;
@@ -611,9 +643,9 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.estimatedCryptoRangeString = "";
         this.estimatedCryptoRange = {};
         this.fiatMinMaxString = "";
-        this.inCurrencyCode = "";
-        this.inCurrencyName = "";
-        this.inCurrencyValue = "";
+        this.inCurrencyCode = "EUR";
+        this.inCurrencyName = "Euro";
+        this.inCurrencyValue = "200";
         this.outCurrencyCode = "XMR";
         this.outCurrencyName = "Monero";
         this.outCurrencyValue = "";
@@ -636,7 +668,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             "ticker": "",
         }
     ];
-        this.selectedFiatCurrency = "";
+        this.selectedFiatCurrency = "EUR";
         //this.setScreenTitle("Buy Monero With Fiat");
         this.wallets = [
             {}
@@ -736,6 +768,10 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         root.addEventListener('click', (event) => { 
             console.log('click from WS'); 
             this.shadowName = event.target.localName 
+            //event.target.click();
+            if (event.target.localName === 'searchable-select') {
+                
+            }
         });
         
         root.addEventListener('touchend', (event) => { 
@@ -793,7 +829,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
                                             <div id="transaction-range">
                                                 <span id="transaction-range" class="field_title form-field-title">${this.fiatMinMaxString}</span>
                                                 <div id="currency-loader">
-                                                    <activity-indicator .loadingText=${"Loading supported currencies"} ?hidden=${!this.displayCurrencyLoadingIndicator}></activity-indicator>
+                                                    <!-- <activity-indicator .loadingText=${"Loading supported currencies"} ?hidden=${!this.displayCurrencyLoadingIndicator}></activity-indicator> -->
                                                     <activity-indicator .loadingText=${"Retrieving minimum and maximum transaction amount limits"} ?hidden=${!this.displayMinMaxLoadingIndicator}></activity-indicator>
                                                     <activity-indicator .loadingText=${"Busy retrieving estimate"} ?hidden=${!this.displayEstimateRetrieval}></activity-indicator>
                                                     <div id="errorResponse" ?hidden=${!this.displayErrorResponse}>

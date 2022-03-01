@@ -178,7 +178,8 @@ export class SearchableSelect extends LitElement {
         super();
         this.showDropdown = false;
         this.searchString = "";
-        this.buttonText = "---";
+        //this.buttonText = "---";
+        this.buttonText = "EUR";
     }
 
   handleSelectionEvent(event) {
@@ -208,12 +209,13 @@ export class SearchableSelect extends LitElement {
 
     createRenderRoot() {
         const root = super.createRenderRoot();
-        root.addEventListener('click', (e) => { 
-            if (e.target.classList.contains("currencyOption")) {
-                this.handleSelectionEvent(e);
-            }
-            this.toggleElement();
-        });
+        // root.addEventListener('click', (e) => { 
+        //     console.log("clikck for " + e);
+        //     if (e.target.classList.contains("currencyOption")) {
+        //         this.handleSelectionEvent(e);
+        //     }
+        //     this.toggleElement();
+        // });
         root.addEventListener('touchend', (e) => { 
             if (e.target.classList.contains("currencyOption")) {
                 this.handleSelectionEvent(e);
