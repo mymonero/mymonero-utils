@@ -18,7 +18,7 @@
 > :warning: This project is under heavy development. Expect bugs & breaking changes.
 ## Production Releases
 
-For information pertaining to how each release is created, please refer to [RELEASES.md](./docs/RELEASES.md)</a> in the "docs" folder
+For information pertaining to how each release is created, please refer to [RELEASES.md](./docs/RELEASES.md) in the "docs" folder
 
 ## Packages
 
