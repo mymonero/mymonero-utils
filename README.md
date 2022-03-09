@@ -16,6 +16,9 @@
 </p>
 
 > :warning: This project is under heavy development. Expect bugs & breaking changes.
+## Production Releases
+
+For information pertaining to how each release is created, please refer to [RELEASES.md](https://github.com/mymonero/mymonero-app-js/blob/master/docs/PRODUCTION_BUILDS.md)</a> in the "docs" folder
 
 ## Packages
 
