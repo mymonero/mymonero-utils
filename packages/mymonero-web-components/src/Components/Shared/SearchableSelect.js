@@ -158,9 +158,7 @@ export class SearchableSelect extends LitElement {
         if (changedProperties.get("values").length > 0) {
             //this.showDropdown = false;
             this.filteredValues = this.values;
-
         }
-        this.filteredvalues = this.values;
     }
 
     connectedCallback() {
