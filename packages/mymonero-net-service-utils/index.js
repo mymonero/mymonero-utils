@@ -27,8 +27,7 @@ function HTTPRequest (
     throw 'final_parameters must not be nil'
     // return null
   }
-  const completeURL =
-		_new_APIAddress_baseURLString(apiAddress_authority) + endpointPath
+  const completeURL = apiAddress_authority + endpointPath
   console.log('📡  ' + completeURL)
   //
   const request_options = _new_requestOptions_base(
@@ -56,7 +55,7 @@ exports.HTTPRequest = HTTPRequest
 function _new_APIAddress_baseURLString (
   apiAddress_authority // authority means [subdomain.]host.…[:…]
 ) {
-  return 'https' + '://' + apiAddress_authority + '/'
+  return apiAddress_authority
 }
 
 function _new_requestOptions_base (methodName, completeURL, json_parameters) {

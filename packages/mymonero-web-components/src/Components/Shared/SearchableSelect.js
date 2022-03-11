@@ -1,5 +1,5 @@
 import { html, css, LitElement } from 'lit';
-console.log("SS FFS");
+// console.log("SS FFS");
 export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
@@ -155,12 +155,10 @@ export class SearchableSelect extends LitElement {
     }
 
     willUpdate(changedProperties) {
-        if (changedProperties.get("values")?.length > 0) {
+        if (changedProperties.get("values").length > 0) {
             //this.showDropdown = false;
             this.filteredValues = this.values;
-
         }
-        this.filteredvalues = this.values;
     }
 
     connectedCallback() {
@@ -178,7 +176,8 @@ export class SearchableSelect extends LitElement {
         super();
         this.showDropdown = false;
         this.searchString = "";
-        this.buttonText = "---";
+        //this.buttonText = "---";
+        this.buttonText = "EUR";
     }
 
   handleSelectionEvent(event) {
@@ -208,12 +207,13 @@ export class SearchableSelect extends LitElement {
 
     createRenderRoot() {
         const root = super.createRenderRoot();
-        root.addEventListener('click', (e) => { 
-            if (e.target.classList.contains("currencyOption")) {
-                this.handleSelectionEvent(e);
-            }
-            this.toggleElement();
-        });
+        // root.addEventListener('click', (e) => { 
+        //     console.log("clikck for " + e);
+        //     if (e.target.classList.contains("currencyOption")) {
+        //         this.handleSelectionEvent(e);
+        //     }
+        //     this.toggleElement();
+        // });
         root.addEventListener('touchend', (e) => { 
             if (e.target.classList.contains("currencyOption")) {
                 this.handleSelectionEvent(e);

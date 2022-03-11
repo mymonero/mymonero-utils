@@ -37,9 +37,9 @@
     "test:lite": "cross-env NODE_ENV=test mocha packages/*/test/unit $npm_package_options_mocha --timeout 20000"
   },
   "dependencies": {
-    "coveralls": "^3.1.0",
+    "coveralls": "^3.1.1",
     "cross-env": "^7.0.3",
-    "mocha": "^8.3.2"
+    "mocha": "^9.2.0"
   },
   "options": {
     "coverage": "--reporter=text-lcov",

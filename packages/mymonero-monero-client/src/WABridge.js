@@ -47,11 +47,11 @@ class WABridge {
     if (!Array.isArray(options.destinations)) {
       throw Error('Invalid destinations')
     }
-    for (let i = 0; i < options.destinations.length; i++) {
-      if (!options.destinations[i].hasOwnProperty('to_address') || !options.destinations[i].hasOwnProperty('send_amount')) {
-        throw Error('Invalid destinations')
+    options.destinations.forEach(function (destination) {
+      if (!destination.hasOwnProperty('to_address') || !destination.hasOwnProperty('send_amount')) {
+        throw Error('Invalid destinations missing values')
       }
-    }
+    })
     if (options.shouldSweep) {
       if (options.destinations.length !== 1) {
         throw Error('Invalid number of destinations must be 1')

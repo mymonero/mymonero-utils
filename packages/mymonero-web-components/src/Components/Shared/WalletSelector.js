@@ -288,7 +288,7 @@ export class WalletSelector extends LitElement {
   render() {
 
       // TODO: Find a cleaner way to handle update that doesn't require passing offset to every element
-    if (this.wallets?.length > 0) {
+    if (this.wallets.length > 0) {
         const walletTemplates = [];
         for (let i = 0; i < this.wallets.length; i++) {
             walletTemplates.push(html`

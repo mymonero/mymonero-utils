@@ -77,7 +77,7 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
                 destination: "changenowFixedRateView"
             },
             { 
-                service_provider: "changenow",
+                service_provider: "guardarian",
                 title: "Buy Monero using fiat currency",
                 description: `
                     No Monero? No problem! Seamlessly purchase Monero using your debit / credit card, and get your purchased Monero automatically paid into your wallet.`,

@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="MyMonero" src="https://user-images.githubusercontent.com/1645428/120083066-8a394a00-c0c6-11eb-9bc5-1ce02784dab3.png">
+  <img alt="MyMonero" src="https://user-images.githubusercontent.com/1645428/146000939-b06f8fd3-9ed2-4a5e-bdd6-3981281dde9c.png">
 </p>
 
 <h1 align="center">MyMonero Wallet Library</h1>
@@ -85,8 +85,6 @@ Fetches the latest exchange rates for fiat currencies.
 const exchangeRates = await walletManager.exchangeRates()
 ```
 -----
-
-### Wallet
 
 ### Sync the wallet with the light wallet server.
 
