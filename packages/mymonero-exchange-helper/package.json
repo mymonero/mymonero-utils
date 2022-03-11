@@ -10,7 +10,7 @@
     "@mymonero/mymonero-bigint": "^1.4.2",
     "@mymonero/mymonero-exchange": "^1.4.2",
     "@mymonero/mymonero-money-format": "^1.4.2",
-    "axios": "^0.21.1"
+    "axios": "^0.21.3"
   },
   "exports": {
     "require": "./index.js",
