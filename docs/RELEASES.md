@@ -23,17 +23,23 @@ Merge in any new pull requests into the `develop` branch.
 #### Checkout a new branch for the release 
 Once all features have been merged into `develop`, check out a new branch for the release. The naming convention should adhere to semantic versioning. In the following command, replace 'x.x.x' with the new release version.
 
-`git checkout -b release-vx.x.x` 
+```bash
+git checkout -b release-vx.x.x
+```
 
 #### Push branch upstream 
 Push your branch to upstream: 
 
-`git push -u origin release-vx.x.x`.
+```bash
+git push -u origin release-vx.x.x
+```
 
 #### Publish release using lerna
 In the project root, run lerna and follow the interactive prompts. Make sure you specify the version number that corresponds to the Git branch you've just uploaded.
 
-`lerna publish`
+```bash
+lerna publish
+```
 
 The release will automatically be tagged on GitHub, and the various packages will be automatically uploaded to [npm](https://www.npmjs.org)
 
@@ -47,4 +53,7 @@ Open a pull request from `develop` to `master` and merge it
 
 Sometimes, a release might be tagged on Github, but an error will disrupt the publishing of the packages to NPM. 
 
-In this case, do not create a new version with lerna. Instead, run `lerna publish --from-git`
+In this case, do not create a new version with lerna. Instead, run 
+```bash
+lerna publish --from-git
+```
