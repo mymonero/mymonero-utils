@@ -14,7 +14,10 @@ You will need an up-to-date version of [NodeJS](https://nodejs.org) and [npm](ht
 
 MyMonero contributors perform release using NodeJS version 16.0.0 or higher 
 
-Prior to producing a release, ensure you run `lerna bootstrap` in your project's root folder.
+Prior to producing a release, ensure you run:
+```bash
+lerna bootstrap
+``` 
 
 ## Build methodology
 
