@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-bridge-utils",
-  "version": "1.4.2",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
