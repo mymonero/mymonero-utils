@@ -86,7 +86,7 @@ export class ExchangeServiceProviderCard extends LitElement {
             max-width: 100% !important;
             margin-left: 10px !important;
           }
-          .changenow-logo, .localmonero-logo {
+          .changenow-logo, .localmonero-logo, .guardarian-logo {
             width: 100% !important;
             height: 69px !important;
             background-position: top !important;
