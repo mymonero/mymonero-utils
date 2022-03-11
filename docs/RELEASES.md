@@ -14,14 +14,21 @@ You will need an up-to-date version of [NodeJS](https://nodejs.org) and [npm](ht
 
 MyMonero contributors perform release using NodeJS version 16.0.0 or higher 
 
+
+## Build methodology
+
+#### Merge new features
+
+Merge in any new pull requests into the `develop` branch.
+
+#### Bootstrap the project using Lerna
+
+Certain packages are made available as CommonJS modules. To facilitate this, they need to be installed properly in order to have them transpiled correctly.
+
 Prior to producing a release, ensure you run:
 ```bash
 lerna bootstrap
 ``` 
-
-## Build methodology
-
-Merge in any new pull requests into the `develop` branch.
 
 #### Checkout a new branch for the release 
 Once all features have been merged into `develop`, check out a new branch for the release. The naming convention should adhere to semantic versioning. In the following command, replace 'x.x.x' with the new release version.
