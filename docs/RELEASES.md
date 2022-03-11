@@ -16,23 +16,35 @@ MyMonero contributors perform release using NodeJS version 16.0.0 or higher
 
 Prior to producing a release, ensure you run `lerna bootstrap` in your project's root folder.
 
-### Build methodology
+## Build methodology
 
-1. Merge in any new pull requests into the `develop` branch.
-1. Once all features have been merged into `develop`, check out a new branch for the release.The naming convention should adhere to semantic versioning. For example, `git checkout -b release-vx.x.x` where 'x.x.x' is replaced with the new release version.
-1. Push your branch to upstream: `git push -u origin release-vx.x.x`.
-1. In the project root, run `lerna publish`, following the interactive prompts. Make sure you specify the version number that corresponds to the Git branch you've just uploaded.
+Merge in any new pull requests into the `develop` branch.
+
+#### Checkout a new branch for the release 
+Once all features have been merged into `develop`, check out a new branch for the release. The naming convention should adhere to semantic versioning. In the following command, replace 'x.x.x' with the new release version.
+
+`git checkout -b release-vx.x.x` 
+
+#### Push branch upstream 
+Push your branch to upstream: 
+
+`git push -u origin release-vx.x.x`.
+
+#### Publish release using lerna
+In the project root, run lerna and follow the interactive prompts. Make sure you specify the version number that corresponds to the Git branch you've just uploaded.
+
+`lerna publish`
 
 The release will automatically be tagged on GitHub, and the various packages will be automatically uploaded to [npm](https://www.npmjs.org)
 
-5. Open a pull request to develop from release-vx.x.x and merge it
-1. Open a PR from develop to master and merge it
+#### Merging back into master once released
+
+On GitHub, open a pull request to `develop` from `release-vx.x.x` and merge it
+
+Open a pull request from `develop` to `master` and merge it
 
 ### Troubleshooting
 
 Sometimes, a release might be tagged on Github, but an error will disrupt the publishing of the packages to NPM. 
 
 In this case, do not create a new version with lerna. Instead, run `lerna publish --from-git`
-for (const destination in options) {
-  if (!destination.hasOwnProperty('to_address) || !destination.hasOwnProperty('send_amount')))
-}
