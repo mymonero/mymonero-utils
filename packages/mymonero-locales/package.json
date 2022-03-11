@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-locales",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "List of supported locales",
   "main": "index.js",
   "scripts": {
