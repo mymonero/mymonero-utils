@@ -12,8 +12,7 @@
 
 You will need an up-to-date version of [NodeJS](https://nodejs.org) and [npm](https://github.com/npm/cli) installed on your system.
 
-MyMonero contributors perform release using NodeJS version 16.0.0 or higher 
-
+MyMonero maintainers perform all releases using NodeJS version 16.0.0 or higher 
 
 ## Build methodology
 
@@ -53,11 +52,30 @@ lerna publish
 
 The release will automatically be tagged on GitHub, and the various packages will be automatically uploaded to [npm](https://www.npmjs.org)
 
-#### Merging back into master once released
+#### Merging back into `develop` and `master` branches once released
+
+Every release should be merged into develop.
+
+Merges to `master` should be performed every time a minor or major release is performed. If a release is a patch, develop should be merged into master after a specified time period of seven calendar days.  
+
+##### Minor / Major Updates (e.g. v1.0.0 -> v1.1.0 or v1.0.0 -> v2.0.0)
+
+Minor and major updates are always merged back to develop before any new PRs to develop are merged.
 
 On GitHub, open a pull request to `develop` from `release-vx.x.x` and merge it
 
-Open a pull request from `develop` to `master` and merge it
+Once merged with `develop`, minor and major updates are to be merged into `master`
+
+On GitHub, open a pull request to `master` from `develop` and merge it
+
+##### Patch Updates (e.g. v1.0.0 -> v1.0.1)
+
+Patch updates are always merged back to develop before any new PRs to develop are merged.
+
+On GitHub, open a pull request to `develop` from `release-vx.x.x` and merge it
+
+Patches are to be merged back into master after the `develop` branch remains unchanged for seven calendar days
+
 
 ### Troubleshooting
 
