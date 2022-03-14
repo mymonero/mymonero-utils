@@ -360,12 +360,12 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         if (prepopulatedCurrencyValueExists) {
             this.handleCurrencyInputResponse();
         }
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
-        let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray);
+        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
+        let estimatedFiatRange = await Promise.all(rangeQueryArray);
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
-        this.estimatedCryptoRange = estimatedCryptoRange;
-        this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
+        //this.estimatedCryptoRange = estimatedCryptoRange;
+        //this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
         let formatOptions = {
             style: 'currency',
             currency: this.inCurrencyCode
@@ -385,8 +385,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.inCurrencyCode = "EUR"
         this.inCurrencyName = "Euro"
         this.displayMinMaxLoadingIndicator = false;
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
-        let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray)
+        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
+        let [estimatedFiatRange] = await Promise.all(rangeQueryArray)
             .catch(error => {
                 // console.error(error);
                 // console.error(error.message);
@@ -394,8 +394,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             });
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
-        this.estimatedCryptoRange = estimatedCryptoRange;
-        this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
+        // this.estimatedCryptoRange = estimatedCryptoRange;
+        // this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
         let formatOptions = {
             style: 'currency',
             currency: this.inCurrencyCode
