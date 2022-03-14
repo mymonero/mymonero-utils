@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-monero-client",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "The JS library containing the JS transpilation of the shared library behind the MyMonero apps",
   "main": "./src/index.js",
   "scripts": {
