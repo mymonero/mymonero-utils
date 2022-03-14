@@ -388,8 +388,8 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
         let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray)
             .catch(error => {
-                console.error(error);
-                console.error(error.message);
+                // console.error(error);
+                // console.error(error.message);
                 this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
             });
         this.displayMinMaxLoadingIndicator = false;

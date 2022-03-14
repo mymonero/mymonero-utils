@@ -155,9 +155,11 @@ export class SearchableSelect extends LitElement {
     }
 
     willUpdate(changedProperties) {
-        if (changedProperties.get("values").length > 0) {
-            //this.showDropdown = false;
-            this.filteredValues = this.values;
+        if (typeof changedProperties.get("values") !== "undefined") {
+            if (changedProperties.get("values").length > 0) {
+                //this.showDropdown = false;
+                this.filteredValues = this.values;
+            }
         }
     }
 
