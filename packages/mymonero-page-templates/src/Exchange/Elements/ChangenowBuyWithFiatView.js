@@ -361,7 +361,7 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
             this.handleCurrencyInputResponse();
         }
         let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
-        let estimatedFiatRange = await Promise.all(rangeQueryArray);
+        let [estimatedFiatRange] = await Promise.all(rangeQueryArray);
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
         //this.estimatedCryptoRange = estimatedCryptoRange;
