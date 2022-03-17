@@ -1,6 +1,7 @@
 'use strict'
-
+console.log("Does get loaded");
 function New_ParsedPayload_FromPossibleRequestURIString (string, nettype, monero_utils/* pass this so this fn remains sync */) {
+  let coinUriPrefix = "monero:"
   // throws; -> {}
   //
   // detect no-scheme moneroAddr and possible OA addr - if has no monero: prefix
