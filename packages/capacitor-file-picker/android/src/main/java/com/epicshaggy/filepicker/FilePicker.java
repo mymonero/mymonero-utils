@@ -1,0 +1,175 @@
+package com.epicshaggy.filepicker;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.provider.OpenableColumns;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
+
+import androidx.activity.result.ActivityResult;
+
+import com.getcapacitor.JSArray;
+import com.getcapacitor.JSObject;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.ActivityCallback;
+import com.getcapacitor.annotation.CapacitorPlugin;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
+// import androidx.activity.result.contract.ActivityResultContracts;
+//
+//public class MySecondActivityContract : ActivityResultContract<String, Int?>() {
+//
+//        override fun createIntent(context: Context, input: String?): Intent {
+//        return Intent(context, SecondActivity::class.java)
+//        .putExtra("my_input_key", input)
+//        }
+//
+//        override fun parseResult(resultCode: Int, intent: Intent?): Int? = when {
+//        resultCode != Activity.RESULT_OK -> null
+//        else -> intent?.getIntExtra("my_result_key", 42)
+//        }
+//
+//        override fun getSynchronousResult(context: Context, input: String?): SynchronousResult<Int?>? {
+//        return if (input.isNullOrEmpty()) SynchronousResult(42) else null
+//        }
+//}
+
+@CapacitorPlugin()
+public class FilePicker extends Plugin {
+
+    private class FileTypes {
+        static final String PDF = "pdf";
+        static final String IMAGE = "image";
+    }
+
+    private String[] getAllowedFileTypes(JSArray fileTypes) {
+        ArrayList<String> typeList = new ArrayList<>();
+
+        for (int i = 0; i < fileTypes.length(); i++) {
+
+            try {
+                String val = fileTypes.getString(i);
+                switch (val) {
+                    case FileTypes.PDF:
+                        typeList.add("application/pdf");
+                        break;
+                    case FileTypes.IMAGE:
+                        typeList.add("image/*");
+                        break;
+                    default:
+                        typeList.add(val);
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        if (typeList.size() > 0) {
+            String[] accept = typeList.toArray(new String[0]);
+            return accept;
+        }
+        return null;
+    }
+
+    @PluginMethod()
+    public void showFilePicker(PluginCall call) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        intent.setType("*/*");
+
+        if (call.getData().has("fileTypes")) {
+            String[] types = getAllowedFileTypes(call.getArray("fileTypes"));
+            if (types != null) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, types);
+            }
+        }
+
+
+        // old startActivityForResult(call, intent, "filePickerResult");
+        startActivityForResult(call, intent, "newFilePickerResult");
+
+//        bridge.registerForActivityResult(call, intent, )
+        // final androidx.activity.result.ActivityResultLauncher<Object> objectActivityResultLauncher = bridge.registerForActivityResult();
+    }
+
+    @ActivityCallback
+    private void newFilePickerResult(PluginCall call, ActivityResult result) {
+
+        // Log.i("debugkarl", "File picking sorta working");
+        Integer resultCode = result.getResultCode();
+        // Log.i("debugkarl", "Result code:");
+        // Log.i("debugkarl", resultCode.toString());
+        switch (result.getResultCode()) {
+
+            case Activity.RESULT_OK:
+//                if (result.getSynchronousResult() != null && result.getResultData().getData() != null) {
+                    Intent data = result.getData();
+
+                    String mimeType = getContext().getContentResolver().getType(data.getData());
+                    String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+
+                    Cursor c = getContext().getContentResolver().query(data.getData(), null, null, null, null);
+                    c.moveToFirst();
+                    String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                    JSObject ret = new JSObject();
+                    Log.i("debugkarl", "Inside RESULT_OK");
+                    Log.i("debugkarl", data.getDataString());
+                    ret.put("uri", data.getDataString());
+                    ret.put("name", name);
+                    ret.put("mimeType", mimeType);
+                    ret.put("extension", extension);
+                    call.resolve(ret);
+//                }
+                break;
+            case Activity.RESULT_CANCELED:
+                call.reject("File picking was cancelled.");
+                break;
+            default:
+                call.reject("An unknown error occurred.");
+                break;
+        }
+    }
+
+//    @ActivityCallback
+//    private void filePickerResult(PluginCall call, androidx.activity.result.ActivityResult result) {
+//
+//        switch (result.getResultCode()) {
+//            case Activity.RESULT_OK:
+//                if (result.getResultData() != null && result.getResultData().getData() != null) {
+//                    Intent data = result.getResultData();
+//
+//                    String mimeType = getContext().getContentResolver().getType(data.getData());
+//                    String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+//
+//                    Cursor c = getContext().getContentResolver().query(data.getData(), null, capacnull, null, null);
+//                    c.moveToFirst();
+//                    String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+//
+//                    JSObject ret = new JSObject();
+//                    ret.put("uri", data.getDataString());
+//                    ret.put("name", name);
+//                    ret.put("mimeType", mimeType);
+//                    ret.put("extension", extension);
+//                    call.resolve(ret);
+//                }
+//                break;
+//            case Activity.RESULT_CANCELED:
+//                call.reject("File picking was cancelled.");
+//                break;
+//            default:
+//                call.reject("An unknown error occurred.");
+//                break;
+//        }
+//
+//
+//    }
+}
