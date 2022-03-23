@@ -1,0 +1,5 @@
+com/epicshaggy/filepicker/FilePicker.java
+ com.epicshaggy.filepicker.FilePicker
+ com.epicshaggy.filepicker.FilePicker$FileTypes
+com/epicshaggy/filepicker/capacitorfilepicker/BuildConfig.java
+ com.epicshaggy.filepicker.capacitorfilepicker.BuildConfig

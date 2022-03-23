@@ -1,0 +1,11 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.epicshaggy.filepicker.capacitorfilepicker" >
+4
+5    <uses-sdk
+6        android:minSdkVersion="21"
+6-->/Users/karlbuys/Sites/github/2android/ios/mymonero-android-js/node_modules/capacitor-file-picker/android/src/main/AndroidManifest.xml
+7        android:targetSdkVersion="30" />
+7-->/Users/karlbuys/Sites/github/2android/ios/mymonero-android-js/node_modules/capacitor-file-picker/android/src/main/AndroidManifest.xml
+8
+9</manifest>
