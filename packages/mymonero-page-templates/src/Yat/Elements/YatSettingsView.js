@@ -1,6 +1,7 @@
 import {html, css, LitElement } from 'lit';
 import Swal from 'sweetalert2';
 
+
 export class YatSettingsView extends LitElement {
     static get styles() {
         return css`
@@ -40,8 +41,8 @@ export class YatSettingsView extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this.wallets = this.context.walletsListController.records;
-        // this.partnerPath = "https://yat.fyi/partner/mymonero"
-        this.partnerPath = "https://y.at/partner/mymonero"
+        // this.partnerPath = "https://y.at/partner/mymonero"
+        this.partnerPath = "https://yat.fyi/partner/mymonero"
     }
         
     constructor() {
@@ -82,7 +83,6 @@ export class YatSettingsView extends LitElement {
         this.openExternal(partnerPath);
     }
 
-    // Presently not used while additional integration is in progress
     async handleConnectAYatClickEvent() {
         // params:
         // eid
@@ -141,8 +141,9 @@ export class YatSettingsView extends LitElement {
             
             if (address) {
                 let addressString = encodeURIComponent(`0x1001=${address}`);
-                let refreshToken = "todolol"
-                let partnerPath = `${this.partnerPath}/link-email?addresses=${addressString}&refresh_token=${refreshToken}`
+                //let refreshToken = "todolol"
+                //let partnerPath = `https://y.a.bblat/partner/{partner_path}/link-email?addresses=${addressString}&refresh_token=${refreshToken}`
+                let partnerPath = this.partnerPath;
                 this.openExternal(partnerPath);
             }
             
@@ -184,18 +185,17 @@ export class YatSettingsView extends LitElement {
         } else if (this.context.walletsListController.records.length === 1) {
             // immediate redirect
             let addressString = `0x1001=${this.wallets.records[0]}`
-            let partnerPath = `${this.partnerPath}}/link-email`
+            let partnerPath = `https://y.at/partner/{partner_path}/link-email`
             this.openExternal(partnerPath);    
         } else {
             // please log into wallet
         }
     }
 
-    // Presently not used while additional integration is in progress
     handleManageAYatClickEvent() {
         // refresh_token:  User's refresh token that was received in the response body of redirection to Yat web or as a deep link query parameter in redirection from Yat web in Get a Yat (Flow 1A).
         // addresses: YAT_TAG_1=ADDRESS_1|YAT_TAG_2=ADDRESS_2|...|YAT_TAG_N=ADDRESS_N
-        let partnerPath = `${this.partnerPath}/manage`
+        let partnerPath = "https://y.at/partner/{partner_path}/manage"
         this.openExternal(partnerPath);
     }
 
@@ -206,29 +206,23 @@ export class YatSettingsView extends LitElement {
             </div> -->
             <div class="form-field">
                 <span class="field-title">
-                    <!-- Yat<mym-tooltip allowHTML="true" tooltipContent="Yat lets you use emojis as your universal username and identity on the internet.">?</mym-tooltip> -->
-                    Yat
+                    Yat<mym-tooltip allowHTML="true" tooltipContent="Yat lets you use emojis as your universal username and identity on the internet.">?</mym-tooltip>
                 </span>
             </div>
             <div>
-                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>       
-                <mym-tooltip tooltipContent="Yat is a platform that lets you buy a URL with emojis in it. You can use your unique URL to link your Monero wallet address, making it easier for people to pay you.">Test</mym-tooltip>     
+                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>            
             </div>
-            <!-- <div>
+            <div>
                 <a id="connect-a-yat" class="clickable-link" @click=${this.handleConnectAYatClickEvent}>Connect a Yat</a>
             </div>
             <div>
                 <a id="manage-a-yat" class="clickable-link" @click=${this.handleManageAYatClickEvent}>Manage Yats</a>
-            </div> -->
+            </div>
         `
     }  
 }
 
-try {
-    customElements.define('mym-yat-settings-view', YatSettingsView);
-} catch (error) {
-    // already defined
-}
+customElements.define('mym-yat-settings-view', YatSettingsView);
 
 
 
