@@ -291,20 +291,28 @@ export class WalletSelector extends LitElement {
     if (this.wallets.length > 0) {
         const walletTemplates = [];
         for (let i = 0; i < this.wallets.length; i++) {
+            let walletLabel = this.wallets[i].walletLabel;
+            if (this.wallets[i].eid !== undefined && this.wallets[i].eid.length > 0) {
+                walletLabel = this.wallets[i].walletLabel + " - " + this.wallets[i].eid
+            }
             walletTemplates.push(html`
                 <div @click=${this.updateSelectedWallet} data-walletoffset=${i} data-swatch="00F4CD" data-walletbalance="0.00052545" data-walletid="dd7e2ba0-d80d-11eb-b0fd-5d37c436790f" data-walletpublicaddress="47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9" class="hoverable-cell utility walletCell performUpdate" style="word-break: break-all; height: 66px; position: relative; left: 0px; top: 0px; box-sizing: border-box; width: 100%;">                    
                     <div data-walletoffset=${i} class="wallet-icon performUpdate medium-32 ${ "wallet-" + this.wallets[i].swatch.substr(1)}"></div>                        
-                    <div data-walletoffset=${i} class="wallet-label performUpdate">${this.wallets[i].walletLabel}</div>
+                    <div data-walletoffset=${i} class="wallet-label performUpdate">${walletLabel}</div>
                     <div data-walletoffset=${i} class="wallet-description-label performUpdate">${this.wallets[i].Balance_FormattedString()} XMR</div>
                 </div>
             `);
+        }
+        let selectedWalletLabel = this.selectedWallet.walletLabel;
+        if (this.selectedWallet.eid !== undefined && this.selectedWallet.eid.length > 0) {
+            selectedWalletLabel = this.selectedWallet.walletLabel + " - " + this.selectedWallet.eid
         }
         return html`
             <div id="wallet-selector" class="WalletSelectView ListCustomSelectView form_field closeSelector" data-walletchosen="true" @click=${this.showOptionsDropdown} ?hidden=${this.displayOptionsDropdown}>
                 <!-- selected wallet -->
                 <div data-walletoffset="0" id="selected-wallet" class="hoverable-cell utility selectionDisplayCellView closeSelector">
                     <div data-walletoffset=${0} class="wallet-icon closeSelector medium-32 ${ "wallet-" + this.selectedWallet.swatch.substr(1)}"></div>                        
-                    <div data-walletoffset=${0} class="wallet-label closeSelector">${this.selectedWallet.walletLabel}</div>
+                    <div data-walletoffset=${0} class="wallet-label closeSelector">${selectedWalletLabel}</div>
                     <div data-walletoffset=${0} class="wallet-description-label closeSelector">${this.selectedWallet.Balance_FormattedString()} XMR</div>
                 </div>
 
@@ -315,23 +323,6 @@ export class WalletSelector extends LitElement {
                     ${walletTemplates}
                 </div>
             </div>        
-                    
-                    
-                    <!-- <div data-walletlabel="1" data-walletoffset="1" data-swatch="CFCECF" data-walletbalance="0.000001" data-walletid="8b13b0b0-d80d-11eb-b0fd-5d37c436790f" data-walletpublicaddress="47joJKcNWs66f6ein9qTTVFyzeGnmBEGWKomSuMmqwaBYGj7gv2RvFRRUy1xtzpn6qE8BBpDnuFbp44qe9X1XmK78vqXaij" class="hoverable-cell utility walletCell" style="word-break: break-all; height: 66px; position: relative; left: 0px; top: 0px; box-sizing: border-box; width: 100%;">                    
-                        <div class="wallet-icon medium-32" style="background-image: url('../../../assets/img/wallet-CFCECF@3x.png');"></div>                        
-                        <div class="walletLabel">1</div>
-                        <div class="description-label" style="position: relative; box-sizing: border-box; padding: 0px 38px 4px 66px; font-size: 13px; font-family: Native-Light, input, menlo, monospace; font-weight: 100; -webkit-font-smoothing: subpixel-antialiased; max-height: 32px; color: rgb(158, 156, 158); word-break: normal; overflow: hidden; text-overflow: ellipsis; cursor: default;">0.000001 XMR   </div>
-                    </div>
-                    
-                    <div data-walletlabel="1" data-walletoffset="2" data-swatch="6B696B" data-walletbalance="0" data-walletid="41151480-d025-11eb-abe1-d74624217cf8" data-walletpublicaddress="4B9Qr7SnR67RmDgBnRmMe1YKTrtcLzSHAe5yMDMpqfiGc3TqxbaZcdQ46aURH2rJSRTK4p31MQNyBRTSgTtuoK9n8vGVBdD" class="hoverable-cell utility walletCell" style="word-break: break-all; height: 66px; position: relative; left: 0px; top: 0px; box-sizing: border-box; width: 100%;">                    
-                        <div class="wallet-icon medium-32" style="background-image: url('../../../assets/img/wallet-6B696B@3x.png');"></div>                        
-                        <div class="walletLabel">1</div>
-                        <div class="description-label" style="position: relative; box-sizing: border-box; padding: 0px 38px 4px 66px; font-size: 13px; font-family: Native-Light, input, menlo, monospace; font-weight: 100; -webkit-font-smoothing: subpixel-antialiased; max-height: 32px; color: rgb(158, 156, 158); word-break: normal; overflow: hidden; text-overflow: ellipsis; cursor: default;">0 XMR   </div>
-                    </div>
-                    
-                    </div>
-                </div>
-            </div> -->
         `;
         } else {
             console.error("Zero wallet records found");
@@ -348,21 +339,6 @@ export class WalletSelector extends LitElement {
 
     }
 }
-/*
-
-${this.wallets.map((wallet) => {
-                            //return html`<provider-card .service=${service} @click=${this.clickHandler}></provider-card>`
-                            return html`
-
-                            <div @click=${this.updateSelectedWallet} data-walletlabel="1" data-walletoffset="0" data-swatch="00F4CD" data-walletbalance="0.00052545" data-walletid="dd7e2ba0-d80d-11eb-b0fd-5d37c436790f" data-walletpublicaddress="47pasa5moXNCSyvvip6sY39VFGYymMhVEXpcaZSaP3hAVNbVXpGu5MVZn9ePeotMRFiJuLq2pB6B3Hm7uWYanyJe1yeSbm9" class="hoverable-cell utility walletCell" style="word-break: break-all; height: 66px; position: relative; left: 0px; top: 0px; box-sizing: border-box; width: 100%;">                    
-                                <div class="wallet-icon medium-32" style="background-image: url('../../../assets/img/wallet-00F4CD@3x.png');"></div>                        
-                                <div class="walletLabel">1</div>
-                                <div class="description-label" style="position: relative; box-sizing: border-box; padding: 0px 38px 4px 66px; font-size: 13px; font-family: Native-Light, input, menlo, monospace; font-weight: 100; -webkit-font-smoothing: subpixel-antialiased; max-height: 32px; color: rgb(158, 156, 158); word-break: normal; overflow: hidden; text-overflow: ellipsis; cursor: default;">0.00052545 XMR</div>
-                            </div>
-                            `
-                        })}  
-
-*/
 
 try {
     customElements.define('wallet-selector', WalletSelector);
