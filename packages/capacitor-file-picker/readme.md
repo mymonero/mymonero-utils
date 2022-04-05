@@ -14,11 +14,11 @@ Presents the device's native file picking ui and returns the selected file's uri
 
 ### Capacitor 2
 
-- `npm i capacitor-file-picker@0.0.2`
+Not supported
 
 ### Capacitor 3
 
-- `npm i capacitor-file-picker`
+- `npm i @mymonero/capacitor-file-picker`
 
 ## Usage
 
