@@ -180,7 +180,8 @@ export class YatSettingsView extends LitElement {
     }  
 }
 
-customElements.define('mym-yat-settings-view', YatSettingsView);
-
-
-
+try {
+    customElements.define('mym-yat-settings-view', YatSettingsView);
+} catch (error) {
+    // already defined
+}
