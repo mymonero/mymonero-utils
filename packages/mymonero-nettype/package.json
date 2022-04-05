@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-nettype",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Definitions of the monero network types used in mymonero",
   "main": "index.js",
   "scripts": {
