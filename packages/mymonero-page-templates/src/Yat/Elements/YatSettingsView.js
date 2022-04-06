@@ -73,7 +73,7 @@ export class YatSettingsView extends LitElement {
         let partnerPath = this.partnerPath;
         
         // Uncomment the next line once we have proper Yat management functionality in the core wallet experience
-        let addressString = `0x1001=${this.context.walletsListController.records[0]}`
+        let addressString = `0x1001=${this.context.walletsListController.records[0].public_address}`
         partnerPath += `?${addressString}`
         if (this.context.refresh_token !== undefined) {
             partnerPath += "&refresh_token=" + this.context.refresh_token
