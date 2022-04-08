@@ -1,5 +1,5 @@
 import { html, css, LitElement } from 'lit';
-// console.log("SS FFS");
+
 export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
@@ -182,7 +182,7 @@ export class SearchableSelect extends LitElement {
         this.buttonText = "EUR";
     }
 
-  handleSelectionEvent(event) {
+    handleSelectionEvent(event) {
         let selectObject = this.selectedElement;
         // Chrome uses event.path while Firefox uses composedPath
         var eventPath = event.path || (event.composedPath && event.composedPath());
@@ -216,11 +216,31 @@ export class SearchableSelect extends LitElement {
         //     }
         //     this.toggleElement();
         // });
+        const self = this;
+        root.addEventListener('touchstart', (e) => { 
+            self.touchstartYOffset = e.layerY
+        });
+
+        
         root.addEventListener('touchend', (e) => { 
-            if (e.target.classList.contains("currencyOption")) {
-                this.handleSelectionEvent(e);
+            if (e.target.classList.contains("currencySelect")) { // currency button pressed
+                this.toggleElement(); 
             }
-            this.toggleElement();
+            
+            // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
+            if (e.target.classList.contains("currencyOption")) { // currency option pressed
+                let yOffset = self.touchstartYOffset - e.layerY;
+                if (Math.abs(yOffset) < 30) {
+                    this.handleSelectionEvent(e);
+                    this.toggleElement();
+                    // based of yOffset travel distance, we assume the user meant to click this element
+                } else { // do nothing, since the yOffset is great enough to assume the user scrolled
+                    
+                }
+            } else if (e.target.id == "searchText") { // user focused the select dropdown
+                e.target.focus()
+            }
+            
         });
         return root;
     }
