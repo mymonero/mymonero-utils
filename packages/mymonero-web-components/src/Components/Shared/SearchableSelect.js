@@ -223,10 +223,18 @@ export class SearchableSelect extends LitElement {
 
         
         root.addEventListener('touchend', (e) => { 
-            if (e.target.classList.contains("currencySelect")) { // currency button pressed
+            console.log(e);
+            var eventPath = e.path || (e.composedPath && e.composedPath());
+            // console.log(eventPath);
+            // console.log(eventPath[0]);
+            // console.log(eventPath[0].classList);
+            // console.log(eventPath[0].classList[0]);
+            // console.log(eventPath[0].classList[1]);
+            // console.log(eventPath[0].classList.contains("currencySelect"));
+            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
                 this.toggleElement(); 
             }
-            
+
             // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
             if (e.target.classList.contains("currencyOption")) { // currency option pressed
                 let yOffset = self.touchstartYOffset - e.layerY;
@@ -249,7 +257,7 @@ export class SearchableSelect extends LitElement {
         if (this.filteredValues.length > 0 && this.filteredValues[0].name !== "") {
             return html` 
             <div class="dropdown">
-                <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
+                <button class="dropbtn currencySelect">${this.buttonText}</button>
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
                     <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
                     ${this.filteredValues.map((object) => {
