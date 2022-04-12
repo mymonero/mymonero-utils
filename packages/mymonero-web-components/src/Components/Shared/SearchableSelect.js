@@ -221,16 +221,21 @@ export class SearchableSelect extends LitElement {
             self.touchstartYOffset = e.layerY
         });
 
+        root.addEventListener('click', (event) => {
+            var eventPath = e.path || (e.composedPath && e.composedPath());
+            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
+                this.toggleElement(); 
+            }
+
+            if (e.target.classList.contains("currencyOption")) { // currency option pressed
+                this.handleSelectionEvent(e);
+            } else if (e.target.id == "searchText") { // user focused the select dropdown
+                e.target.focus()
+            }
+        })
         
         root.addEventListener('touchend', (e) => { 
-            console.log(e);
             var eventPath = e.path || (e.composedPath && e.composedPath());
-            // console.log(eventPath);
-            // console.log(eventPath[0]);
-            // console.log(eventPath[0].classList);
-            // console.log(eventPath[0].classList[0]);
-            // console.log(eventPath[0].classList[1]);
-            // console.log(eventPath[0].classList.contains("currencySelect"));
             if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
                 this.toggleElement(); 
             }
