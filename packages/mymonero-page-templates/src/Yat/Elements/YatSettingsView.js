@@ -160,6 +160,31 @@ export class YatSettingsView extends LitElement {
         }
     }
 
+    createRenderRoot() {
+        const root = super.createRenderRoot();
+        const self = this;
+
+        root.addEventListener('click', (e) => { 
+            if (e.target.id == "buy-a-yat") {
+                this.handleBuyAYatClickEvent(e)
+            }
+            if (e.target.id == "connect-a-yat") {
+                this.handleConnectAYatClickEvent(e);
+            }
+        });
+
+
+        root.addEventListener('touchend', (e) => { 
+            if (e.target.id == "buy-a-yat") {
+                this.handleBuyAYatClickEvent(e)
+            }
+            if (e.target.id == "connect-a-yat") {
+                this.handleConnectAYatClickEvent(e);
+            }
+        });
+        return root;
+    }
+
     render() {
         return html`
             <!-- <div style="">
@@ -171,10 +196,10 @@ export class YatSettingsView extends LitElement {
                 </span>
             </div>
             <div>
-                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>            
+                <a id="buy-a-yat" class="clickable-link">Buy a Yat</a>            
             </div>
             <div>
-                <a id="connect-a-yat" class="clickable-link" @click=${this.handleConnectAYatClickEvent}>Connect / Manage your Yat(s)</a>
+                <a id="connect-a-yat" class="clickable-link">Connect / Manage your Yat(s)</a>
             </div>
         `
     }  
