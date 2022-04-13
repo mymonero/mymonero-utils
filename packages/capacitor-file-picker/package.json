@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/capacitor-file-picker",
-  "version": "1.0.10",
+  "version": "2.1.3",
   "description": "This plugin presents the native UI for picking a file.",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -46,5 +46,8 @@
   },
   "bugs": {
     "url": "https://github.com/mymonero-utils"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -159,10 +159,9 @@ public class FilePicker: CAPPlugin {
         defaults.set(call.callbackId, forKey: "callbackId")
         self.bridge?.saveCall(call)
         
-        let fileTypes = call.options["fileTypes"] as? [String] ?? []
-        
-        let types = getAllowedFileTypes(fileTypes: fileTypes)
-        
+        // let fileTypes = call.options["fileTypes"] as? [String] ?? []
+                
+        let types = [kUTTypeImage]
         
         DispatchQueue.main.async {
             let documentPicker = UIDocumentPickerViewController(documentTypes: types as [String], in: .import)

@@ -1,5 +1,5 @@
 import { html, css, LitElement } from 'lit';
-// console.log("SS FFS");
+
 export class SearchableSelect extends LitElement {
   static get styles() {
     return css`
@@ -182,7 +182,7 @@ export class SearchableSelect extends LitElement {
         this.buttonText = "EUR";
     }
 
-  handleSelectionEvent(event) {
+    handleSelectionEvent(event) {
         let selectObject = this.selectedElement;
         // Chrome uses event.path while Firefox uses composedPath
         var eventPath = event.path || (event.composedPath && event.composedPath());
@@ -216,11 +216,44 @@ export class SearchableSelect extends LitElement {
         //     }
         //     this.toggleElement();
         // });
-        root.addEventListener('touchend', (e) => { 
-            if (e.target.classList.contains("currencyOption")) {
-                this.handleSelectionEvent(e);
+        const self = this;
+        root.addEventListener('touchstart', (e) => { 
+            self.touchstartYOffset = e.layerY
+        });
+
+        root.addEventListener('click', (event) => {
+            var eventPath = event.path || (event.composedPath && event.composedPath());
+            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
+                this.toggleElement(); 
             }
-            this.toggleElement();
+
+            if (event.target.classList.contains("currencyOption")) { // currency option pressed
+                this.handleSelectionEvent(event);
+            } else if (event.target.id == "searchText") { // user focused the select dropdown
+                event.target.focus()
+            }
+        })
+        
+        root.addEventListener('touchend', (event) => { 
+            var eventPath = event.path || (event.composedPath && event.composedPath());
+            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
+                this.toggleElement(); 
+            }
+
+            // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
+            if (event.target.classList.contains("currencyOption")) { // currency option pressed
+                let yOffset = self.touchstartYOffset - event.layerY;
+                if (Math.abs(yOffset) < 30) {
+                    this.handleSelectionEvent(event);
+                    this.toggleElement();
+                    // based of yOffset travel distance, we assume the user meant to click this element
+                } else { // do nothing, since the yOffset is great enough to assume the user scrolled
+                    
+                }
+            } else if (event.target.id == "searchText") { // user focused the select dropdown
+                event.target.focus()
+            }
+            
         });
         return root;
     }
@@ -229,7 +262,7 @@ export class SearchableSelect extends LitElement {
         if (this.filteredValues.length > 0 && this.filteredValues[0].name !== "") {
             return html` 
             <div class="dropdown">
-                <button @click=${this.toggleElement} class="dropbtn currencySelect">${this.buttonText}</button>
+                <button class="dropbtn currencySelect">${this.buttonText}</button>
                 <div id="dropdown" class="dropdown-content" ?hidden=${!this.showDropdown}>
                     <input type="text" placeholder="Search.." id="searchText" @input=${this.updateSearchTextValue} .value=${this.searchString}>
                     ${this.filteredValues.map((object) => {

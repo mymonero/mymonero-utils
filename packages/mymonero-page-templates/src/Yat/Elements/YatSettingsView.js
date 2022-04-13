@@ -73,7 +73,7 @@ export class YatSettingsView extends LitElement {
         let partnerPath = this.partnerPath;
         
         // Uncomment the next line once we have proper Yat management functionality in the core wallet experience
-        let addressString = `0x1001=${this.context.walletsListController.records[0]}`
+        let addressString = `0x1001=${this.context.walletsListController.records[0].public_address}`
         partnerPath += `?${addressString}`
         if (this.context.refresh_token !== undefined) {
             partnerPath += "&refresh_token=" + this.context.refresh_token
@@ -86,12 +86,10 @@ export class YatSettingsView extends LitElement {
         // eid
         // refresh_token:  User's refresh token that was received in the response body of redirection to Yat web or as a deep link query parameter in redirection from Yat web in Get a Yat (Flow 1A).
         // addresses: 
-        
         if (this.context.walletsListController.records.length > 0) {
             let walletsString;
             let inputObj = {};
             this.wallets.forEach((wallet) => {
-                console.log(wallet);
                 inputObj[wallet.public_address] = wallet.walletLabel;
                 walletsString += `<option value='${wallet.public_address}'>${wallet.walletLabel}</option>`
             })
@@ -160,6 +158,30 @@ export class YatSettingsView extends LitElement {
         }
     }
 
+    createRenderRoot() {
+        const root = super.createRenderRoot();
+        const self = this;
+        root.addEventListener('click', (e) => { 
+            if (e.target.id == "buy-a-yat") {
+                this.handleBuyAYatClickEvent()
+            }
+            if (e.target.id == "connect-a-yat") {
+                this.handleConnectAYatClickEvent();
+            }
+        });
+
+        root.addEventListener('touchend', async (e) => { 
+            if (e.target.id == "buy-a-yat") {
+                this.handleBuyAYatClickEvent(e)
+            }
+            if (e.target.id == "connect-a-yat") {
+                console.log(this.handleConnectAYatClickEvent)
+                let test = await this.handleConnectAYatClickEvent();
+            }
+        });
+        return root;
+    }
+
     render() {
         return html`
             <!-- <div style="">
@@ -170,11 +192,11 @@ export class YatSettingsView extends LitElement {
                     Yat
                 </span>
             </div>
-            <div>
-                <a id="buy-a-yat" class="clickable-link" @click=${this.handleBuyAYatClickEvent}>Buy a Yat</a>            
+            <div id="buy-a-yat">
+                <a class="clickable-link">Buy a Yat</a>            
             </div>
-            <div>
-                <a id="connect-a-yat" class="clickable-link" @click=${this.handleConnectAYatClickEvent}>Connect / Manage your Yat(s)</a>
+            <div id="connect-a-yat">
+                <a class="clickable-link">Connect / Manage your Yat(s)</a>
             </div>
         `
     }  
