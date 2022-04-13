@@ -72,18 +72,15 @@ public class FilePicker extends Plugin {
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, types);
             }
         }
-
-        startActivityForResult(call, intent, "filePickerResult");
+        startActivityForResult(call, intent, "newFilePickerResult");
     }
 
     @ActivityCallback
-    private void filePickerResult(PluginCall call, androidx.activity.result.ActivityResult result) {
+    private void newFilePickerResult(PluginCall call, ActivityResult result) {
         Integer resultCode = result.getResultCode();
-
         switch (result.getResultCode()) {
 
             case Activity.RESULT_OK:
-
                 Intent data = result.getData();
 
                 String mimeType = getContext().getContentResolver().getType(data.getData());
@@ -99,39 +96,6 @@ public class FilePicker extends Plugin {
                 ret.put("mimeType", mimeType);
                 ret.put("extension", extension);
                 call.resolve(ret);
-
-                break;
-            case Activity.RESULT_CANCELED:
-                call.reject("File picking was cancelled.");
-                break;
-            default:
-                call.reject("An unknown error occurred.");
-                break;
-        }
-    }
-
-    @ActivityCallback
-    private void filePickerResult(PluginCall call, android.app.Instrumentation.ActivityResult result) {
-
-        switch (result.getResultCode()) {
-            case Activity.RESULT_OK:
-                if (result.getData() != null && result.getData().getData() != null) {
-                    Intent data = result.getData();
-
-                    String mimeType = getContext().getContentResolver().getType(data.getData());
-                    String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-
-                    Cursor c = getContext().getContentResolver().query(data.getData(), null, null, null, null);
-                    c.moveToFirst();
-                    String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-
-                    JSObject ret = new JSObject();
-                    ret.put("uri", data.getDataString());
-                    ret.put("name", name);
-                    ret.put("mimeType", mimeType);
-                    ret.put("extension", extension);
-                    call.resolve(ret);
-                }
                 break;
             case Activity.RESULT_CANCELED:
                 call.reject("File picking was cancelled.");
