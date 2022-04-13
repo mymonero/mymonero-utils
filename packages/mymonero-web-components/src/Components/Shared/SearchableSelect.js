@@ -222,36 +222,36 @@ export class SearchableSelect extends LitElement {
         });
 
         root.addEventListener('click', (event) => {
-            var eventPath = e.path || (e.composedPath && e.composedPath());
+            var eventPath = event.path || (event.composedPath && event.composedPath());
             if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
                 this.toggleElement(); 
             }
 
-            if (e.target.classList.contains("currencyOption")) { // currency option pressed
-                this.handleSelectionEvent(e);
-            } else if (e.target.id == "searchText") { // user focused the select dropdown
-                e.target.focus()
+            if (event.target.classList.contains("currencyOption")) { // currency option pressed
+                this.handleSelectionEvent(event);
+            } else if (event.target.id == "searchText") { // user focused the select dropdown
+                event.target.focus()
             }
         })
         
-        root.addEventListener('touchend', (e) => { 
-            var eventPath = e.path || (e.composedPath && e.composedPath());
+        root.addEventListener('touchend', (event) => { 
+            var eventPath = event.path || (event.composedPath && event.composedPath());
             if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
                 this.toggleElement(); 
             }
 
             // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
-            if (e.target.classList.contains("currencyOption")) { // currency option pressed
-                let yOffset = self.touchstartYOffset - e.layerY;
+            if (event.target.classList.contains("currencyOption")) { // currency option pressed
+                let yOffset = self.touchstartYOffset - event.layerY;
                 if (Math.abs(yOffset) < 30) {
-                    this.handleSelectionEvent(e);
+                    this.handleSelectionEvent(event);
                     this.toggleElement();
                     // based of yOffset travel distance, we assume the user meant to click this element
                 } else { // do nothing, since the yOffset is great enough to assume the user scrolled
                     
                 }
-            } else if (e.target.id == "searchText") { // user focused the select dropdown
-                e.target.focus()
+            } else if (event.target.id == "searchText") { // user focused the select dropdown
+                event.target.focus()
             }
             
         });
