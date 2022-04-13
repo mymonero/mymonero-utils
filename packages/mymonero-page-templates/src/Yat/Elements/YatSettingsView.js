@@ -170,17 +170,8 @@ export class YatSettingsView extends LitElement {
             }
         });
 
-        root.addEventListener('touchstart', (e) => { 
-            console.log("touch start");
-            
-            console.log(e)
-            console.log(e.target)
-        });
         root.addEventListener('touchend', async (e) => { 
-            console.log("Touchend");
-
             if (e.target.id == "buy-a-yat") {
-                
                 this.handleBuyAYatClickEvent(e)
             }
             if (e.target.id == "connect-a-yat") {
