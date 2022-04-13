@@ -86,12 +86,10 @@ export class YatSettingsView extends LitElement {
         // eid
         // refresh_token:  User's refresh token that was received in the response body of redirection to Yat web or as a deep link query parameter in redirection from Yat web in Get a Yat (Flow 1A).
         // addresses: 
-        
         if (this.context.walletsListController.records.length > 0) {
             let walletsString;
             let inputObj = {};
             this.wallets.forEach((wallet) => {
-                console.log(wallet);
                 inputObj[wallet.public_address] = wallet.walletLabel;
                 walletsString += `<option value='${wallet.public_address}'>${wallet.walletLabel}</option>`
             })
@@ -163,23 +161,33 @@ export class YatSettingsView extends LitElement {
     createRenderRoot() {
         const root = super.createRenderRoot();
         const self = this;
-
+        console.log("Render root coming");
         root.addEventListener('click', (e) => { 
+            console.log("Click");
             if (e.target.id == "buy-a-yat") {
                 this.handleBuyAYatClickEvent(e)
             }
             if (e.target.id == "connect-a-yat") {
-                this.handleConnectAYatClickEvent(e);
+                this.handleConnectAYatClickEvent();
             }
         });
 
+        root.addEventListener('touchstart', (e) => { 
+            console.log("touch start");
+            
+            console.log(e)
+            console.log(e.target)
+        });
+        root.addEventListener('touchend', async (e) => { 
+            console.log("Touchend");
 
-        root.addEventListener('touchend', (e) => { 
             if (e.target.id == "buy-a-yat") {
+                
                 this.handleBuyAYatClickEvent(e)
             }
             if (e.target.id == "connect-a-yat") {
-                this.handleConnectAYatClickEvent(e);
+                console.log(this.handleConnectAYatClickEvent)
+                let test = await this.handleConnectAYatClickEvent();
             }
         });
         return root;
@@ -195,11 +203,11 @@ export class YatSettingsView extends LitElement {
                     Yat
                 </span>
             </div>
-            <div>
-                <a id="buy-a-yat" class="clickable-link">Buy a Yat</a>            
+            <div id="buy-a-yat">
+                <a class="clickable-link">Buy a Yat</a>            
             </div>
-            <div>
-                <a id="connect-a-yat" class="clickable-link">Connect / Manage your Yat(s)</a>
+            <div id="connect-a-yat">
+                <a class="clickable-link">Connect / Manage your Yat(s)</a>
             </div>
         `
     }  
