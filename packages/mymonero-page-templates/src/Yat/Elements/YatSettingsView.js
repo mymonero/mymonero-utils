@@ -161,11 +161,9 @@ export class YatSettingsView extends LitElement {
     createRenderRoot() {
         const root = super.createRenderRoot();
         const self = this;
-        console.log("Render root coming");
         root.addEventListener('click', (e) => { 
-            console.log("Click");
             if (e.target.id == "buy-a-yat") {
-                this.handleBuyAYatClickEvent(e)
+                this.handleBuyAYatClickEvent()
             }
             if (e.target.id == "connect-a-yat") {
                 this.handleConnectAYatClickEvent();
