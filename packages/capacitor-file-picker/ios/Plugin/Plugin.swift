@@ -159,7 +159,7 @@ public class FilePicker: CAPPlugin {
         defaults.set(call.callbackId, forKey: "callbackId")
         self.bridge?.saveCall(call)
         
-        let fileTypes = call.options["fileTypes"] as? [String] ?? []
+        // let fileTypes = call.options["fileTypes"] as? [String] ?? []
                 
         let types = [kUTTypeImage]
         
