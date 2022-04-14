@@ -25,7 +25,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorFilePicker.podspec"
+    "MymoneroCapacitorFilePicker.podspec"
   ],
   "keywords": [
     "capacitor",
