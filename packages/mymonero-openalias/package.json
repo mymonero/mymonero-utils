@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-openalias",
-  "version": "2.1.1",
+  "version": "2.1.5",
   "description": "Connector for converting openalias addresses to monero addresses",
   "main": "index.js",
   "scripts": {
