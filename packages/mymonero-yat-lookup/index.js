@@ -40,7 +40,6 @@ function isEmojiCharacter(char) {
 }
 
 function isValidYatHandle(handle) {
-    console.log("Invoked isValidYatHandle:", handle)
     if (typeof(handle) !== 'string') {
         return false;
     }
@@ -75,10 +74,10 @@ function getSupportedEmojis() {
             try {
                 axios.get(endpoint)
                     .then((response) => {
-                        console.log("Successfully retrieved supported emojis");
+                        
                         resolve(response.data);
                     }).catch((error) => {
-                        console.log("Unable to retrieve supported emojis -- in this instance we could consider falling back to the originally supported emojis by Yat");
+                        
                         // we could resolve with base emoji list here                        
                         //self.validEmojis = [...validEmojis]; // properly clone array using spread operator
                         resolve(validEmojis);
@@ -96,7 +95,6 @@ function getSupportedEmojis() {
 function isValidYatCharacter(char) {
     const self = this;
     let response = self.validEmojis.includes(char);
-    console.log(`Checking ${char} against valid emojis`, response)
     return response;
 }
 
@@ -110,8 +108,6 @@ function lookupMoneroAddresses(yat) {
     return new Promise((resolve, reject) => {
         axios.get(endpoint)
             .then((response) => {
-                console.log("Looking up Yat: " + yat);
-                console.log(self.debugMode);
                 // This path will execute when a Yat that exists is looked up. 
                 let returnData = new Map();
                 let resultArray = Object.values(response.data.result);
@@ -135,26 +131,16 @@ function lookupMoneroAddresses(yat) {
 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
 // Remember that [0..9], *, #, digits will match true when checking their properties to see if they are 
 function testEmojisAgainstUnicodePropertyEscape() {
-    console.log("Invoking testEmojisAgainstUnicodePropertyEscape");
-    //console.log(typeof(this.validEmojis));
     let alerted = 0;
     
     let cnt = 0;
     for (let i = 0; i < this.validEmojis.length; i++) {
-        //console.log(regexpEmojiPresentation.match(this.validEmojis[i]));
-        console.log(this.validEmojis[i]);
-        //let match = /\p{Emoji}/u.test(this.validEmojis[i]);
         let match = isEmojiCharacter(this.validEmojis[i]);
-        //console.log("Inline regexp test:", /\p{Emoji}/u.test(this.validEmojis[i]));
         if (match !== true) {
             alerted++;
         }
-        //console.log("Test flower");
-        //console.log(regexpEmojiPresentation.test("🌺"));
         cnt++;
     }
-    console.log(cnt);
-
 }
 
 module.exports = YatMoneroLookup;

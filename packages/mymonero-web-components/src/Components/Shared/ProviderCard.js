@@ -115,13 +115,13 @@ export class ExchangeServiceProviderCard extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     
-    this.addEventListener('touchstart', () => {
-      console.log("PC: Touch start");
-    });
+    // this.addEventListener('touchstart', () => {
 
-    this.addEventListener('touchend', () => {
-        console.log("PC: Touch end");
-    });
+    // });
+
+    // this.addEventListener('touchend', () => {
+
+    // });
   }
 
   disconnectedCallback() {
