@@ -117,9 +117,7 @@ export class YatSettingsView extends LitElement {
                 inputPlaceholder: 'Select a wallet',
                 showCancelButton: true,
                 inputValidator: (value) => {
-                    console.log(value);
                     return new Promise((resolve) => {
-                        console.log(value);
                         if (value !== '') {
                             resolve()
                         } else {
@@ -162,20 +160,20 @@ export class YatSettingsView extends LitElement {
         const root = super.createRenderRoot();
         const self = this;
         root.addEventListener('click', (e) => { 
-            if (e.target.id == "buy-a-yat") {
+            if (e.target.classList.contains("buy-a-yat")) {
                 this.handleBuyAYatClickEvent()
             }
-            if (e.target.id == "connect-a-yat") {
+
+            if (e.target.classList.contains("connect-a-yat")) {
                 this.handleConnectAYatClickEvent();
             }
         });
 
         root.addEventListener('touchend', async (e) => { 
-            if (e.target.id == "buy-a-yat") {
+            if (e.target.classList.contains("buy-a-yat")) {
                 this.handleBuyAYatClickEvent(e)
             }
-            if (e.target.id == "connect-a-yat") {
-                console.log(this.handleConnectAYatClickEvent)
+            if (e.target.classList.contains("connect-a-yat")) {
                 let test = await this.handleConnectAYatClickEvent();
             }
         });
