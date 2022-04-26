@@ -190,11 +190,11 @@ export class YatSettingsView extends LitElement {
                     Yat
                 </span>
             </div>
-            <div id="buy-a-yat">
-                <a class="clickable-link">Buy a Yat</a>            
+            <div class="buy-a-yat">
+                <a class="buy-a-yat clickable-link">Buy a Yat</a>            
             </div>
-            <div id="connect-a-yat">
-                <a class="clickable-link">Connect / Manage your Yat(s)</a>
+            <div class="connect-a-yat">
+                <a class="connect-a-yat clickable-link">Connect / Manage your Yat(s)</a>
             </div>
         `
     }  
