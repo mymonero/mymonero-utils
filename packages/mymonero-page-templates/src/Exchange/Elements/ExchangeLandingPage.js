@@ -141,15 +141,15 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         }
     }
 
-    handleTouchEvent(event) {
-        console.log("Handle click event");
-        console.log(event);
-    }
+    // handleTouchEvent(event) {
+    //     console.log("Handle click event");
+    //     console.log(event);
+    // }
 
-    handleClickEvent(event) {
-        console.log("Handle click event");
-        console.log(event);
-    }
+    // handleClickEvent(event) {
+    //     console.log("Handle click event");
+    //     console.log(event);
+    // }
 
     render() {
 

@@ -122,7 +122,7 @@ walletSelectorClickListener = function(event, exchangeElements) {
         walletSelector.dataset.walletchosen = true;
         clearCurrencies();
     } else {
-        console.log("Didn't update wallet dataset");
+        // console.log("Didn't update wallet dataset");
     }
     if (event.srcElement.parentElement.className.includes("selectionDisplayCellView")) {
         walletElement.classList.add('active');
