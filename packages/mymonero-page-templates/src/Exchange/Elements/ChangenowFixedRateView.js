@@ -93,7 +93,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
                 this.context.walletsListController.orderSent = false
             }
 
-            ExchangeUtils.default.sendFunds(this.context.walletsListController.records[0], in_amount, send_address, sweep_wallet, exchangeHelper.sendFundsValidationStatusCallback, exchangeHelper.handleSendFundsResponseCallback, this.context)
+            ExchangeUtils.default.sendFunds(this.context.walletsListController.records[selectorOffset], in_amount, send_address, sweep_wallet, exchangeHelper.sendFundsValidationStatusCallback, exchangeHelper.handleSendFundsResponseCallback, this.context)
         } catch (error) {
             console.log(error)
         } 
