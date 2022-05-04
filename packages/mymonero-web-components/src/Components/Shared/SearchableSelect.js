@@ -217,44 +217,52 @@ export class SearchableSelect extends LitElement {
         //     this.toggleElement();
         // });
         const self = this;
-        root.addEventListener('touchstart', (e) => { 
-            self.touchstartYOffset = e.layerY
-        });
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            // Mobile devices
+            // Touch supported device
+            root.addEventListener('touchstart', (event) => {                
+                self.touchstartYOffset = event.changedTouches[0].clientY;
+            });            
 
-        root.addEventListener('click', (event) => {
-            var eventPath = event.path || (event.composedPath && event.composedPath());
-            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
-                this.toggleElement(); 
-            }
+            root.addEventListener('touchend', (event) => { 
 
-            if (event.target.classList.contains("currencyOption")) { // currency option pressed
-                this.handleSelectionEvent(event);
-            } else if (event.target.id == "searchText") { // user focused the select dropdown
-                event.target.focus()
-            }
-        })
-        
-        root.addEventListener('touchend', (event) => { 
-            var eventPath = event.path || (event.composedPath && event.composedPath());
-            if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
-                this.toggleElement(); 
-            }
+                var eventPath = event.path || (event.composedPath && event.composedPath());
+                if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
+                    this.toggleElement(); 
+                } else if (event.target.classList.contains("currencyOption")) { // currency option pressed
+                    // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
+                    let yOffset = self.touchstartYOffset - event.changedTouches[0].clientY;
+                    if (Math.abs(yOffset) < 30) {
+                        this.handleSelectionEvent(event);
+                        this.toggleElement();
+                        // based of yOffset travel distance, we assume the user meant to click this element
+                    } else { // do nothing, since the yOffset is great enough to assume the user scrolled
+                        // console.log("Scrolling")
+                    }
+                } else if (event.target.id == "searchText") { // user focused the select dropdown
+                    event.target.focus()
+                } else {
+                    console.log("We shouldn't get here");
+                }
+            });
 
-            // To support swiping, we determine if someone has tapped versus swiped by checking the yOffset of the element they touched
-            if (event.target.classList.contains("currencyOption")) { // currency option pressed
-                let yOffset = self.touchstartYOffset - event.layerY;
-                if (Math.abs(yOffset) < 30) {
+        } else { // desktop devices
+            root.addEventListener('click', (event) => {
+                var eventPath = event.path || (event.composedPath && event.composedPath());
+                if (eventPath[0].classList.contains("currencySelect")) { // currency button pressed
+                    this.toggleElement(); 
+                }
+
+                if (event.target.classList.contains("currencyOption")) { // currency option pressed
                     this.handleSelectionEvent(event);
                     this.toggleElement();
-                    // based of yOffset travel distance, we assume the user meant to click this element
-                } else { // do nothing, since the yOffset is great enough to assume the user scrolled
-                    
+                } else if (event.target.id == "searchText") { // user focused the select dropdown
+                    event.target.focus()
                 }
-            } else if (event.target.id == "searchText") { // user focused the select dropdown
-                event.target.focus()
-            }
-            
-        });
+            })
+           
+        }
+
         return root;
     }
 
