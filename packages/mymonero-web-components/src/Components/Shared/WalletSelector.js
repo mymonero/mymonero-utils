@@ -267,20 +267,25 @@ export class WalletSelector extends LitElement {
 
     createRenderRoot() {
         const root = super.createRenderRoot();
-        root.addEventListener('click', (event) => { 
-            if (event.target.id == "wallet-selector") {
-                this.showOptionsDropdown();
-            } else if (event.target.classList.contains("performUpdate")) {
-                this.updateSelectedWallet(event);
-            }
-        });
-        root.addEventListener('touchend', (event) => { 
-            if (event.target.id == "wallet-selector") {
-                this.showOptionsDropdown();
-            } else if (event.target.classList.contains("performUpdate")) {
-                this.updateSelectedWallet(event);
-            }
-        });
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            root.addEventListener('click', (event) => { 
+                if (event.target.id == "wallet-selector") {
+                    this.showOptionsDropdown();
+                } else if (event.target.classList.contains("performUpdate")) {
+                    this.updateSelectedWallet(event);
+                }
+            });
+        } else {
+            root.addEventListener('touchend', (event) => { 
+                if (event.target.id == "wallet-selector") {
+                    this.showOptionsDropdown();
+                } else if (event.target.classList.contains("performUpdate")) {
+                    this.updateSelectedWallet(event);
+                } else {
+                    this.showOptionsDropdown();
+                }
+            });
+        }
         return root;
     }
 
