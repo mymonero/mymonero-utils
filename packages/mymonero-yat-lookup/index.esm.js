@@ -31,6 +31,8 @@ function YatMoneroLookup(opts = {}) {
     this.getBasePath = (() => {
         return this.apiUrl;
     })
+
+    return this
 }
 
 function isEmojiCharacter(char) {
@@ -137,4 +139,6 @@ function testEmojisAgainstUnicodePropertyEscape() {
     }
 }
 
-module.exports = YatMoneroLookup;
+let obj = { YatMoneroLookup };
+
+export default obj;
