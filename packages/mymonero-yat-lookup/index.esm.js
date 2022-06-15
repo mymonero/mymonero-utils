@@ -40,7 +40,7 @@ function isEmojiCharacter(char) {
 }
 
 function isValidYatHandle(handle) {
-    console.log("Invoked isValidYatHandle:", handle)
+
     if (typeof(handle) !== 'string') {
         return false;
     }
@@ -68,10 +68,9 @@ function getSupportedEmojis() {
             try {
                 axios.get(endpoint)
                     .then((response) => {
-                        console.log("Successfully retrieved supported emojis");
                         resolve(response.data);
                     }).catch((error) => {
-                        console.log("Unable to retrieve supported emojis -- in this instance we could consider falling back to the originally supported emojis by Yat");
+                        // console.log("Unable to retrieve supported emojis -- in this instance we could consider falling back to the originally supported emojis by Yat");
                         // we could resolve with base emoji list here                        
                         //self.validEmojis = [...validEmojis]; // properly clone array using spread operator
                         resolve(validEmojis);
@@ -130,7 +129,6 @@ function testEmojisAgainstUnicodePropertyEscape() {
     let alerted = 0;
     let cnt = 0;
     for (let i = 0; i < this.validEmojis.length; i++) {
-        console.log(this.validEmojis[i]);
         let match = isEmojiCharacter(this.validEmojis[i]);
         if (match !== true) {
             alerted++;
