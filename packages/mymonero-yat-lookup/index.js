@@ -124,8 +124,7 @@ function lookupMoneroAddresses(yat) {
 function testEmojisAgainstUnicodePropertyEscape() {
     let alerted = 0;
     let cnt = 0;
-    for (let i = 0; i < this.validEmojis.length; i++) {
-        console.log(this.validEmojis[i]);
+    for (let i = 0; i < this.validEmojis.length; i++) 
         let match = isEmojiCharacter(this.validEmojis[i]);
         if (match !== true) {
             alerted++;
