@@ -40,7 +40,7 @@ function isEmojiCharacter(char) {
 }
 
 function isValidYatHandle(handle) {
-    // console.log("Invoked isValidYatHandle:", handle)
+
     if (typeof(handle) !== 'string') {
         return false;
     }
@@ -49,13 +49,6 @@ function isValidYatHandle(handle) {
         return false;
     }
     
-    // Iterate through all characters to ensure they're valid emojis 
-    for (const c of handle) {
-        if (/\p{Extended_Pictographic}/u.test(c) == false) {
-            return false
-        }
-    }
-
     // Iterate through all known valid Yat characters and check that they are members of 
     // This is commented out until it's possible for us to get a full list of emoji mapping
     // for (const c of handle) {
@@ -75,7 +68,6 @@ function getSupportedEmojis() {
             try {
                 axios.get(endpoint)
                     .then((response) => {
-                       //  console.log("Successfully retrieved supported emojis");
                         resolve(response.data);
                     }).catch((error) => {
                         // console.log("Unable to retrieve supported emojis -- in this instance we could consider falling back to the originally supported emojis by Yat");
@@ -96,28 +88,29 @@ function getSupportedEmojis() {
 function isValidYatCharacter(char) {
     const self = this;
     let response = self.validEmojis.includes(char);
-    // console.log(`Checking ${char} against valid emojis`, response)
     return response;
 }
 
 // Returns empty object when successful but no data is set. Otherwise, returns object with key => value pair - eg { "0x1001" => "moneroaddress", "0x1002" => "monerosubaddress" }
-// *  
+// *
 function lookupMoneroAddresses(yat) {
     const self = this;
     // 0x1001 is a Monero address, 0x1002 is a Monero subaddress
-    let endpointString = `${self.apiUrl}/emoji_id/${yat}?tags=0x1001,0x1002`;
+    let endpointString = `${self.apiUrl}/emoji_id/${yat}/payment`;
     let endpoint = encodeURI(endpointString);
+
     return new Promise((resolve, reject) => {
-        axios.get(endpoint, { crossDomain: true })
+        axios.get(endpoint)
             .then((response) => {
-                // This path will execute when a Yat that exists is looked up. 
+                
                 let returnData = new Map();
-                let resultArray = Object.values(response.data.result);
-
-                resultArray.forEach(function (result) {
-                    returnData.set(result.tag, result.data);
-                })
-
+                if (typeof(response.data.result['0x1001']) !== "undefined") {
+                    returnData.set('0x1001', response.data.result['0x1001'].address);
+                }
+                if (typeof(response.data.result['0x1002']) !== "undefined") {
+                    returnData.set('0x1002', response.data.result['0x1002'].address);
+                }
+                
                 resolve(returnData);
 
             }).catch(function (error) {
@@ -133,21 +126,15 @@ function lookupMoneroAddresses(yat) {
 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes
 // Remember that [0..9], *, #, digits will match true when checking their properties to see if they are 
 function testEmojisAgainstUnicodePropertyEscape() {
-    //console.log("Invoking testEmojisAgainstUnicodePropertyEscape");
-    //console.log(typeof(this.validEmojis));
     let alerted = 0;
-    
     let cnt = 0;
     for (let i = 0; i < this.validEmojis.length; i++) {
         let match = isEmojiCharacter(this.validEmojis[i]);
         if (match !== true) {
             alerted++;
         }
-
         cnt++;
     }
-    console.log(cnt);
-
 }
 
 let obj = { YatMoneroLookup };
