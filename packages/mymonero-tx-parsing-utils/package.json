@@ -20,7 +20,7 @@
     "@mymonero/mymonero-keyimage-cache": "^2.0.0",
     "@mymonero/mymonero-monero-config": "^2.0.0",
     "@mymonero/mymonero-money-format": "^2.0.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.4"
   },
   "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc"
 }
