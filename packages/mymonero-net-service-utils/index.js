@@ -1,4 +1,4 @@
-'use strict'
+const http = require('@capacitor-community/http')
 
 function New_ParametersForWalletRequest (address, view_key__private) {
   return {
@@ -35,19 +35,41 @@ function HTTPRequest (
     completeURL,
     final_parameters
   )
-  const requestHandle = request_conformant_module(
-    request_options,
-    function (err_orProgressEvent, res, body) {
-      _new_HTTPRequestHandlerFunctionCallingFn(fn)(
-        // <- called manually instead of directly passed to request_conformant_module call to enable passing completeURL
-        completeURL,
-        err_orProgressEvent,
-        res,
-        body
-      )
-    }
-  )
-  //
+
+  const err_orProgressEvent = function(error) {
+    console.log(error);
+  }
+  const requestHandle = http.Http.request({
+    method: 'POST',
+    url: completeURL,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },  
+    data: JSON.stringify(final_parameters)
+  }).then(res => {
+    _new_HTTPRequestHandlerFunctionCallingFn(fn)(
+      // <- called manually instead of directly passed to request_conformant_module call to enable passing completeURL
+      completeURL,
+      err_orProgressEvent,
+      res,
+      res.data
+    )
+  })
+
+  // const old_requestHandle = request_conformant_module(
+  //   request_options,
+  //   function (err_orProgressEvent, res, body) {
+  //     _new_HTTPRequestHandlerFunctionCallingFn(fn)(
+  //       // <- called manually instead of directly passed to request_conformant_module call to enable passing completeURL
+  //       completeURL,
+  //       err_orProgressEvent,
+  //       res,
+  //       body
+  //     )
+  //   }
+  // )
+  
   return requestHandle
 }
 exports.HTTPRequest = HTTPRequest
@@ -76,7 +98,7 @@ function _new_HTTPRequestHandlerFunctionCallingFn (fn) {
   return function (completeURL, err_orProgressEvent, res, body) {
     // err appears to actually be a ProgressEvent
     var err = null
-    const statusCode = typeof res !== 'undefined' ? res.statusCode : -1
+    const statusCode = typeof res !== 'undefined' ? res.status : -1
     if (statusCode == 0 || statusCode == -1) {
       // we'll treat 0 as a lack of internet connection.. unless there's a better way to make use of err_orProgressEvent which is apparently going to be typeof ProgressEvent here
       err = new Error('Connection Failure')
@@ -84,7 +106,7 @@ function _new_HTTPRequestHandlerFunctionCallingFn (fn) {
       const body_Error =
 				body && typeof body === 'object' ? body.Error : undefined
       const statusMessage =
-				res && res.statusMessage ? res.statusMessage : undefined
+				res && res.status ? res.status : undefined
       if (typeof body_Error !== 'undefined' && body_Error) {
         err = new Error(body_Error)
       } else if (typeof statusMessage !== 'undefined' && statusMessage) {
@@ -101,6 +123,7 @@ function _new_HTTPRequestHandlerFunctionCallingFn (fn) {
     }
     var json
     if (typeof body === 'string') {
+      console.log('body', body)
       try {
         json = JSON.parse(body)
       } catch (e) {

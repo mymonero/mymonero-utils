@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-net-service-utils",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc",
   "dependencies": {
+    "@capacitor-community/http": "^1.4.1",
     "xhr": "^2.6.0"
   }
 }
