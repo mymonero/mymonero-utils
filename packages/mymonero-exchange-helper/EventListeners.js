@@ -104,8 +104,6 @@ walletSelectorClickListener = function(event, exchangeElements) {
     let selectedWallet = document.getElementById('selected-wallet');
     walletElement.classList.add('active');
     if (event.srcElement.parentElement.className.includes("optionCell")) {
-        console.log("Updating wallet dataset");
-        console.log(selectedWallet.dataset);
         let dataAttributes = event.srcElement.parentElement.dataset;
         selectedWallet.dataset.walletlabel = dataAttributes.walletlabel;
         selectedWallet.dataset.walletbalance = dataAttributes.walletbalance;
@@ -123,9 +121,8 @@ walletSelectorClickListener = function(event, exchangeElements) {
         let walletSelector = document.getElementById('wallet-selector');
         walletSelector.dataset.walletchosen = true;
         clearCurrencies();
-        console.log(selectedWallet.dataset);
     } else {
-        console.log("Didn't update wallet dataset");
+        // console.log("Didn't update wallet dataset");
     }
     if (event.srcElement.parentElement.className.includes("selectionDisplayCellView")) {
         walletElement.classList.add('active');

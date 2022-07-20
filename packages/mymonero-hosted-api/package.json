@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-hosted-api",
-  "version": "2.0.0",
+  "version": "2.1.10",
   "description": "Connector for MyMonero compatible services",
   "main": "index.js",
   "scripts": {

@@ -360,12 +360,17 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         if (prepopulatedCurrencyValueExists) {
             this.handleCurrencyInputResponse();
         }
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
-        let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray);
+        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
+        let [estimatedFiatRange] = await Promise.all(rangeQueryArray)
+            .catch(error => {
+                // console.error(error);
+                // console.error(error.message);
+                this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
+            });
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
-        this.estimatedCryptoRange = estimatedCryptoRange;
-        this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
+        //this.estimatedCryptoRange = estimatedCryptoRange;
+        //this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
         let formatOptions = {
             style: 'currency',
             currency: this.inCurrencyCode
@@ -385,17 +390,17 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         this.inCurrencyCode = "EUR"
         this.inCurrencyName = "Euro"
         this.displayMinMaxLoadingIndicator = false;
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR"), this.fiatApi.getMinMaxRange("XMR", this.inCurrencyCode)]
-        let [estimatedFiatRange, estimatedCryptoRange] = await Promise.all(rangeQueryArray)
+        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
+        let [estimatedFiatRange] = await Promise.all(rangeQueryArray)
             .catch(error => {
-                console.error(error);
-                console.error(error.message);
+                // console.error(error);
+                // console.error(error.message);
                 this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
             });
         this.displayMinMaxLoadingIndicator = false;
         this.estimatedFiatRange = estimatedFiatRange;
-        this.estimatedCryptoRange = estimatedCryptoRange;
-        this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
+        // this.estimatedCryptoRange = estimatedCryptoRange;
+        // this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
         let formatOptions = {
             style: 'currency',
             currency: this.inCurrencyCode
@@ -766,11 +771,17 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         const root = super.createRenderRoot();
         
         root.addEventListener('click', (event) => { 
-            console.log('click from WS'); 
-            this.shadowName = event.target.localName 
-            //event.target.click();
-            if (event.target.localName === 'searchable-select') {
-                
+            if (event.target.localName == "input") {
+                event.target.focus();
+            } else {
+                let inputs = this.querySelectorAll("input");
+                inputs.forEach((input) => {
+                    input.blur();
+                })
+            }
+            
+            if (event.target.id == "confirmation-button") {
+                this.redirectToURL();
             }
         });
         

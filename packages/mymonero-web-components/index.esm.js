@@ -1,4 +1,3 @@
-console.log("web components imported");
 /* Require reusable components */
 require("./src/Components/Shared/ActivityIndicator");
 require("./src/Components/Shared/ProviderCard");
