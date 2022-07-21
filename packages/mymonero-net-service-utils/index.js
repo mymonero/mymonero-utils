@@ -52,6 +52,53 @@ function HTTPRequest (
 }
 exports.HTTPRequest = HTTPRequest
 
+// this function exists for MyMonero mobile to be able to facilitate Monero LWS compatiblityß
+function HTTPRequestBypassCORS (
+  capacitorHttp, 
+  apiAddress_authority, // authority means [subdomain.]host.…[:…] with no trailing slash
+  endpointPath,
+  final_parameters,
+  fn
+) {
+  // fn: (err?, data?) -> new Request
+  if (typeof final_parameters === 'undefined' || final_parameters == null) {
+    throw 'final_parameters must not be nil'
+    // return null
+  }
+  const completeURL = apiAddress_authority + endpointPath
+  console.log('📡  ' + completeURL)
+  //
+  const request_options = _new_requestOptions_base(
+    'POST',
+    completeURL,
+    final_parameters
+  )
+
+  const err_orProgressEvent = function(error) {
+    console.log(error);
+  }
+  const requestHandle = capacitorHttp.Http.request({
+    method: 'POST',
+    url: completeURL,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },  
+    data: JSON.stringify(final_parameters)
+  }).then(res => {
+    _new_HTTPRequestHandlerFunctionCallingFn(fn)(
+      // <- called manually instead of directly passed to request_conformant_module call to enable passing completeURL
+      completeURL,
+      err_orProgressEvent,
+      res,
+      res.data
+    )
+  })
+    
+  return requestHandle
+}
+exports.HTTPRequestBypassCORS = HTTPRequestBypassCORS
+
 function _new_APIAddress_baseURLString (
   apiAddress_authority // authority means [subdomain.]host.…[:…]
 ) {
