@@ -15,18 +15,17 @@ class WABridge {
   /**
    * Creates a transfer of funds to the recipient address and returns the raw signed tx.
    * @param {object} options
-   * @param {number} options.amount
-   * @param {string} options.recipientAddress
    * @param {number} options.priority
    * @param {string} options.address
    * @param {string} options.privateViewKey
    * @param {string} options.publicSpendKey
    * @param {string} options.privateSpendKey
+   * @param {array} options.destinations - Array of to_address and send_amount
    * @param {boolean} options.shouldSweep
    * @param {string} options.nettype - The network name eg MAINNET.
    * @param {object} options.unspentOuts - List of unspent outs as well as per byte fee.
    * @param {randomOutsCallback} options.randomOutsCb - Used to fetch the random outs from the light wallet service.
-   * @returns
+   * @returns {object} - Signed transaction
    */
   async createTransaction (options) {
     const self = this
@@ -176,7 +175,7 @@ class WABridge {
    * Derives the seed and keys from the mnemonic string.
    * @param {string} mnemonic - The string of mnemonic words.
    * @param {string} nettype - The network name eg MAINNET.
-   * @returns {array} List of public and private keys.
+   * @returns {object} List of public and private keys.
    */
   seedAndKeysFromMnemonic (mnemonic, nettype) {
     checkNetType(nettype)
@@ -205,7 +204,7 @@ class WABridge {
    * @param {string} privateSpendKey - The wallet private spend key.
    * @param {string} seed - The seed as optional.
    * @param {string} nettype - The network name eg MAINNET.
-   * @returns {array} Returns if its valid, view only and the public view and spend keys.
+   * @returns {object} Returns if its valid, view only and the public view and spend keys.
    */
   isValidKeys (address, privateViewKey, privateSpendKey, seed, nettype) {
     checkNetType(nettype)
@@ -227,7 +226,7 @@ class WABridge {
    * Decodes address to provide spend and view keys.
    * @param {string} address - The primary address to decode.
    * @param {string} nettype - The network name eg MAINNET.
-   * @returns {array} Break down of the address.
+   * @returns {object} Break down of the address.
    */
   decodeAddress (address, nettype) {
     checkNetType(nettype)
@@ -249,7 +248,7 @@ class WABridge {
    * Creates a new wallet based on the locale.
    * @param {string} localeLanguageCode The locale  based on language and Country. eg. en-US.
    * @param {string} nettype - The network name eg MAINNET.
-   * @returns {array} mnemonic details as well as the public and private keys.
+   * @returns {object} mnemonic details as well as the public and private keys.
    */
   generateWallet (localeLanguageCode, nettype) {
     checkNetType(nettype)
@@ -291,7 +290,7 @@ class WABridge {
    * (Deprecated) Returns a list of public amd private keys derived from the seed.
    * @param {string} seed - The seed string. not to be confused with the mnemonic seed.
    * @param {string} nettype - The network name eg MAINNET.
-   * @returns {array} A breakdown of the public and private keys.
+   * @returns {object} A breakdown of the public and private keys.
    */
   addressAndKeysFromSeed (seed, nettype) {
     checkNetType(nettype)
