@@ -54,7 +54,7 @@ exports.HTTPRequest = HTTPRequest
 
 // this function exists for MyMonero mobile to be able to facilitate Monero LWS compatiblityß
 function HTTPRequestBypassCORS (
-  capacitorHttp, 
+  capacitorHttp,
   apiAddress_authority, // authority means [subdomain.]host.…[:…] with no trailing slash
   endpointPath,
   final_parameters,
@@ -74,8 +74,8 @@ function HTTPRequestBypassCORS (
     final_parameters
   )
 
-  const err_orProgressEvent = function(error) {
-    console.log(error);
+  const err_orProgressEvent = function (error) {
+    console.log(error)
   }
   const requestHandle = capacitorHttp.Http.request({
     method: 'POST',
@@ -83,10 +83,10 @@ function HTTPRequestBypassCORS (
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json'
-    },  
+    },
     data: JSON.stringify(final_parameters)
   }).then(res => {
-    _new_HTTPRequestHandlerFunctionCallingFn(fn)(
+    _new_CapacitorRequestHandlerFunctionCallingFn(fn)(
       // <- called manually instead of directly passed to request_conformant_module call to enable passing completeURL
       completeURL,
       err_orProgressEvent,
@@ -94,7 +94,7 @@ function HTTPRequestBypassCORS (
       res.data
     )
   })
-    
+
   return requestHandle
 }
 exports.HTTPRequestBypassCORS = HTTPRequestBypassCORS
@@ -164,5 +164,55 @@ function _new_HTTPRequestHandlerFunctionCallingFn (fn) {
     }
     console.log('✅  ' + completeURL + ' ' + statusCode)
     fn(null, json)
+  }
+}
+
+function _new_CapacitorRequestHandlerFunctionCallingFn (fn) {
+  return function (completeURL, err_orProgressEvent, res, body) {	
+    // err appears to actually be a ProgressEvent	
+    console.log("Invoked capacitor request handler")
+    var err = null	
+    const statusCode = typeof res !== 'undefined' ? res.status : -1	
+    if (statusCode == 0 || statusCode == -1) {	
+      // we'll treat 0 as a lack of internet connection.. unless there's a better way to make use of err_orProgressEvent which is apparently going to be typeof ProgressEvent here	
+      err = new Error('Connection Failure')	
+    } else if (statusCode !== 200) {	
+      const body_Error =	
+        body && typeof body === 'object' ? body.Error : undefined	
+      const statusMessage =	
+        res && res.status ? res.status : undefined	
+      if (typeof body_Error !== 'undefined' && body_Error) {	
+        err = new Error(body_Error)	
+      } else if (typeof statusMessage !== 'undefined' && statusMessage) {	
+        err = new Error(statusMessage)	
+      } else {	
+        err = new Error('Unknown ' + statusCode + ' error')	
+      }	
+    }	
+    if (err) {	
+      console.error('❌  ' + err)	
+      // console.error("Body:", body)	
+      fn(err, null)	
+      return	
+    }	
+    var json	
+    if (typeof body === 'string') {	
+      console.log('body', body)	
+      try {	
+        json = JSON.parse(body)	
+      } catch (e) {	
+        console.error(	
+          '❌  HostedMoneroAPIClient Error: Unable to parse json with exception:',	
+          e,	
+          '\nbody:',	
+          body	
+        )	
+        fn(e, null)	
+      }	
+    } else {	
+      json = body	
+    }	
+    console.log('✅  ' + completeURL + ' ' + statusCode)	
+    fn(null, json)	
   }
 }
