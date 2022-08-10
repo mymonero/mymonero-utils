@@ -10,6 +10,7 @@ module.exports = function (options) {
   MyMoneroBridge_utils.update_options_for_fallback_to_asmjs(options)
 
   const platform_info = MyMoneroBridge_utils.detect_platform()
+  const ENVIRONMENT_IS_CAPACITOR = platform_info.ENVIRONMENT_IS_CAPACITOR
   const ENVIRONMENT_IS_WEB = platform_info.ENVIRONMENT_IS_WEB
   const ENVIRONMENT_IS_NODE = platform_info.ENVIRONMENT_IS_NODE
 
@@ -29,6 +30,10 @@ module.exports = function (options) {
         dir: this_scriptDirectory,
         base: filename
       })
+    } else if (ENVIRONMENT_IS_CAPACITOR) {
+      var pathTo_cryptonoteUtilsDir
+      pathTo_cryptonoteUtilsDir = `/assets/` // this works for the MyMonero web and mobile builds, and is quite general, at least
+      fullPath = pathTo_cryptonoteUtilsDir + filename
     } else if (ENVIRONMENT_IS_WEB) {
       var pathTo_cryptonoteUtilsDir
       if (typeof __dirname !== undefined && __dirname !== '/') { // looks like node running in browser.. (but not going to assume it's electron-renderer since that should be taken care of by monero_utils.js itself)
