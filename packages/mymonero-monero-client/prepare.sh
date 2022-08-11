@@ -6,7 +6,7 @@ set -e # Exit on any error
 
 ## These should be audited!
 mymonero_core_cpp_url='https://github.com/mymonero/mymonero-core-cpp'
-mymonero_core_cpp_hash='eabedb90f3ef64738be3b6a38487a45bbecb1c33'
+mymonero_core_cpp_hash='2b46a401252862abc491273911478188a1754666'
 monero_core_custom_url='https://github.com/mymonero/monero-core-custom'
 monero_core_custom_hash='d0d4ec2c99a1db96518a98ff47773d76cf729d84'
 
