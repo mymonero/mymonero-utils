@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+add_compile_definitions(MYMONERO_CORE_CUSTOM)
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message("MM_DEBUG=${MM_DEBUG}")
@@ -103,6 +105,7 @@ set(
     ${MONERO_SRC}/ringct/rctCryptoOps.c
     ${MONERO_SRC}/ringct/rctSigs.cpp
     ${MONERO_SRC}/ringct/bulletproofs.cc
+    ${MONERO_SRC}/ringct/bulletproofs_plus.cc
     ${MONERO_SRC}/ringct/multiexp.cc
     ${MONERO_SRC}/mnemonics/electrum-words.cpp
     ${MONERO_SRC}/vtlogger/logger.cpp
@@ -125,6 +128,7 @@ set (EMCC_LINKER_FLAGS__WASM
 -s NO_DISABLE_EXCEPTION_CATCHING \
 -s NODEJS_CATCH_EXIT=1 \
 -s NODEJS_CATCH_REJECTION=0 \
+-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 --post-js ${CMAKE_CURRENT_LIST_DIR}/src/module-post.js \
 ")
 

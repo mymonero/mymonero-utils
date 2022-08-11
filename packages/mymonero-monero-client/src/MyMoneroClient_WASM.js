@@ -1959,6 +1959,12 @@ var ASM_CONSTS = {
       return demangleAll(js);
     }
 
+  /** @type {function(...*):?} */
+  function __ZN10cryptonote27get_transaction_prefix_hashERKNS_18transaction_prefixERN6crypto4hashE(
+  ) {
+  err('missing function: _ZN10cryptonote27get_transaction_prefix_hashERKNS_18transaction_prefixERN6crypto4hashE'); abort(-1);
+  }
+
   function ___assert_fail(condition, filename, line, func) {
       abort('Assertion failed: ' + UTF8ToString(condition) + ', at: ' + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
     }
@@ -6332,6 +6338,7 @@ function intArrayToString(array) {
 
 
 var asmLibraryArg = {
+  "_ZN10cryptonote27get_transaction_prefix_hashERKNS_18transaction_prefixERN6crypto4hashE": __ZN10cryptonote27get_transaction_prefix_hashERKNS_18transaction_prefixERN6crypto4hashE,
   "__assert_fail": ___assert_fail,
   "__cxa_allocate_exception": ___cxa_allocate_exception,
   "__cxa_atexit": ___cxa_atexit,
@@ -6390,7 +6397,6 @@ var asmLibraryArg = {
   "invoke_viiiiiii": invoke_viiiiiii,
   "invoke_viiiiiiiiii": invoke_viiiiiiiiii,
   "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii,
-  "invoke_viijii": invoke_viijii,
   "mktime": _mktime,
   "setTempRet0": _setTempRet0,
   "strftime_l": _strftime_l,
@@ -6407,10 +6413,10 @@ var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
-var _free = Module["_free"] = createExportWrapper("free");
+var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */
-var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
+var _free = Module["_free"] = createExportWrapper("free");
 
 /** @type {function(...*):?} */
 var ___getTypeName = Module["___getTypeName"] = createExportWrapper("__getTypeName");
@@ -6484,9 +6490,6 @@ var dynCall_iiiij = Module["dynCall_iiiij"] = createExportWrapper("dynCall_iiiij
 var dynCall_jiiii = Module["dynCall_jiiii"] = createExportWrapper("dynCall_jiiii");
 
 /** @type {function(...*):?} */
-var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
-
-/** @type {function(...*):?} */
 var dynCall_iiiiij = Module["dynCall_iiiiij"] = createExportWrapper("dynCall_iiiiij");
 
 /** @type {function(...*):?} */
@@ -6497,6 +6500,9 @@ var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = createExportWrapper("dynCall_i
 
 /** @type {function(...*):?} */
 var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall_iiiiiijj");
+
+/** @type {function(...*):?} */
+var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
 
 
 function invoke_vii(index,a1,a2) {
@@ -6701,17 +6707,6 @@ function invoke_jiiii(index,a1,a2,a3,a4) {
   var sp = stackSave();
   try {
     return dynCall_jiiii(index,a1,a2,a3,a4);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_viijii(index,a1,a2,a3,a4,a5,a6) {
-  var sp = stackSave();
-  try {
-    dynCall_viijii(index,a1,a2,a3,a4,a5,a6);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;

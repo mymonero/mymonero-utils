@@ -172,7 +172,8 @@ namespace SendFunds
 		uint64_t fee_mask;
 		monero_fork_rules::use_fork_rules_fn_type use_fork_rules;
 		// - re-entry params
-		optional<uint64_t> passedIn_attemptAt_fee;
+		optional<uint64_t> prior_attempt_size_calcd_fee;
+		optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;
 		size_t constructionAttempt;
 		// - step1_retVals held for step2 - making them optl for increased safety
 		optional<uint64_t> step1_retVals__final_total_wo_fee;
