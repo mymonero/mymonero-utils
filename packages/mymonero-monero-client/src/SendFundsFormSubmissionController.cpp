@@ -51,12 +51,11 @@ using namespace boost;
 string FormSubmissionController::handle(const property_tree::ptree res)
 {
 	this->randomOuts = res;
-	
+
 	const bool step2 = this->cb_II__got_random_outs(this->randomOuts);
-	if (!step2) {
-		return error_ret_json_from_message("couldnt use random outputs");
-	}
-	
+	// if (!step2) {
+	// 	return error_ret_json_from_message(this->failureReason);
+	// }
 	return this->cb_III__submitted_tx();
 }
 
@@ -64,12 +63,12 @@ string FormSubmissionController::prepare()
 {
 	using namespace std;
 	using namespace boost;
-	
+
 	this->sending_amounts.clear();
  	if (this->parameters.send_amount_strings.size() != this->parameters.enteredAddressValues.size()) {
  		return error_ret_json_from_message("Amounts don't match recipients.");
  	}
-	
+
 	if (this->parameters.is_sweeping) {
 		if (this->parameters.enteredAddressValues.size() != 1) {
  			return error_ret_json_from_message("Only one recipient allowed when sweeping.");
@@ -125,11 +124,10 @@ string FormSubmissionController::prepare()
 		return error_ret_json_from_message(this->failureReason);
 	}
 	auto req_params = new__req_params__get_random_outs(
-    this->step1_retVals__using_outs, // use the one on the heap, since we've moved the one from step1_retVals
-    this->prior_attempt_unspent_outs_to_mix_outs // mix out used in prior tx construction attempts
-  );
-	// this->randomOuts = this->get_random_outs(req_params);
-
+		this->step1_retVals__using_outs, // use the one on the heap, since we've moved the one from step1_retVals
+		this->prior_attempt_unspent_outs_to_mix_outs // mix out used in prior tx construction attempts
+  	);
+	//this->randomOuts = this->get_random_outs(req_params);
 	boost::property_tree::ptree req_params_root;
 		boost::property_tree::ptree amounts_ptree;
 		BOOST_FOREACH(const string &amount_string, req_params.amounts)
@@ -142,7 +140,7 @@ string FormSubmissionController::prepare()
 		req_params_root.put("count", req_params.count);
 		stringstream req_params_ss;
 		boost::property_tree::write_json(req_params_ss, req_params_root, false/*pretty*/);
-	
+
 	return req_params_ss.str().c_str();
 }
 
@@ -185,7 +183,7 @@ bool FormSubmissionController::cb_I__got_unspent_outs(const optional<property_tr
 	this->use_fork_rules = monero_fork_rules::make_use_fork_rules_fn(parsed_res.fork_version);
 	//
 	this->prior_attempt_size_calcd_fee = boost::none;
-  this->prior_attempt_unspent_outs_to_mix_outs = boost::none;
+  	this->prior_attempt_unspent_outs_to_mix_outs = boost::none;
 	this->constructionAttempt = 0;
 
 	return true;
@@ -227,7 +225,7 @@ bool FormSubmissionController::_reenterable_construct_and_send_tx()
 	return true;
 }
 bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tree::ptree> &res) {
-	auto parsed_res = new__parsed_res__get_random_outs(res.get());
+	auto parsed_res = res ? new__parsed_res__get_random_outs(res.get()) : LightwalletAPI_Res_GetRandomOuts{ boost::none/*err_msg*/, vector<RandomAmountOutputs>{}/*mix_outs*/ };
 	if (parsed_res.err_msg != boost::none) {
 		this->failureReason = std::move(*(parsed_res.err_msg));
 		return false;
