@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+add_compile_definitions(MYMONERO_CORE_CUSTOM)
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message("MM_DEBUG=${MM_DEBUG}")
@@ -64,9 +66,13 @@ set(
     ${MYMONERO_CORE_CPP_SRC}/tools__ret_vals.hpp
     ${MYMONERO_CORE_CPP_SRC}/tools__ret_vals.cpp
     #
+    ${MONERO_SRC}/cryptonote_basic/cryptonote_basic.h
+    ${MONERO_SRC}/cryptonote_basic/cryptonote_basic_impl.h
     ${MONERO_SRC}/cryptonote_basic/cryptonote_basic_impl.cpp
-    ${MONERO_SRC}/cryptonote_basic/account.cpp
     ${MONERO_SRC}/cryptonote_basic/cryptonote_format_utils.cpp
+    ${MONERO_SRC}/cryptonote_basic/cryptonote_format_utils_basic.cpp
+    ${MONERO_SRC}/cryptonote_basic/cryptonote_format_utils.h
+    ${MONERO_SRC}/cryptonote_basic/account.cpp
     ${MONERO_SRC}/crypto/crypto.cpp
     ${MONERO_SRC}/crypto/hash.c
     ${MONERO_SRC}/crypto/slow-hash-dummied.cpp
@@ -103,6 +109,7 @@ set(
     ${MONERO_SRC}/ringct/rctCryptoOps.c
     ${MONERO_SRC}/ringct/rctSigs.cpp
     ${MONERO_SRC}/ringct/bulletproofs.cc
+    ${MONERO_SRC}/ringct/bulletproofs_plus.cc
     ${MONERO_SRC}/ringct/multiexp.cc
     ${MONERO_SRC}/mnemonics/electrum-words.cpp
     ${MONERO_SRC}/vtlogger/logger.cpp
@@ -125,6 +132,11 @@ set (EMCC_LINKER_FLAGS__WASM
 -s NO_DISABLE_EXCEPTION_CATCHING \
 -s NODEJS_CATCH_EXIT=1 \
 -s NODEJS_CATCH_REJECTION=0 \
+-s ERROR_ON_UNDEFINED_SYMBOLS=1 \
+-s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]' \
+-O3 \
+--source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap \
+--memory-init-file 1 \
 --post-js ${CMAKE_CURRENT_LIST_DIR}/src/module-post.js \
 ")
 

@@ -160,7 +160,7 @@ class Wallet {
 
     try {
       const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
-
+      unspentOuts.per_byte_fee = 24658
       const params = {
         destinations: options.destinations,
         priority: options.priority,

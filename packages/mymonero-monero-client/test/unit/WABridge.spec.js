@@ -528,7 +528,7 @@ describe('cryptonote_utils tests', function () {
 
     assert.strictEqual(
       result,
-      16062000
+      11550000
     )
   })
 
