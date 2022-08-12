@@ -132,8 +132,9 @@ set (EMCC_LINKER_FLAGS__WASM
 -s NO_DISABLE_EXCEPTION_CATCHING \
 -s NODEJS_CATCH_EXIT=1 \
 -s NODEJS_CATCH_REJECTION=0 \
--s ERROR_ON_UNDEFINED_SYMBOLS=0 \
+-s ERROR_ON_UNDEFINED_SYMBOLS=1 \
 -s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]' \
+-O3 \
 --source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap \
 --memory-init-file 1 \
 --post-js ${CMAKE_CURRENT_LIST_DIR}/src/module-post.js \
