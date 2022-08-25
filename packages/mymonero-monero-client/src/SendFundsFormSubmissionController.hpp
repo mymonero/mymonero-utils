@@ -111,7 +111,7 @@ namespace SendFunds
 	};
 	struct Parameters
 	{
-		vector<string> send_amount_strings;
+		string send_amount_string;
 		bool is_sweeping;
 		uint32_t priority;
 		//
@@ -162,8 +162,8 @@ namespace SendFunds
 		string failureReason;
 		// - from setup
 		property_tree::ptree randomOuts;
-		vector<uint64_t> sending_amounts;
- 		vector<string> to_address_strings;
+		uint64_t sending_amount;
+ 		string to_address_string;
 		bool isXMRAddressIntegrated;
 		optional<string> integratedAddressPIDForDisplay;
 		// - from cb_i

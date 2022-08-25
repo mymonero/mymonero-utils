@@ -65,18 +65,13 @@ string FormSubmissionController::prepare()
 	using namespace std;
 	using namespace boost;
 	
-	this->sending_amounts.clear();
- 	if (this->parameters.send_amount_strings.size() != this->parameters.enteredAddressValues.size()) {
- 		return error_ret_json_from_message("Amounts don't match recipients.");
- 	}
+	sending_amount = 0;
 	
 	if (this->parameters.is_sweeping) {
 		if (this->parameters.enteredAddressValues.size() != 1) {
  			return error_ret_json_from_message("Only one recipient allowed when sweeping.");
  		}
 	} else {
-		this->sending_amounts.reserve(this->parameters.send_amount_strings.size());
- 		for (const auto& amount : this->parameters.send_amount_strings) {
  			uint64_t parsed_amount;
  			if (!cryptonote::parse_amount(parsed_amount, amount)) {
  				return error_ret_json_from_message("Cannot parse amount.");
@@ -84,8 +79,7 @@ string FormSubmissionController::prepare()
  			if (parsed_amount == 0) {
  				return error_ret_json_from_message("Amount cannot be zero.");
  			}
- 			this->sending_amounts.push_back(parsed_amount);
-		}
+ 			this->sending_amount = parsed_amount;
 	}
 		
 	this->isXMRAddressIntegrated = false;
@@ -124,7 +118,10 @@ string FormSubmissionController::prepare()
 	if (!reenter) {
 		return error_ret_json_from_message(this->failureReason);
 	}
-	auto req_params = new__req_params__get_random_outs(this->step1_retVals__using_outs); // use the one on the heap, since we've moved the one from step1_retVals
+	auto req_params = new__req_params__get_random_outs(this->step1_retVals__using_outs, // use the one on the heap, since we've moved the one from step1_retVals
+							   this->prior_attempt_unspent_outs_to_mix_outs // mix out used in prior tx construction attempts
+			                                  );
+
 	// this->randomOuts = this->get_random_outs(req_params);
 
 	boost::property_tree::ptree req_params_root;
@@ -193,7 +190,7 @@ bool FormSubmissionController::_reenterable_construct_and_send_tx()
 		step1_retVals,
 		//
 		boost::none,
-		this->sending_amounts,
+		this->sending_amount,
 		this->parameters.is_sweeping,
 		this->parameters.priority,
 		this->use_fork_rules,
@@ -231,9 +228,8 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->failureReason = "Expected non-0 using_outs";
 		return false;
 	}
-	const vector<uint64_t> &sending_amounts = this->parameters.is_sweeping ?
-		vector<uint64_t>{*this->step1_retVals__final_total_wo_fee}
- 		: this->sending_amounts;
+	const uint64_t sending_amount = this->parameters.is_sweeping ? *this->step1_retVals__final_total_wo_fee
+ 		: this->sending_amount;
 	Send_Step2_RetVals step2_retVals;
 	uint64_t unlock_time = 0; // hard-coded for now since we don't ever expose it, presently
 	monero_transfer_utils::send_step2__try_create_transaction(
@@ -244,7 +240,7 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.sec_spendKey_string,
 		this->to_address_strings,
 		boost::none,
-		sending_amounts,
+		sending_amount,
 		*(this->step1_retVals__change_amount),
 		*(this->step1_retVals__using_fee),
 		this->parameters.priority,
