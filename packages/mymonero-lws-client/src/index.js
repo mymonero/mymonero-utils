@@ -17,7 +17,7 @@ class LWSClient {
   constructor (options = {}) {
     this.httpClient = options.httpClient || axios
     this.appName = options.appName || 'MyMonero'
-    this.appVersion = options.appVersion || '1.1.24'
+    this.appVersion = options.appVersion || '1.3.0'
     axios.defaults.baseURL = options.url || 'https://api.mymonero.com'
   }
 
@@ -101,7 +101,7 @@ class LWSClient {
       amount: '0',
       dust_threshold: '2000000000',
       use_dust: true,
-      mixin: 10,
+      mixin: 11,
       app_name: self.appName,
       app_version: self.appVersion
     }).catch(err => {
@@ -136,7 +136,7 @@ class LWSClient {
     }
     const response = await this.httpClient.post('/get_random_outs', {
       amounts: amounts,
-      count: 11,
+      count: 16,
       app_name: self.appName,
       app_version: self.appVersion
     }).catch(err => {
