@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+add_compile_definitions(MYMONERO_CORE_CUSTOM)
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message("MM_DEBUG=${MM_DEBUG}")
