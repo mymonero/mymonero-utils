@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-wallet-manager",
-  "version": "2.1.16",
+  "version": "2.1.18",
   "description": "",
   "main": "src/WalletManager.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@mymonero/mymonero-lws-client": "^2.1.14",
-    "@mymonero/mymonero-monero-client": "^2.1.16",
+    "@mymonero/mymonero-monero-client": "^2.1.18",
     "bignumber.js": "^9.0.1"
   },
   "devDependencies": {
