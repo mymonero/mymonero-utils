@@ -67,24 +67,19 @@ string FormSubmissionController::prepare()
 	
 	sending_amount = 0;
 	
-	if (this->parameters.is_sweeping) {
-		if (this->parameters.enteredAddressValues.size() != 1) {
- 			return error_ret_json_from_message("Only one recipient allowed when sweeping.");
- 		}
-	} else {
- 			uint64_t parsed_amount;
- 			if (!cryptonote::parse_amount(parsed_amount, amount)) {
- 				return error_ret_json_from_message("Cannot parse amount.");
- 			}
- 			if (parsed_amount == 0) {
- 				return error_ret_json_from_message("Amount cannot be zero.");
- 			}
- 			this->sending_amount = parsed_amount;
-	}
+ 	uint64_t parsed_amount;
+ 	if (!cryptonote::parse_amount(parsed_amount, amount)) {
+ 		return error_ret_json_from_message("Cannot parse amount.");
+ 	}
+ 	if (parsed_amount == 0) {
+ 		return error_ret_json_from_message("Amount cannot be zero.");
+ 	}
+ 	this->sending_amount = parsed_amount;
+	
 		
 	this->isXMRAddressIntegrated = false;
  	this->integratedAddressPIDForDisplay = boost::none;
- 	for (string& xmrAddress_toDecode : this->parameters.enteredAddressValues) {
+ 	for (string& xmrAddress_toDecode : this->parameters.enteredAddressValue) {
  		auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
  		if (decode_retVals.did_error) {
  			return error_ret_json_from_message("Invalid address");
