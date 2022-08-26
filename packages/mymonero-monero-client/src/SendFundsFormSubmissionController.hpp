@@ -121,7 +121,7 @@ namespace SendFunds
 		string sec_spendKey_string;
 		string pub_spendKey_string;
 		//
-		vector<string> enteredAddressValues;
+		string enteredAddressValue;
 		//
 		property_tree::ptree unspentOuts;
 	};

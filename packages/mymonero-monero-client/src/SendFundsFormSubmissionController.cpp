@@ -84,14 +84,12 @@ string FormSubmissionController::prepare()
 		
 	this->isXMRAddressIntegrated = false;
  	this->integratedAddressPIDForDisplay = boost::none;
- 	this->to_address_strings.clear();
- 	this->to_address_strings.reserve(this->parameters.enteredAddressValues.size());
  	for (string& xmrAddress_toDecode : this->parameters.enteredAddressValues) {
  		auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
  		if (decode_retVals.did_error) {
  			return error_ret_json_from_message("Invalid address");
  		}
- 		this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
+ 		this->to_address_string = std::move(xmrAddress_toDecode);
 		if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
 			if (this->isXMRAddressIntegrated) {
 				return error_ret_json_from_message("Only one integrated address allowed per transaction");
@@ -238,7 +236,7 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.from_address_string,
 		this->parameters.sec_viewKey_string,
 		this->parameters.sec_spendKey_string,
-		this->to_address_strings,
+		this->to_address_string,
 		boost::none,
 		sending_amount,
 		*(this->step1_retVals__change_amount),
