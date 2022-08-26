@@ -8,7 +8,7 @@ set -e # Exit on any error
 mymonero_core_cpp_url='https://github.com/mymonero/mymonero-core-cpp'
 mymonero_core_cpp_hash='64c37a6a40dd08a6888761327abd4e9555dcf353'
 monero_core_custom_url='https://github.com/mymonero/monero-core-custom'
-monero_core_custom_hash='ecc8ef47de3d6887bf282215091ce2280ebea373'
+monero_core_custom_hash='5fe78a49307968f756d7cc43ab364c96f2f6f0b0'
 
 if [ "$(basename "$(pwd)")" != "mymonero-monero-client" ]; then
   echo "Should be ran from the repo dir!"
