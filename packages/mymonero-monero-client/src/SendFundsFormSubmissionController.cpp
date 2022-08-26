@@ -65,35 +65,31 @@ string FormSubmissionController::prepare()
 	using namespace std;
 	using namespace boost;
 	
-	sending_amount = 0;
-	
  	uint64_t parsed_amount;
- 	if (!cryptonote::parse_amount(parsed_amount, amount)) {
- 		return error_ret_json_from_message("Cannot parse amount.");
- 	}
- 	if (parsed_amount == 0) {
+
+	if (!cryptonote::parse_amount(parsed_amount, this->parameters.send_amount_string))
+	{
+		return error_ret_json_from_message("Cannot parse amount.");
+	}
+ 	
+	if (parsed_amount == 0) {
  		return error_ret_json_from_message("Amount cannot be zero.");
  	}
- 	this->sending_amount = parsed_amount;
+
+	this->sending_amount = parsed_amount;
 	
-		
 	this->isXMRAddressIntegrated = false;
  	this->integratedAddressPIDForDisplay = boost::none;
- 	for (string& xmrAddress_toDecode : this->parameters.enteredAddressValue) {
- 		auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
- 		if (decode_retVals.did_error) {
- 			return error_ret_json_from_message("Invalid address");
- 		}
- 		this->to_address_string = std::move(xmrAddress_toDecode);
-		if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
-			if (this->isXMRAddressIntegrated) {
-				return error_ret_json_from_message("Only one integrated address allowed per transaction");
-			}
-
-			this->isXMRAddressIntegrated = true;
-			this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
+ 	
+	auto decode_retVals = monero::address_utils::decodedAddress(this->parameters.enteredAddressValue, this->parameters.nettype);
+	if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
+		if (this->isXMRAddressIntegrated) {
+			return error_ret_json_from_message("Only one integrated address allowed per transaction");
 		}
- 	}
+
+		this->isXMRAddressIntegrated = true;
+		this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
+	}
 
 	if (this->isXMRAddressIntegrated) {
 		// XXX: why does the integrated address case return early??
