@@ -108,8 +108,7 @@ string FormSubmissionController::prepare()
 		return error_ret_json_from_message(this->failureReason);
 	}
 	auto req_params = new__req_params__get_random_outs(this->step1_retVals__using_outs, // use the one on the heap, since we've moved the one from step1_retVals
-							   this->prior_attempt_unspent_outs_to_mix_outs // mix out used in prior tx construction attempts
-			                                  );
+			                                   boost::none);
 
 	// this->randomOuts = this->get_random_outs(req_params);
 
