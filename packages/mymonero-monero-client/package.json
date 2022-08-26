@@ -1,11 +1,11 @@
 {
   "name": "@mymonero/mymonero-monero-client",
-  "version": "2.1.18",
+  "version": "2.1.19",
   "description": "The JS library containing the JS transpilation of the shared library behind the MyMonero apps",
   "main": "./src/index.js",
   "scripts": {
-    "dev": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk ./bin/archive-emcpp-dev.sh",
-    "build": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk ./bin/archive-emcpp.sh",
+    "dev": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk:3.1.7 ./bin/archive-emcpp-dev.sh",
+    "build": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk:3.1.7 ./bin/archive-emcpp.sh",
     "test": "mocha --recursive"
   },
   "devDependencies": {
