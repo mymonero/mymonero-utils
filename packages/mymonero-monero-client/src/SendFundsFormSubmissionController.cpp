@@ -53,9 +53,9 @@ string FormSubmissionController::handle(const property_tree::ptree res)
 	this->randomOuts = res;
 
 	const bool step2 = this->cb_II__got_random_outs(this->randomOuts);
-	// if (!step2) {
-	// 	return error_ret_json_from_message(this->failureReason);
-	// }
+	if (!step2) {
+	 	return error_ret_json_from_message(this->failureReason);
+	}
 	return this->cb_III__submitted_tx();
 }
 
@@ -86,6 +86,11 @@ string FormSubmissionController::prepare()
  			this->sending_amounts.push_back(parsed_amount);
 		}
 	}
+
+	bool manuallyEnteredPaymentID_exists = this->parameters.manuallyEnteredPaymentID != boost::none && !this->parameters.manuallyEnteredPaymentID->empty();
+	optional<string> paymentID_toUseOrToNilIfIntegrated = boost::none; // may be nil
+	// we don't care whether it's an integrated address or not here since we're not going to use its payment id
+	paymentID_toUseOrToNilIfIntegrated = this->parameters.manuallyEnteredPaymentID.get();
 		
 	this->isXMRAddressIntegrated = false;
  	this->integratedAddressPIDForDisplay = boost::none;
@@ -96,15 +101,45 @@ string FormSubmissionController::prepare()
  		if (decode_retVals.did_error) {
  			return error_ret_json_from_message("Invalid address");
  		}
- 		this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
 		if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
+			this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
 			if (this->isXMRAddressIntegrated) {
 				return error_ret_json_from_message("Only one integrated address allowed per transaction");
 			}
-
+			this->payment_id_string = boost::none;
 			this->isXMRAddressIntegrated = true;
 			this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
 		}
+		else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false) {
+			if (paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) { // a short one
+				THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
+				optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
+					xmrAddress_toDecode, // the monero one
+					*paymentID_toUseOrToNilIfIntegrated, // short pid
+					this->parameters.nettype
+				);
+				if (fabricated_integratedAddress_orNone == boost::none) {
+					return error_ret_json_from_message("Could not construct integrated address");
+				}
+				this->to_address_strings.emplace_back(*fabricated_integratedAddress_orNone);
+				this->payment_id_string = boost::none; // must now zero this or Send will throw a "pid must be blank with integrated addr"
+				this->isXMRAddressIntegrated = true;
+				this->integratedAddressPIDForDisplay = *paymentID_toUseOrToNilIfIntegrated; // a short pid
+
+			}
+			else {
+				this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
+				this->payment_id_string = paymentID_toUseOrToNilIfIntegrated;
+				this->isXMRAddressIntegrated = false;
+				this->integratedAddressPIDForDisplay = boost::none;
+			}
+		}
+		else {
+			this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode)); // therefore, non-integrated normal XMR address
+			this->payment_id_string = paymentID_toUseOrToNilIfIntegrated; // may still be nil
+			this->isXMRAddressIntegrated = false;
+			this->integratedAddressPIDForDisplay = boost::none;
+		} 
  	}
 
 	if (this->isXMRAddressIntegrated) {
@@ -194,7 +229,7 @@ bool FormSubmissionController::_reenterable_construct_and_send_tx()
 	monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 		step1_retVals,
 		//
-		boost::none,
+		this->payment_id_string,
 		this->sending_amounts,
 		this->parameters.is_sweeping,
 		this->parameters.priority,
@@ -261,7 +296,7 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.sec_viewKey_string,
 		this->parameters.sec_spendKey_string,
 		this->to_address_strings,
-		boost::none,
+		this->payment_id_string,
 		sending_amounts,
 		*(this->step1_retVals__change_amount),
 		*(this->step1_retVals__using_fee),
