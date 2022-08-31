@@ -73,7 +73,7 @@ class WABridge {
       pub_spendKey_string: options.publicSpendKey,
       priority: '' + options.priority,
       nettype_string: options.nettype,
-      manuallyEnteredPaymentID: "e574a588436ae7f11aca4267fc3d749add96c5cb2764333bee877652a7ea2566",
+      manuallyEnteredPaymentID: options.paymentId,
       unspentOuts: options.unspentOuts
     }
 
