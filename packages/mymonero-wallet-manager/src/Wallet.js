@@ -169,9 +169,9 @@ class Wallet {
         publicSpendKey: self.publicSpendKey,
         privateSpendKey: self.privateSpendKey,
         shouldSweep: options.shouldSweep,
-	paymentId: options.paymentId,
         nettype: self.netType,
         unspentOuts: unspentOuts,
+        paymentId: options.paymentId,
         randomOutsCb: function (numberOfOuts) {
           return self.lwsClient.randomOutputs(numberOfOuts)
         }
