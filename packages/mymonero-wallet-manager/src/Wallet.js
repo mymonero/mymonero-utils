@@ -160,7 +160,7 @@ class Wallet {
 
     try {
       const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
-      unspentOuts.per_byte_fee = 24658
+      unspentOuts.per_byte_fee = 25658
       const params = {
         destinations: options.destinations,
         priority: options.priority,
@@ -176,6 +176,12 @@ class Wallet {
           return self.lwsClient.randomOutputs(numberOfOuts)
         }
       }
+      if (options.paymentId != null) {
+        params.paymentId = options.paymentId
+        params.manuallyEnteredPaymentID = options.paymentId
+      } else {
+        // payment ID is null
+      } 
       const result = await self.bridgeClass.createTransaction(params)
       result.contact = options.contact || null
 
