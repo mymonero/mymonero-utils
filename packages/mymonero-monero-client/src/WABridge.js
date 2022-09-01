@@ -77,6 +77,10 @@ class WABridge {
       unspentOuts: options.unspentOuts
     }
 
+    if (options.paymentId === undefined) {
+      args.manuallyEnteredPaymentID = ''
+    }
+
     try {
       // WebAssembly keeps state between calls so we can prepare the tx before getting the random out and signing tx
       const retString = this.Module.prepareTx(JSON.stringify(args, null, ''))
@@ -97,7 +101,7 @@ class WABridge {
       // parse variables ruturned as strings
       rawTx.mixin = parseInt(rawTx.mixin)
       rawTx.isXMRAddressIntegrated = rawTx.isXMRAddressIntegrated === 'true'
-
+      
       return rawTx
     } catch (exception) {
       // check for exceptions thrown by WebAssembly that is only a pointer id
