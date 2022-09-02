@@ -23,6 +23,7 @@ class WABridge {
    * @param {string} options.publicSpendKey
    * @param {string} options.privateSpendKey
    * @param {boolean} options.shouldSweep
+   * @param {?string} options.paymentId - The payment id for the transaction. can be null. 
    * @param {string} options.nettype - The network name eg MAINNET.
    * @param {object} options.unspentOuts - List of unspent outs as well as per byte fee.
    * @param {randomOutsCallback} options.randomOutsCb - Used to fetch the random outs from the light wallet service.
@@ -72,7 +73,12 @@ class WABridge {
       pub_spendKey_string: options.publicSpendKey,
       priority: '' + options.priority,
       nettype_string: options.nettype,
+      manuallyEnteredPaymentID: options.paymentId,
       unspentOuts: options.unspentOuts
+    }
+
+    if (options.paymentId === undefined) {
+      args.manuallyEnteredPaymentID = ''
     }
 
     try {
@@ -95,7 +101,7 @@ class WABridge {
       // parse variables ruturned as strings
       rawTx.mixin = parseInt(rawTx.mixin)
       rawTx.isXMRAddressIntegrated = rawTx.isXMRAddressIntegrated === 'true'
-
+      
       return rawTx
     } catch (exception) {
       // check for exceptions thrown by WebAssembly that is only a pointer id

@@ -21,7 +21,11 @@ class WalletManager {
    */
   async init () {
     const self = this
-    self.bridgeClass = await require('@mymonero/mymonero-monero-client')({})
+    try {
+      self.bridgeClass = await require('@mymonero/mymonero-monero-client')({})
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   /**

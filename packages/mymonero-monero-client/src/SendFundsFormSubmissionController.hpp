@@ -103,6 +103,7 @@ namespace SendFunds
 		uint64_t total_sent; // final_total_wo_fee + final_fee
 		size_t mixin;
 		bool isXMRAddressIntegrated; // regarding sentTo_address
+		optional<string> final_payment_id; // will be filled if a payment id was passed in or an integrated address was used
 		optional<string> integratedAddressPIDForDisplay;
 		string signed_serialized_tx_string;
 		string tx_hash_string;
@@ -123,6 +124,7 @@ namespace SendFunds
 		//
 		vector<string> enteredAddressValues;
 		//
+		optional<string> manuallyEnteredPaymentID;
 		property_tree::ptree unspentOuts;
 	};
 	//
@@ -164,6 +166,7 @@ namespace SendFunds
 		property_tree::ptree randomOuts;
 		vector<uint64_t> sending_amounts;
  		vector<string> to_address_strings;
+		optional<string> payment_id_string;
 		bool isXMRAddressIntegrated;
 		optional<string> integratedAddressPIDForDisplay;
 		// - from cb_i
