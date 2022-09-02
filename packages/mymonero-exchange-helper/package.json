@@ -1,15 +1,15 @@
 {
   "name": "@mymonero/mymonero-exchange-helper",
-  "version": "2.1.19",
+  "version": "2.1.20",
   "description": "A library of helper functions used for rendering the in-app exchange",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^2.1.19",
-    "@mymonero/mymonero-exchange": "^2.1.19",
-    "@mymonero/mymonero-money-format": "^2.1.19",
+    "@mymonero/mymonero-bigint": "^2.1.20",
+    "@mymonero/mymonero-exchange": "^2.1.20",
+    "@mymonero/mymonero-money-format": "^2.1.20",
     "axios": "^0.21.3"
   },
   "exports": {
