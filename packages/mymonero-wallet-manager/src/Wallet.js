@@ -193,6 +193,40 @@ class Wallet {
   }
 
   /**
+   * Fetches the unspent outs from the light wallet server.
+   * @param {object} options
+   * @returns
+   */
+   async unspentOutputs (options) {
+    const self = this
+
+    try {
+      const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
+      
+      return unspentOuts
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Fetches decoys from the light wallet server.
+   * @param {int} count
+   * @returns
+   */
+   async decoyOutputs (count = 1) {
+    const self = this
+
+    try {
+      const decoyOutputs = await self.lwsClient.randomOutputs(count)
+      
+      return decoyOutputs
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
    * Fetches the latest exchange rates from the light wallet server
    * @returns {array} List of fiat exchange rates.
    */
