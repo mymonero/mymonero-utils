@@ -371,7 +371,28 @@ string FormSubmissionController::cb_III__submitted_tx()
 	root.put("tx_hash", std::move(*(this->step2_retVals__tx_hash_string)));
 	root.put("tx_key", std::move(*(this->step2_retVals__tx_key_string)));
 	root.put("tx_pub_key", std::move(*(this->step2_retVals__tx_pub_key_string)));
-	root.put("target_address", "XXX fix me"); // XXX
+	string target_address_str;
+	size_t nTargAddrs = this->to_address_strings.size();
+        for (size_t i = 0; i < nTargAddrs; ++i){
+		if (nTargAddrs == 1) {
+			target_address_str += this->to_address_strings[i];
+		}
+		else {
+			if (i == 0) {
+				target_address_str += "[";
+			}
+
+			target_address_str += this->to_address_strings[i];
+
+			if (i < nTargAddrs - 1) {
+				target_address_str += ", ";
+			}
+			else {
+				target_address_str += "]";
+			}
+		}
+	}
+	root.put("target_address", target_address_str); 
 	root.put("final_total_wo_fee", std::move(RetVals_Transforms::str_from(*(this->step1_retVals__final_total_wo_fee))));
 	root.put("isXMRAddressIntegrated", std::move(RetVals_Transforms::str_from(this-isXMRAddressIntegrated)));
 	if (this->integratedAddressPIDForDisplay) {
