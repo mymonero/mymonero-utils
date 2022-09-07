@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-sendfunds-utils",
-  "version": "2.1.22",
+  "version": "2.1.23",
   "description": "Utils for managing the send fund process for mymonero",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606"
+  "gitHead": "8b2fb278e4a5aa84e577c9985fbca332fca4f1b0"
 }
