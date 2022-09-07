@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-lws-client",
-  "version": "2.1.21",
+  "version": "2.1.22",
   "description": "Connector for using a Monero compliant light wallet api",
   "main": "src/index.js",
   "scripts": {
@@ -26,5 +26,6 @@
     "ignore": [
       "/test"
     ]
-  }
+  },
+  "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606"
 }

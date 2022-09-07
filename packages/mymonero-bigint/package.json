@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-bigint",
-  "version": "2.1.21",
+  "version": "2.1.22",
   "description": "A fork of the BigInt package to add lowVal and expose CONSTRUCT",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/mymonero/mymonero-utils.git"
   },
   "license": "MIT",
-  "gitHead": "9a48af4405c496f12db1b01dcc0eeccefcc3d5fc",
+  "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606",
   "publishConfig": {
     "access": "public"
   }

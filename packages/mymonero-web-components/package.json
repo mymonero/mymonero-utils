@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-web-components",
-  "version": "2.1.21",
+  "version": "2.1.22",
   "description": "This npm package contains a number of Lit web components.",
   "main": "./lib/index",
   "exports": {
@@ -43,5 +43,5 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.5.5"
   },
-  "gitHead": "b88eae9be8a3efdd6065777b61282df629e31d63"
+  "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606"
 }
