@@ -339,17 +339,14 @@ class WABridge {
    * @param {string} nettype - The network name eg MAINNET.
    * @returns {string} The new integrated addresss.
    */
-  newIntegratedAddress (address, paymentId, nettype) {
+   newIntegratedAddress (address, paymentId, nettype) {
     checkNetType(nettype)
     if (!paymentId || paymentId.length !== 16) {
       throw Error('expected valid paymentId')
     }
-    const retString = this.Module.newIntegratedAddress(address, paymentId, nettype)
-    const ret = JSON.parse(retString)
-    if (ret.err_msg) {
-      throw Error(ret.err_msg)
-    }
-    return ret.retVal
+    const ret = this.Module.newIntegratedAddress(address, paymentId, nettype)
+
+    return ret
   }
 
   /**

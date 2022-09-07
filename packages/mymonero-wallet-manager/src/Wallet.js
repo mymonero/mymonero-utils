@@ -86,6 +86,61 @@ class Wallet {
 
     return result
   }
+  
+  /**
+   * Fetches the unspent outs from the light wallet server.
+   * @param {object} options
+   * @returns
+   */
+   async unspentOutputs (options) {
+    const self = this
+
+    try {
+      const unspentOuts = await self.lwsClient.unspentOutputs(self.privateViewKey, self.address)
+      
+      return unspentOuts
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Fetches decoys from the light wallet server.
+   * @param {int} count
+   * @returns
+   */
+   async decoyOutputs (count = 1) {
+    const self = this
+
+    try {
+      const decoyOutputs = await self.lwsClient.randomOutputs(count)
+      
+      return decoyOutputs
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Creates a integrated address.
+   * @param {string} address
+   * @param {string} paymentId
+   * @returns
+   */
+   generateIntegratedAddress (address, paymentId = null) {
+    const self = this
+
+    if (paymentId == null) {
+      paymentId = self.generatePaymentId()
+    }
+    try {
+      const integratedAddress = self.bridgeClass.newIntegratedAddress(address, paymentId, self.netType)
+      
+      return integratedAddress
+    } catch (error) {
+      throw error
+    }
+  }
 
   /**
    * Gives an estimated transaction fee.
