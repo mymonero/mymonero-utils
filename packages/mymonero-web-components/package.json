@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-web-components",
-  "version": "2.1.22",
+  "version": "2.1.23",
   "description": "This npm package contains a number of Lit web components.",
   "main": "./lib/index",
   "exports": {

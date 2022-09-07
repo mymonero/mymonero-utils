@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-libapp",
-  "version": "2.1.22",
+  "version": "2.1.23",
   "description": "Package to contain the wasm's",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^2.1.22",
-    "@mymonero/mymonero-nettype": "^2.1.22"
+    "@mymonero/mymonero-bigint": "^2.1.23",
+    "@mymonero/mymonero-nettype": "^2.1.23"
   },
   "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606"
 }

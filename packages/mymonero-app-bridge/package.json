@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-app-bridge",
-  "version": "2.1.22",
+  "version": "2.1.23",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,9 +16,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^2.1.22",
-    "@mymonero/mymonero-bridge-utils": "^2.1.22",
-    "@mymonero/mymonero-nettype": "^2.1.22"
+    "@mymonero/mymonero-bigint": "^2.1.23",
+    "@mymonero/mymonero-bridge-utils": "^2.1.23",
+    "@mymonero/mymonero-nettype": "^2.1.23"
   },
   "gitHead": "33c4aef67a8a392795a728b5c4145bd8f6f9e606"
 }
