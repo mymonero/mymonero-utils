@@ -101,6 +101,10 @@ string FormSubmissionController::prepare()
  		if (decode_retVals.did_error) {
  			return error_ret_json_from_message("Invalid address");
  		}
+		// since we may have a payment ID here (which may also have been entered manually), validate
+		if (monero_paymentID_utils::is_a_valid_or_not_a_payment_id(paymentID_toUseOrToNilIfIntegrated) == false) { // convenience function - will be true if nil pid
+			return error_ret_json_from_message("PID is not valid");
+		}
 		if (decode_retVals.paymentID_string != boost::none) { // is integrated address!
 			this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
 			if (this->isXMRAddressIntegrated) {
@@ -110,8 +114,8 @@ string FormSubmissionController::prepare()
 			this->isXMRAddressIntegrated = true;
 			this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
 		}
-		else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false) {
-			if (paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) { // a short one
+		else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false && decode_retVals.isSubaddress != true && 
+                         paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) {  // no subaddress, short pid provided, will make integrated address
 				THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
 				optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
 					xmrAddress_toDecode, // the monero one
@@ -121,19 +125,15 @@ string FormSubmissionController::prepare()
 				if (fabricated_integratedAddress_orNone == boost::none) {
 					return error_ret_json_from_message("Could not construct integrated address");
 				}
+				if (this->isXMRAddressIntegrated) {
+                                	return error_ret_json_from_message("Only one integrated address allowed per transaction");
+                        	}
 				this->to_address_strings.emplace_back(*fabricated_integratedAddress_orNone);
 				this->payment_id_string = boost::none; // must now zero this or Send will throw a "pid must be blank with integrated addr"
 				this->isXMRAddressIntegrated = true;
 				this->integratedAddressPIDForDisplay = *paymentID_toUseOrToNilIfIntegrated; // a short pid
-
-			}
-			else {
-				this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode));
-				this->payment_id_string = paymentID_toUseOrToNilIfIntegrated;
-				this->isXMRAddressIntegrated = false;
-				this->integratedAddressPIDForDisplay = boost::none;
-			}
 		}
+
 		else {
 			this->to_address_strings.emplace_back(std::move(xmrAddress_toDecode)); // therefore, non-integrated normal XMR address
 			this->payment_id_string = paymentID_toUseOrToNilIfIntegrated; // may still be nil
@@ -141,13 +141,6 @@ string FormSubmissionController::prepare()
 			this->integratedAddressPIDForDisplay = boost::none;
 		} 
  	}
-
-	if (this->isXMRAddressIntegrated) {
-		// XXX: why does the integrated address case return early??
-		boost::property_tree::ptree root;
-		root.put("retVal", "true");
-		return ret_json_from_root(root);
-	}
 
 	const bool step1 = this->cb_I__got_unspent_outs(this->parameters.unspentOuts);
 	if (!step1) {
@@ -310,7 +303,83 @@ bool FormSubmissionController::cb_II__got_random_outs(const optional<property_tr
 		this->parameters.nettype
 	);
 	if (step2_retVals.errCode != noError) {
-		this->failureReason = "No balances";
+		switch (step2_retVals.errCode) {
+            		case noError:
+                		this->failureReason = "No error";
+				break;
+            		case couldntDecodeToAddress:
+                		this->failureReason = "Couldn't decode address";
+				break;
+            		case noDestinations:
+                		this->failureReason = "No destinations provided";
+				break;
+            		case wrongNumberOfMixOutsProvided:
+                		this->failureReason = "Wrong number of mix outputs provided";
+				break;
+            		case notEnoughOutputsForMixing:
+                		this->failureReason = "Not enough outputs for mixing";
+				break;
+            		case invalidSecretKeys:
+                		this->failureReason = "Invalid secret keys";
+				break;
+            		case outputAmountOverflow:
+                		this->failureReason = "Output amount overflow";
+				break;
+            		case inputAmountOverflow:
+                		this->failureReason = "Input amount overflow";
+				break;
+            		case mixRCTOutsMissingCommit:
+                		this->failureReason = "Mix RCT outs missing commit";
+				break;
+            		case resultFeeNotEqualToGiven:
+                		this->failureReason = "Result fee not equal to given fee";
+				break;
+            		case needMoreMoneyThanFound:
+                		this->failureReason = "Spendable balance too low";
+				break;
+            		case invalidDestinationAddress:
+                		this->failureReason = "Invalid destination address";
+				break;
+            		case nonZeroPIDWithIntAddress:
+                		this->failureReason = "Payment ID must be blank when using an integrated address";
+				break;
+            		case cantUsePIDWithSubAddress:
+                		this->failureReason = "Payment ID must be blank when using a subaddress";
+				break;
+            		case couldntAddPIDNonceToTXExtra:
+                		this->failureReason = "Couldn’t add nonce to tx extra";
+				break;
+            		case givenAnInvalidPubKey:
+                		this->failureReason = "Invalid pub key";
+				break;
+            		case invalidCommitOrMaskOnOutputRCT:
+                		this->failureReason = "Invalid commit or mask on output rct";
+				break;
+            		case transactionNotConstructed:
+                		this->failureReason = "Transaction not constructed";
+				break;
+            		case transactionTooBig:
+                		this->failureReason = "Transaction too big";
+				break;
+            		case notYetImplemented:
+                		this->failureReason = "Not yet implemented";
+				break;
+            		case invalidPID:
+                		this->failureReason = "Invalid payment ID";
+				break;
+            		case enteredAmountTooLow:
+                		this->failureReason = "The amount you’ve entered is too low";
+				break;
+            		case notEnoughUsableDecoysFound:
+                		this->failureReason = "Not enough usable decoys found";
+				break;
+            		case tooManyDecoysRemaining:
+                		this->failureReason = "Too many unused decoys remaining";
+				break;
+            		case cantGetDecryptedMaskFromRCTHex:
+                		this->failureReason = "Can't get decrypted mask from 'rct' hex";
+				break;
+        	}
 		return false;
 	}
 	if (step2_retVals.tx_must_be_reconstructed) {
