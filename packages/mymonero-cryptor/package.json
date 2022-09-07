@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-cryptor",
-  "version": "2.1.20",
+  "version": "2.1.23",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,5 +14,6 @@
   "license": "BSD-3-Clause",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "8b2fb278e4a5aa84e577c9985fbca332fca4f1b0"
 }
