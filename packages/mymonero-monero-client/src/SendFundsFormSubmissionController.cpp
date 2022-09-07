@@ -90,7 +90,9 @@ string FormSubmissionController::prepare()
 	bool manuallyEnteredPaymentID_exists = this->parameters.manuallyEnteredPaymentID != boost::none && !this->parameters.manuallyEnteredPaymentID->empty();
 	optional<string> paymentID_toUseOrToNilIfIntegrated = boost::none; // may be nil
 	// we don't care whether it's an integrated address or not here since we're not going to use its payment id
-	paymentID_toUseOrToNilIfIntegrated = this->parameters.manuallyEnteredPaymentID.get();
+	if (manuallyEnteredPaymentID_exists) {
+		paymentID_toUseOrToNilIfIntegrated = this->parameters.manuallyEnteredPaymentID.get();
+	}
 		
 	this->isXMRAddressIntegrated = false;
  	this->integratedAddressPIDForDisplay = boost::none;
@@ -114,7 +116,7 @@ string FormSubmissionController::prepare()
 			this->isXMRAddressIntegrated = true;
 			this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
 		}
-		else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false && decode_retVals.isSubaddress != true && 
+		else if (paymentID_toUseOrToNilIfIntegrated != boost::none && !paymentID_toUseOrToNilIfIntegrated->empty() && !decode_retVals.isSubaddress && 
                          paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) {  // no subaddress, short pid provided, will make integrated address
 				THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
 				optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
