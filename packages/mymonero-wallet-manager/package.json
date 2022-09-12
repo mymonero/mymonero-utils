@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-wallet-manager",
-  "version": "2.1.24",
+  "version": "2.1.25",
   "description": "",
   "main": "src/WalletManager.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "Devin Pearson <devin@mymonero.com> (https://github.com/devinpearson/)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@mymonero/mymonero-lws-client": "^2.1.24",
-    "@mymonero/mymonero-monero-client": "^2.1.24",
+    "@mymonero/mymonero-lws-client": "^2.1.25",
+    "@mymonero/mymonero-monero-client": "^2.1.25",
     "bignumber.js": "^9.0.1"
   },
   "devDependencies": {

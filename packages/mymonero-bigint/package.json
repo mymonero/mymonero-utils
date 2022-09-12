@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-bigint",
-  "version": "2.1.24",
+  "version": "2.1.25",
   "description": "A fork of the BigInt package to add lowVal and expose CONSTRUCT",
   "main": "index.js",
   "scripts": {
