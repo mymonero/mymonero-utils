@@ -13,11 +13,12 @@ If you would like to generate the WASM files yourself you will require docker
 
 ## Building
 
-1. Clone the repo `git clone https://github.com/mymonero/mymonero-client.git`
-1. `cd mymonero-client`
-1. `rm -rf build`
-1. `rm src/MyMoneroClient_*`
-1. `npm run build`
+1. Clone the repo `git clone https://github.com/mymonero/mymonero-utils.git`
+1. `cd packages/mymonero-monero-client`
+1. `rm -rf build` removes the old build folder if you have run a build previously.
+1. `rm src/MyMoneroClient_*` removes the old WASM before your new build.
+1. `./prepare.sh` to fetch the monero core code and the mymonero bridging code.
+1. `npm run build` initiates the emscripten docker image to build the project.
 
 By following these instructions, new WASM library is generated and copied to the src folder
 
@@ -27,6 +28,8 @@ By following these instructions, new WASM library is generated and copied to the
 
 ### Installation
 
+You can install the WASM and javascript bridging code via npm.
+
 ```bash
 npm i @mymonero/mymonero-monero-client
 ```
@@ -34,6 +37,7 @@ npm i @mymonero/mymonero-monero-client
 ### Initialize
 
 Initialize the WABridge class which loads and prepares the WebAssembly.
+The WABridge has helper methods for each of the calls allowing for linting and improved error handling
 
 ```js
 const WABridge = await require('@mymonero/mymonero-monero-client')({})
@@ -42,6 +46,20 @@ const WABridge = await require('@mymonero/mymonero-monero-client')({})
 ### Generate Wallet
 
 Creates a new wallet using the Language and Locale and Network Type.
+Only the prefix is checked e.g. en-UK, en-US will match to English.
+
+- English - en
+- Dutch - nl
+- French - fr
+- Spanish - es
+- Portuguese - pt
+- Japanese - ja
+- Italian - it
+- German - de
+- Russian - ru
+- Chinese, simplified - zh
+- Esperanto - eo
+- Lojban - jbo
 
 ```js
 const result = WABridge.generateWallet('en-US', 'MAINNET')
@@ -65,6 +83,8 @@ console.log(result)
 Used to validate the users keys for accessing the wallet.
 Requires the address, private view key and private spend key.
 
+isValidKeys(address, privateViewKey, privateSpendKey)
+
 ```js
 const result = WABridge.isValidKeys(
   '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg',
@@ -87,7 +107,7 @@ console.log(paymentId)
 
 ### Decode an Address
 
-Decodes the address to access primary address and payment ID.
+Decodes the address to access public spend key, public view key, whether it is a subaddress and payment ID.
 
 ```js
 const result = WABridge.decodeAddress(
@@ -111,6 +131,7 @@ console.log(result)
 ### Validate Integrated Address
 
 Checks if the provided address is a integrated address. returns a boolean value.
+This is a helper function for decodeAddress. If the address is not a subaddress and has a payment id it will return true.
 
 ```js
 const result = WABridge.isIntegratedAddress(
@@ -123,6 +144,7 @@ console.log(result)
 ### Validate Subaddress
 
 Checks if the provided address is a subaddress. returns a boolean value.
+This is a helper function for decodeAddress. If the address decode returns is a subaddress it will return true.
 
 ```js
 const result = WABridge.isSubaddress(
@@ -135,6 +157,7 @@ console.log(result)
 ### Generate new Integrated Address
 
 Generate a new intergrated address using address and payment ID.
+Accepts a primary addresss and a short payment id. subaddresses cannot be paired with a payment id.
 
 ```js
 const result = WABridge.newIntegratedAddress(
@@ -182,6 +205,7 @@ console.log(result)
 ### Generate Key Image
 
 Generates key image for an output. returns the key image for the tx public key and output index.
+generateKeyImage (txPublicKey, privateViewKey, publicSpendKey, privateSpendKey, outputIndex)
 
 ```js
 const result = WABridge.generateKeyImage(
@@ -198,6 +222,9 @@ console.log(result)
 
 Creates a raw transaction from the options provided. 
 This Tx needs to be sent on to the light wallet server for broadcast.
+Multiple destination transactions do not support payment ids. 
+Only one destination can be set if there is an associated payment id. This includes integrated addresses.
+Subaddresses and primary desitnations can be mixed within a single transaction.
 
 ```js
 const options = {
@@ -237,4 +264,4 @@ WABridge.createTransaction(options)
 
 See [`LICENSE.txt`](LICENSE.txt) for license.
 
-All source code copyright © 2021 by MyMonero. All rights reserved.
+All source code copyright © 2022 by MyMonero. All rights reserved.
