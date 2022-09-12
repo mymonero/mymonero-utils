@@ -182,7 +182,8 @@ class MyMoneroLibAppBridgeClass extends MyMoneroCoreBridgeEssentialsClass
 			fromWallet_needsImport: fn_args.fromWallet_needsImport,
 			requireAuthentication: fn_args.requireAuthentication,
 			//
-			sending_amount_double_string: fn_args.sending_amount_double_string,
+			destinations: fn_args.destinations,
+			//
 			hasPickedAContact: fn_args.hasPickedAContact,
 			resolvedAddress_fieldIsVisible: fn_args.resolvedAddress_fieldIsVisible,
 			manuallyEnteredPaymentID_fieldIsVisible: fn_args.manuallyEnteredPaymentID_fieldIsVisible,
