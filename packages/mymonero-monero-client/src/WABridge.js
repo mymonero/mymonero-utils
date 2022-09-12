@@ -344,9 +344,20 @@ class WABridge {
     if (!paymentId || paymentId.length !== 16) {
       throw Error('expected valid paymentId')
     }
-    const ret = this.Module.newIntegratedAddress(address, paymentId, nettype)
-
-    return ret
+    const retString = this.Module.newIntegratedAddress(address, paymentId, nettype)
+    let errMsg = null
+    try {
+      const ret = JSON.parse(retString)
+      if (ret.err_msg) {
+        errMsg = ret.err_msg
+      }
+    } catch (e) {
+      // dont do anything as the retString is the address
+    }
+    if (errMsg) {
+      throw Error(errMsg)
+    }
+    return retString
   }
 
   /**
