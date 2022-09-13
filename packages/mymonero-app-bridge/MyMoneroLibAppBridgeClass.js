@@ -209,9 +209,6 @@ class MyMoneroLibAppBridgeClass extends MyMoneroCoreBridgeEssentialsClass
 		if (typeof fn_args.contact_address !== 'undefined' && fn_args.contact_address !== null && fn_args.contact_address !== "") {
 			args.contact_address = fn_args.contact_address;
 		}
-		if (typeof fn_args.enteredAddressValue !== 'undefined' && fn_args.enteredAddressValue !== null && fn_args.enteredAddressValue !== "") {
-			args.enteredAddressValue = fn_args.enteredAddressValue;
-		}
 		if (typeof fn_args.resolvedAddress !== 'undefined' && fn_args.resolvedAddress !== null && fn_args.resolvedAddress !== "") {
 			args.resolvedAddress = fn_args.resolvedAddress;
 		}
