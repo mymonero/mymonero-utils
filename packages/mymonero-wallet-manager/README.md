@@ -99,7 +99,9 @@ console.log(wallet.serialize())
 Logs in to or registers the wallet with the light wallet server. The primary address and private view key are shared with the server to facilitate scanning the blockchain.
 
 ```js
-wallet.login(address, privateViewKey)
+const createAccount = true // defaults to false. Set true for newly created wallets
+const result = await wallet.login(createAccount)
+console.log(result)
 ```
 
 ### Sync the wallet with the light wallet server.
@@ -108,7 +110,8 @@ The Sync function requests the latest transaction list and blockchain details fr
 Syncing recalculates balances based on the transaction data returned.
 
 ```js
-wallet.sync()
+const transactions = await wallet.sync()
+console.log(transactions)
 ```
 
 ### Estimate Transaction fee
@@ -118,7 +121,8 @@ Priority is optional and will default to 1.
 
 ```js
 const priority = 1
-wallet.estimateFee(priority)
+const fee = await wallet.estimateFee(priority)
+console.log(fee)
 ```
 
 ### Transfer
@@ -161,7 +165,7 @@ const hash = await wallet.transfer(options).catch(err => {
 Generates a short payment id consisting of 16 characters. Use short payment id's to create an integrated address.
 
 ```js
-const shortPaymentId = await wallet.generatePaymentId()
+const shortPaymentId = wallet.generatePaymentId()
 console.log(shortPaymentId)
 ```
 
@@ -170,7 +174,7 @@ console.log(shortPaymentId)
 Generates an integrated address using the address and short payment id. Omit payment id to generate one.
 
 ```js
-const integratedAddress = await wallet.generateIntegratedAddress('46kDcL7a9uVQojKQWqxqZUg9cKuffJvjYhbjbybxV46oNZm3Pa7qX9YWXC6vjAnyr3NrMFWvGjj7GUNVrQM9itGC5npKFD8', '14aadac4ae6bae9f')
+const integratedAddress = wallet.generateIntegratedAddress('46kDcL7a9uVQojKQWqxqZUg9cKuffJvjYhbjbybxV46oNZm3Pa7qX9YWXC6vjAnyr3NrMFWvGjj7GUNVrQM9itGC5npKFD8', '14aadac4ae6bae9f')
 console.log(integratedAddress)
 ```
 
@@ -182,7 +186,7 @@ Determine subaddresses by the property isSubaddress. Subaddresses cannot contain
 Determine integrated addresses by the property isSubaddress = false and property paymentId != null
 
 ```js
-const addressResult = await wallet.decodeAddress('83iUpSYSEWGhqQ1ungVfNrQYVw556xMbJB1QcZyMrmXAQZQenMjmgTmc8WSwRX1Wxd25sY2WpBPT933MTM3Tti4mETKewsm')
+const addressResult = wallet.decodeAddress('83iUpSYSEWGhqQ1ungVfNrQYVw556xMbJB1QcZyMrmXAQZQenMjmgTmc8WSwRX1Wxd25sY2WpBPT933MTM3Tti4mETKewsm')
 console.log(addressResult)
 ```
 
@@ -191,7 +195,7 @@ console.log(addressResult)
 Serialize the wallet object for local storage or debugging. Warning! This does include the mnemonic seed and private keys in plain text!
 
 ```js
-const serialWallet = await wallet.serialize()
+const serialWallet = wallet.serialize()
 console.log(serialWallet)
 ```
 
@@ -200,7 +204,7 @@ console.log(serialWallet)
 Converts piconero's into monero value.
 
 ```js
-const moneroAmount = await wallet.convertFromPicos(1000000000000)
+const moneroAmount = wallet.convertFromPicos(1000000000000)
 console.log(moneroAmount)
 ```
 
