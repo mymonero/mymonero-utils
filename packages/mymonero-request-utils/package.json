@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-request-utils",
-  "version": "2.1.26",
+  "version": "2.2.0-alpha.0",
   "description": "Definitions of the monero network types used in mymonero",
   "main": "index.js",
   "scripts": {
