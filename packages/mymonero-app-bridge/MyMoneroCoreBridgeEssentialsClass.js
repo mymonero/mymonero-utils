@@ -40,7 +40,7 @@ class MyMoneroCoreBridgeEssentialsClass
 			address: addr,
 			nettype_string: nettype_utils.nettype_to_API_string(nettype)
 		};
-		return this.Module.is_subaddress(args.addr, args.nettype_string);
+		return this.Module.is_subaddress(args.address, args.nettype_string);
 	}
 
 	is_integrated_address(addr, nettype) {
@@ -49,7 +49,7 @@ class MyMoneroCoreBridgeEssentialsClass
 			address: addr,
 			nettype_string: nettype_utils.nettype_to_API_string(nettype)
 		};
-		return this.Module.is_integrated_address(args.addr, args.nettype_string);
+		return this.Module.is_integrated_address(args.address, args.nettype_string);
 	}
 
 	new_payment_id() {
