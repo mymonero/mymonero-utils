@@ -73,6 +73,7 @@ string FormSubmissionController::prepare()
 		if (this->parameters.enteredAddressValues.size() != 1) {
  			return error_ret_json_from_message("Only one recipient allowed when sweeping.");
  		}
+                this->sending_amounts.push_back(0);
 	} else {
 		this->sending_amounts.reserve(this->parameters.send_amount_strings.size());
  		for (const auto& amount : this->parameters.send_amount_strings) {
