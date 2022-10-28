@@ -2,7 +2,13 @@ function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validati
   return new Promise((resolve, reject) => {
     // for debug, we use our own xmr_wallet and we send a tiny amount of XMR. Change this once we can send funds
 
-    const enteredAddressValue = xmr_send_address // ;
+    const destinations = [
+      {
+        to_address: typeof(xmr_send_address) !== 'undefined' ? xmr_send_address : null,
+        send_amount: '' + xmr_amount
+      }
+    ];
+
     const resolvedAddress = ''
     const manuallyEnteredPaymentID = ''
     const resolvedPaymentID = ''
@@ -19,7 +25,7 @@ function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validati
     const simple_priority = 1
 
     wallet.SendFunds(
-      enteredAddressValue,
+      destinations,
       resolvedAddress,
       manuallyEnteredPaymentID,
       resolvedPaymentID,
