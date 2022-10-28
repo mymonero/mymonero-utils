@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-net-service-utils",
-  "version": "2.1.27",
+  "version": "2.1.29",
   "description": "",
   "main": "index.js",
   "scripts": {
