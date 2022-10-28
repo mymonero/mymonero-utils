@@ -1,55 +1,71 @@
 function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validation_status_fn, handle_response_fn) {
-  try {
-    return new Promise((resolve, reject) => {
-      // for debug, we use our own xmr_wallet and we send a tiny amount of XMR. Change this once we can send funds
+  return new Promise((resolve, reject) => {
+    // for debug, we use our own xmr_wallet and we send a tiny amount of XMR. Change this once we can send funds
 
-      const destinations = [
-        {
-          to_address: typeof(xmr_send_address) !== 'undefined' ? xmr_send_address : null,
-          send_amount: '' + xmr_amount
-        }
-      ];
-  
-      const resolvedAddress = ''
-      const manuallyEnteredPaymentID = ''
-      const resolvedPaymentID = ''
-      const hasPickedAContact = false
-      const manuallyEnteredPaymentID_fieldIsVisible = false
-      const resolvedPaymentID_fieldIsVisible = false
-      const resolvedAddress_fieldIsVisible = false
-      let contact_payment_id
-      let cached_OAResolved_address
-      let contact_hasOpenAliasAddress
-      let contact_address
-      const raw_amount_string = xmr_amount // XMR amount in double
-      const sweeping = sweep_wallet
-      const simple_priority = 1
-  
-      wallet.SendFunds(
-        destinations,
-        resolvedAddress,
-        manuallyEnteredPaymentID,
-        resolvedPaymentID,
-        hasPickedAContact,
-        resolvedAddress_fieldIsVisible,
-        manuallyEnteredPaymentID_fieldIsVisible,
-        resolvedPaymentID_fieldIsVisible,
-        contact_payment_id,
-        cached_OAResolved_address,
-        contact_hasOpenAliasAddress,
-        contact_address,
-        sweeping,
-        simple_priority,
-        validation_status_fn,
-        cancelled_fn,
-        handle_response_fn
-      )
-
-      function cancelled_fn () { // canceled_fn
-        // TODO: Karl: I haven't diven deep enough to determine what state would invoke this function yet
+    const destinations = [
+      {
+        to_address: typeof(xmr_send_address) !== 'undefined' ? xmr_send_address : null,
+        send_amount: '' + xmr_amount
       }
-    } catch (e) {
-      
+    ];
+
+    const resolvedAddress = ''
+    const manuallyEnteredPaymentID = ''
+    const resolvedPaymentID = ''
+    const hasPickedAContact = false
+    const manuallyEnteredPaymentID_fieldIsVisible = false
+    const resolvedPaymentID_fieldIsVisible = false
+    const resolvedAddress_fieldIsVisible = false
+    let contact_payment_id
+    let cached_OAResolved_address
+    let contact_hasOpenAliasAddress
+    let contact_address
+    const raw_amount_string = xmr_amount // XMR amount in double
+    const sweeping = sweep_wallet
+    const simple_priority = 1
+
+    console.log(destinations)
+    console.log(resolvedAddress)
+    console.log(manuallyEnteredPaymentID)
+    console.log(resolvedPaymentID)
+    console.log(hasPickedAContact)
+    console.log(resolvedAddress_fieldIsVisible)
+    console.log(manuallyEnteredPaymentID_fieldIsVisible)
+    console.log(resolvedPaymentID_fieldIsVisible)
+    console.log(contact_payment_id)
+    console.log(cached_OAResolved_address)
+    console.log(contact_hasOpenAliasAddress)
+    console.log(contact_address)
+    console.log(xmr_send_address)
+    console.log(sweeping)
+    console.log(simple_priority)
+    console.log(validation_status_fn)
+    console.log(cancelled_fn)
+    // handle_response_fn
+
+    wallet.SendFunds(
+      destinations,
+      resolvedAddress,
+      manuallyEnteredPaymentID,
+      resolvedPaymentID,
+      hasPickedAContact,
+      resolvedAddress_fieldIsVisible,
+      manuallyEnteredPaymentID_fieldIsVisible,
+      resolvedPaymentID_fieldIsVisible,
+      contact_payment_id,
+      cached_OAResolved_address,
+      contact_hasOpenAliasAddress,
+      contact_address,
+      sweeping,
+      simple_priority,
+      validation_status_fn,
+      cancelled_fn,
+      handle_response_fn
+    )
+
+
+    function cancelled_fn () { // canceled_fn
+      // TODO: Karl: I haven't diven deep enough to determine what state would invoke this function yet
     }
   })
 }
