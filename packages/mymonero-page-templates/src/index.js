@@ -17,4 +17,4 @@ let ExchangeNavigationController = require("./Exchange/Controllers/ExchangeNavig
 module.exports = {
     ExchangeLandingPage,
     ExchangeNavigationController
-}
+} 
