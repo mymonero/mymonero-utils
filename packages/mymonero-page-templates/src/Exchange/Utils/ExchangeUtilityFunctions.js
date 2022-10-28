@@ -48,11 +48,8 @@ function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validati
       function cancelled_fn () { // canceled_fn
         // TODO: Karl: I haven't diven deep enough to determine what state would invoke this function yet
       }
-    } catch (e) {
-      
-    }
-  })
-}
+    })
+  }
 // end of functions to check Bitcoin address
 
 function renderOrderStatus (order) {
