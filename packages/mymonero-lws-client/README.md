@@ -30,7 +30,7 @@ const options = {
     url: 'https://api.mymonero.com',
     appName: 'MyMonero',
     appVersion: '1.1.25',
-    apiKey: '<insert your api key here>' // can be null
+    apiKey: '<insert your api key here>' // can be null for certain queries
 }
 const lwsClient = new LWSClient(options)
 ```
