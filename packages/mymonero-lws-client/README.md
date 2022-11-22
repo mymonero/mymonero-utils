@@ -29,7 +29,8 @@ const options = {
     httpClient: axios,
     url: 'https://api.mymonero.com',
     appName: 'MyMonero',
-    appVersion: '1.1.25'
+    appVersion: '1.1.25',
+    apiKey: '<insert your api key here>' // can be null
 }
 const lwsClient = new LWSClient(options)
 ```
