@@ -74,10 +74,18 @@ class LWSClient {
       address,
       view_key,
       api_key: this.api_key,
-      start_block_height,
-      start_tx_height,
-      start_date
     }
+
+    if (start_block_height !== null) {
+      request_body.start_block_height = start_block_height.toString() // The API expects a string for this value
+    }
+    if (start_tx_height !== null) {
+      request_body.start_tx_height = start_tx_height.toString() // The API expects a string for this value
+    }
+    if (start_date !== null) {
+      request_body.start_date = start_date
+    }
+
     const response = await this.httpClient.post('/import_wallet_auth', request_body)
       .catch(err => {
         if (err.response === undefined) {
