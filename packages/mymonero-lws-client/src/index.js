@@ -73,12 +73,11 @@ class LWSClient {
     let request_body = {
       address,
       view_key,
-      api_key: self.api_key,
+      api_key: this.api_key,
       start_block_height,
       start_tx_height,
       start_date
     }
-
     const response = await this.httpClient.post('/import_wallet_auth', request_body)
       .catch(err => {
         if (err.response === undefined) {
@@ -102,10 +101,11 @@ class LWSClient {
    * @returns {object} object with `account_updated` parameter.
    */
    async sync_wallet_with_address (address) {
-    const response = await this.httpClient.post('/sync_wallet_with_address', {
+     const request_body = {
       address: address,
-      api_key: self.api_key
-    }).catch(err => {
+      api_key: this.api_key
+    }
+    const response = await this.httpClient.post('/sync_wallet_with_address', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
