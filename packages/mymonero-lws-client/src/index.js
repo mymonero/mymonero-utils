@@ -33,12 +33,16 @@ class LWSClient {
    * @returns {object} whether the address is new and its start height.
    */
   async login (view_key, address, createAccount = false) {
-    const response = await this.httpClient.post('/login', {
+    let request_body = {
       address: address,
       view_key: view_key,
       create_account: createAccount,
       generated_locally: true
-    }).catch(err => {
+    }
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
+    }
+    const response = await this.httpClient.post('/login', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
@@ -60,10 +64,10 @@ class LWSClient {
   }
 
   /**
-   * Submits request to import wallet information. One of the following options: start_block_height, start_date, or start_tx_height must be specified.
+   * Submits request to import wallet information. API key is required when invoking constructor. 
+   * Select one of the following options: start_block_height, start_date, or start_tx_height must be specified.
    * @param {string} address - Wallet primary address.
    * @param {string} view_key - private view key
-   * @param {string} api_key - API key string specific to the relevant subdomain.
    * @param {string} start_block_height - Optional - Block height to start sync from.
    * @param {string} start_tx_height - Optional - Transaction height to start sync from.
    * @param {string} start_date - Optional - Start date in format 'YYYY-MM-DD' to start sync from.
@@ -103,9 +107,8 @@ class LWSClient {
   }
 
   /**
-   * Syncs wallet from block 0 and does not require the view key, just the public address.
+   * Syncs wallet from block 0 and does not require the view key, just the public address. Requires api key
    * @param {string} view_key - Wallet primary address.
-   * @param {string} api_key - API key string specific to the relevant subdomain.
    * @returns {object} object with `account_updated` parameter.
    */
    async sync_wallet_with_address (address) {
@@ -136,10 +139,14 @@ class LWSClient {
    * @returns {object} Transactions and blockchain heights.
    */
   async getAddressTxs (view_key, address) {
-    const response = await this.httpClient.post('/get_address_txs', {
+    let request_body = {
       address: address,
       view_key: view_key
-    }).catch(err => {
+    }
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
+    }
+    const response = await this.httpClient.post('/get_address_txs', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
@@ -176,8 +183,8 @@ class LWSClient {
       app_name: self.appName,
       app_version: self.appVersion
     }
-    if (self.api_key !== null) {
-      request_body.api_key = self.api_key
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
     }
     const response = await this.httpClient.post('/get_unspent_outs', request_body).catch(err => {
       if (err.response === undefined) {
@@ -209,12 +216,17 @@ class LWSClient {
     for (let i = 0; i < numberOfOuts; i++) {
       amounts.push('0')
     }
-    const response = await this.httpClient.post('/get_random_outs', {
+    let request_body = {
       amounts: amounts,
       count: 16,
       app_name: self.appName,
       app_version: self.appVersion
-    }).catch(err => {
+    }
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
+    }
+
+    const response = await this.httpClient.post('/get_random_outs', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
@@ -233,11 +245,17 @@ class LWSClient {
    */
   async submitRawTx (tx) {
     const self = this
-    const response = await this.httpClient.post('/submit_raw_tx', {
+    let request_body = {
       tx: tx,
       app_name: self.appName,
       app_version: self.appVersion
-    }).catch(err => {
+    }
+    
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
+    }
+
+    const response = await this.httpClient.post('/submit_raw_tx', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
@@ -275,10 +293,14 @@ class LWSClient {
    * @param {string} address - Wallet primary address.
    */
   async getAddressInfo (view_key, address) {
-    const response = await this.httpClient.post('/get_address_info', {
+    let request_body = {
       address: address,
       view_key: view_key
-    }).catch(err => {
+    }
+    if (this.api_key !== null) {
+      request_body.api_key = this.api_key
+    }
+    const response = await this.httpClient.post('/get_address_info', request_body).catch(err => {
       if (err.response === undefined) {
         throw new Error('no response')
       }
