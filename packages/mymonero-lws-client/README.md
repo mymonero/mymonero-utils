@@ -29,7 +29,8 @@ const options = {
     httpClient: axios,
     url: 'https://api.mymonero.com',
     appName: 'MyMonero',
-    appVersion: '1.1.25'
+    appVersion: '1.1.25',
+    apiKey: '<insert your api key here>' // can be null for certain queries
 }
 const lwsClient = new LWSClient(options)
 ```
@@ -126,7 +127,10 @@ Example Response
 ### Fetch Addresses Unspent Outputs
 
 Fetches all outputs available. They will need to be key imaged to work out which have been spent.
+
 This function also returns the fee per byte and fee mask for calculating the transaction fees.  
+
+Requires an API key to be set when initialising lwsClient
 
 ```js
 const privateViewKey = '7bea1907940afdd480eff7c4bcadb478a0fbb626df9e3ed74ae801e18f53e104'
@@ -262,6 +266,42 @@ const address = '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4
 const result = await lwsClient.getAddressInfo(
   privateViewKey,
   address
+)
+console.log(result)
+```
+
+### Import Wallet 
+
+Submits request to import wallet information. One of the following options: start_block_height, start_date, or start_tx_height must be specified. 
+
+Requires an API key to be set when initialising lwsClient
+```js
+const view_key = '7bea1907940afdd480eff7c4bcadb478a0fbb626df9e3ed74ae801e18f53e104'
+const address = '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg'
+const start_block_height = 0 
+const result = await lwsClient.import_wallet_auth(
+    address,
+    view_key, 
+    start_block_height,
+    start_tx_height = null
+    start_date = null
+)
+console.log(result)
+```
+
+### Resync wallet 
+
+Syncs wallet from block 0. 
+
+Requires an API key to be set when initialising lwsClient
+```js
+const address = '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg'
+const result = await lwsClient.import_wallet_auth(
+    address,
+    view_key, 
+    start_block_height,
+    start_tx_height = null
+    start_date = null
 )
 console.log(result)
 ```
