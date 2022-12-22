@@ -23,7 +23,19 @@ If you would like to generate the WASM files yourself you will require docker
 By following these instructions, new WASM library is generated and copied to the src folder
 
 -----
+## Upgrading from 2.1.x to 2.2.x and 3.x.x
 
+No breaking changes have been made to any packages besides @mymonero/mymonero-monero-client.
+
+For users of @mymonero/mymonero-monero-client, the following changes have been made:
+
+Version 2.2.0 and onwards have changed from having separate MyMoneroClient_WASM.wasm and MyMoneroClient_WASM.js, and now unify the WASM and .js file together. 
+
+For webpack users, if you had a script set up to copy the WASM as part of your build process, this should be removed from your webpack.config.js file. 
+
+Otherwise, any users of the mymonero-monero-client library should not need to change anything on their side unless you were loading the WASM using a custom method different to our documentation. 
+
+While we've made every effort to remain backwards compatible, please let us know if you experience any issues.
 ## Usage
 
 ### Installation
