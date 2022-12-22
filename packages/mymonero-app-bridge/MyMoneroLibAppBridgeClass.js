@@ -182,7 +182,8 @@ class MyMoneroLibAppBridgeClass extends MyMoneroCoreBridgeEssentialsClass
 			fromWallet_needsImport: fn_args.fromWallet_needsImport,
 			requireAuthentication: fn_args.requireAuthentication,
 			//
-			sending_amount_double_string: fn_args.sending_amount_double_string,
+			destinations: fn_args.destinations,
+			//
 			hasPickedAContact: fn_args.hasPickedAContact,
 			resolvedAddress_fieldIsVisible: fn_args.resolvedAddress_fieldIsVisible,
 			manuallyEnteredPaymentID_fieldIsVisible: fn_args.manuallyEnteredPaymentID_fieldIsVisible,
@@ -207,9 +208,6 @@ class MyMoneroLibAppBridgeClass extends MyMoneroCoreBridgeEssentialsClass
 		}
 		if (typeof fn_args.contact_address !== 'undefined' && fn_args.contact_address !== null && fn_args.contact_address !== "") {
 			args.contact_address = fn_args.contact_address;
-		}
-		if (typeof fn_args.enteredAddressValue !== 'undefined' && fn_args.enteredAddressValue !== null && fn_args.enteredAddressValue !== "") {
-			args.enteredAddressValue = fn_args.enteredAddressValue;
 		}
 		if (typeof fn_args.resolvedAddress !== 'undefined' && fn_args.resolvedAddress !== null && fn_args.resolvedAddress !== "") {
 			args.resolvedAddress = fn_args.resolvedAddress;

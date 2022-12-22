@@ -3,10 +3,11 @@
 const assert = require('assert')
 const chai = require('chai')
 const nettype = 'MAINNET'
+const wasmLocation = '../../src/index'
 
 describe('cryptonote_utils tests', function () {
   it('create_address aka address_and_keys_from_seed', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.addressAndKeysFromSeed('9c973aa296b79bbf452781dd3d32ad7f', nettype)
     const expected = {
       address: '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg',
@@ -30,7 +31,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('is integrated address a subaddress', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.isSubaddress('4L6Gcy9TAHqPVPMnqa5cPtJK25tr7maE7LrJe67vzumiCtWwjDBvYnHZr18wFexJpih71Mxsjv8b7EpQftpB9NjPaL41VrjstLM5WevLZx', nettype)
     assert.strictEqual(
       decoded,
@@ -41,7 +42,7 @@ describe('cryptonote_utils tests', function () {
   // @todo add is subaddress test that is true
 
   it('is address an integrated address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.isIntegratedAddress('4L6Gcy9TAHqPVPMnqa5cPtJK25tr7maE7LrJe67vzumiCtWwjDBvYnHZr18wFexJpih71Mxsjv8b7EpQftpB9NjPaL41VrjstLM5WevLZx', nettype)
     assert.strictEqual(
       decoded,
@@ -50,7 +51,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('is primary address an integrated address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.isIntegratedAddress('43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg', nettype)
     assert.strictEqual(
       decoded,
@@ -59,7 +60,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('creates a random payment id', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.generatePaymentId()
     assert.strictEqual(
       decoded.length,
@@ -68,7 +69,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('creates new integrated address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.newIntegratedAddress(
       '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg',
       '07749f00b7e3a2f6',
@@ -81,20 +82,21 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('creates new integrated address with invalid payment id', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     chai.expect(() => {
-      WABridge.newIntegratedAddress(
+      const address = WABridge.newIntegratedAddress(
         '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg',
         '07749f00b7e3a2f#',
         'MAINNET'
       )
+      console.log(address)
     }).to.throw('Not a valid payment Id')
   })
 
   // @todo add check for the paymentid length exception
 
   it('checks if two mnemonics are the same', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.compareMnemonics(
       'foxe selfish hum nexus juven dodeg pepp ember biscuti elap jazz vibrate biscui',
       'fox sel hum nex juv dod pep emb bis ela jaz vib bis'
@@ -106,7 +108,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('derive mnemonic from seed', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.mnemonicFromSeed(
       '9c973aa296b79bbf452781dd3d32ad7f',
       'English'
@@ -118,7 +120,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('derive mnemonic from invalid language', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     chai.expect(() => {
       WABridge.mnemonicFromSeed(
         '9c973aa296b79bbf452781dd3d32ad7f',
@@ -128,7 +130,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('derive mnemonic from invalid seed', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     chai.expect(() => {
       WABridge.mnemonicFromSeed(
         '9c973aa296b79bbf452781dd3d32ad7#',
@@ -138,7 +140,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.seedAndKeysFromMnemonic(
       'foxe selfish hum nexus juven dodeg pepp ember biscuti elap jazz vibrate biscui',
       'MAINNET'
@@ -159,7 +161,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed numeric mnemonic derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -170,7 +172,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed null mnemonic derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -181,7 +183,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed incomplete mnemonic derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -192,7 +194,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed invalid 13-word mnemonic derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -203,7 +205,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed invalid 25-word mnemonic derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -214,7 +216,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('throw error when passed invalid nettype derive seed and keys from mnemonic', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.seedAndKeysFromMnemonic(
@@ -225,7 +227,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('creates new wallet based on locale', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.generateWallet(
       'en-US',
       'MAINNET'
@@ -248,7 +250,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('validate login components', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.isValidKeys(
       '43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg',
       '7bea1907940afdd480eff7c4bcadb478a0fbb626df9e3ed74ae801e18f53e104',
@@ -269,7 +271,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('validate invalid spend key login components', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.isValidKeys(
@@ -283,7 +285,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('validate incorrect spend key login components', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.isValidKeys(
@@ -297,7 +299,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('decode mainnet primary address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.decodeAddress(
       '49qwWM9y7j1fvaBK684Y5sMbN8MZ3XwDLcSaqcKwjh5W9kn9qFigPBNBwzdq6TCAm2gKxQWrdZuEZQBMjQodi9cNRHuCbTr',
       nettype
@@ -312,7 +314,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('decode mainnet integrated address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
     const decoded = WABridge.decodeAddress(
       '4KYcX9yTizXfvaBK684Y5sMbN8MZ3XwDLcSaqcKwjh5W9kn9qFigPBNBwzdq6TCAm2gKxQWrdZuEZQBMjQodi9cNd3mZpgrjXBKMx9ee7c',
       nettype
@@ -327,7 +329,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('decode invalid address', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.decodeAddress(
@@ -338,7 +340,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     const result = WABridge.generateKeyImage(
       '585d3601bc6f3b63ad041fbb5f301a6239cbc98ec2954ef827d5f81aed59cff9',
@@ -354,7 +356,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid output index', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -368,7 +370,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on missing output index', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -382,7 +384,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on empty output index', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -396,7 +398,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid length tx public key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -410,7 +412,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid length private view key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -424,7 +426,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid length public spend key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -438,7 +440,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid length private spend key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -452,7 +454,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid private view key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -466,7 +468,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid private spend key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -480,7 +482,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid public spend key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -494,7 +496,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('generate key image throws error on invalid private spend key', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.generateKeyImage(
@@ -508,7 +510,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   // it('generate key image throws error unable to generate key image', async function () {
-  //   const WABridge = await require('../src/index')({})
+  //   const WABridge = await require(wasmLocation)({})
 
   //   chai.expect(() => {
   //     WABridge.generateKeyImage(
@@ -522,18 +524,18 @@ describe('cryptonote_utils tests', function () {
   // })
 
   it('estimate tx fee', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     const result = WABridge.estimateTxFee(1, 6000)
 
     assert.strictEqual(
       result,
-      11550000
+      13590000
     )
   })
 
   it('estimate tx fee invalid priority', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.estimateTxFee(5, 6000)
@@ -541,7 +543,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('estimate tx fee invalid priority as string', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.estimateTxFee('test', 6000)
@@ -549,7 +551,7 @@ describe('cryptonote_utils tests', function () {
   })
 
   it('estimate tx fee invalid feePerb as string', async function () {
-    const WABridge = await require('../../src/index')({})
+    const WABridge = await require(wasmLocation)({})
 
     chai.expect(() => {
       WABridge.estimateTxFee(1, 'test')
