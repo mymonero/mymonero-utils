@@ -122,6 +122,8 @@ set (EMCC_LINKER_FLAGS__WASM
 -std=c++11 \
 -flto \
 --bind \
+-sWASM={0,1} \
+-sSINGLE_FILE \
 -s STRICT=1 \
 -s MODULARIZE=1 \
 -s 'EXPORT_NAME=\"MyMoneroClient\"' \
@@ -139,6 +141,8 @@ set (EMCC_LINKER_FLAGS__WASM
 --memory-init-file 1 \
 --post-js ${CMAKE_CURRENT_LIST_DIR}/src/module-post.js \
 ")
+
+## To build a standalone WASM, remove the -sSINGLE_FILE parameter above
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
