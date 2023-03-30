@@ -5,7 +5,7 @@ const Wallet = require('./Wallet')
 const ContactManager = require('./ContactManager')
 
 class WalletManager {
-  constructor (netType = 'MAINNET', url = 'https://api.mymonero.com') {
+  constructor (netType = 'MAINNET', url = 'localhost') {
     this.netType = netType
     this.url = url
     this.bridgeClass = {}

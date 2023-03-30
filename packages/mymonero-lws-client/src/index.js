@@ -20,7 +20,7 @@ class LWSClient {
     this.appName = options.appName || 'MyMonero'
     this.appVersion = options.appVersion || '1.3.0'
     this.api_key = options.api_key || null,
-    axios.defaults.baseURL = options.url || 'https://api.mymonero.com'
+    axios.defaults.baseURL = options.url || 'localhost'
   }
 
   /**
