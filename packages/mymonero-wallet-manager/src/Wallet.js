@@ -249,10 +249,9 @@ class Wallet {
 
   /**
    * Fetches the unspent outs from the light wallet server.
-   * @param {object} options
    * @returns
    */
-   async unspentOutputs (options) {
+   async unspentOutputs () {
     const self = this
 
     try {
