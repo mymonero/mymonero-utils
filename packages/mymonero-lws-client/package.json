@@ -9,7 +9,7 @@
   "author": "Devin Pearson <devin@mymonero.com> (https://github.com/devinpearson/)",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "axios": "^0.21.3",
+    "axios": "^1.6.0",
     "bignumber.js": "^9.0.1"
   },
   "publishConfig": {
