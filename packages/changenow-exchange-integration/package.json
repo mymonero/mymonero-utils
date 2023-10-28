@@ -31,7 +31,7 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "axios": "^0.21.3"
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.19.0",
