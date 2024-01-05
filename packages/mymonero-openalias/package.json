@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "axios": "^0.21.3"
+    "axios": "^1.6.4"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.19.0",
