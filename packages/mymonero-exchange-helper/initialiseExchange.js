@@ -513,30 +513,30 @@ function initialiseExchangeHelper(context, exchangeHelper) {
         exchangeHelper.exchangeFunctions.initialiseExchangeConfiguration().then((response) => {
           // Data returned by resolve
           // If we get an error, we assume localmonero should be enabled 
-          const localmoneroDiv = document.getElementById('localmonero')
-          const localmoneroAnchor = document.getElementById('localmonero-anchor')
-          localmoneroAnchor.setAttribute('referrer_id', response.data.referrer_info.localmonero.referrer_id)
-          localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
-          localmoneroAnchor.setAttribute('param_str', 'rc')
+          // const localmoneroDiv = document.getElementById('localmonero')
+          // const localmoneroAnchor = document.getElementById('localmonero-anchor')
+          // localmoneroAnchor.setAttribute('referrer_id', response.data.referrer_info.localmonero.referrer_id)
+          // localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
+          // localmoneroAnchor.setAttribute('param_str', 'rc')
 
-          if (response.data.referrer_info.localmonero.enabled === true) {
-            localmoneroDiv.style.display = 'block'
-            localmoneroAnchor.addEventListener('click', (event) => {
-              exchangeHelper.openClickableLink(event, context);
-            })
-          }
+          // if (response.data.referrer_info.localmonero.enabled === true) {
+          //   localmoneroDiv.style.display = 'block'
+          //   localmoneroAnchor.addEventListener('click', (event) => {
+          //     exchangeHelper.openClickableLink(event, context);
+          //   })
+          // }
         }).catch(error => {
-          const localmoneroDiv = document.getElementById('localmonero')
-          const localmoneroAnchor = document.getElementById('localmonero-anchor')
+          // const localmoneroDiv = document.getElementById('localmonero')
+          // const localmoneroAnchor = document.getElementById('localmonero-anchor')
 
-          localmoneroAnchor.setAttribute('referrer_id', 'h2t1')
-          localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
-          localmoneroAnchor.setAttribute('param_str', 'rc')
-          // No data received from promise resolve(). Display link for LocalMonero
-          localmoneroDiv.style.display = 'block'
-          localmoneroAnchor.addEventListener('click', (event) => {
-            exchangeHelper.openClickableLink(event, context);
-          })
+          // localmoneroAnchor.setAttribute('referrer_id', 'h2t1')
+          // localmoneroAnchor.setAttribute('url', 'https://localmonero.co')
+          // localmoneroAnchor.setAttribute('param_str', 'rc')
+          // // No data received from promise resolve(). Display link for LocalMonero
+          // localmoneroDiv.style.display = 'block'
+          // localmoneroAnchor.addEventListener('click', (event) => {
+          //   exchangeHelper.openClickableLink(event, context);
+          // })
         })
       })
     }

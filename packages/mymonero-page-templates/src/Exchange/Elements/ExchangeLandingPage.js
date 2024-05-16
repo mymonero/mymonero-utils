@@ -84,15 +84,15 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
                 navigationType: "internalLink",
                 destination: "changenowBuyWithFiatView"
             },
-            {
-                service_provider: "localmonero",
-                title: "Buy Monero using LocalMonero",
-                description: `
-                    LocalMonero is a marketplace that allows you to buy and sell Monero person-to-person. They act as an escrow service, ensuring that deals between buyers and sellers are concluded safely`,
+            // {
+            //     service_provider: "localmonero",
+            //     title: "Buy Monero using LocalMonero",
+            //     description: `
+            //         LocalMonero is a marketplace that allows you to buy and sell Monero person-to-person. They act as an escrow service, ensuring that deals between buyers and sellers are concluded safely`,
                 
-                navigationType: "externalUrl",
-                destination: "https://localmonero.co?rc=h2t1",
-            }
+            //     navigationType: "externalUrl",
+            //     destination: "https://localmonero.co?rc=h2t1",
+            // }
         ];
     }
     
