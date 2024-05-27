@@ -200,29 +200,7 @@ export class ExchangeServiceProviderCard extends LitElement {
              <div class="title-label">${this.service.title}</div>
              <div class="description-label">${this.service.description}</div>
          </div>`
-
-    // return html`
-    //     <div class="provider-card">
-    //         <div class="hoverable-cell utility">
-    //             <div class="changenow-logo provider-logo">
-
-    //             </div>
-    //         </div>    
-    //         <div class="title-label">Exchange Monero for other cryptocurrencies (floating rate)</div>
-    //         <div class="description-label">Exchange your Monero for any of a number of cryptocurrencies using ChangeNow's floating rate exchange. The floating rate allows you to exchange smaller amounts of Monero than fixed rates. With this method of exchange, due to the volitility of cryptocurrency, you may receive an amount that is slightly different to what you expect.</div>
-    //     </div>
-    //     <div class="provider-card">
-    //         <div class="hoverable-cell utility">
-    //             <div class="localmonero-logo provider-logo">
-
-    //             </div>
-    //         </div>    
-    //         <div class="title-label">Buy Monero with LocalMonero</div>
-    //         <div class="description-label">LocalMonero is a marketplace that allows a user to buy and sell their Monero to others.</div>
-    //     </div>
-    // `;
   }
-
 }
 
 /*

@@ -21,36 +21,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         this.renderStyles();
         
         this.addEventListener('provider-card-clicked', this.handleProviderCardClicked);
-        // const shadow = this.shadowRoot;
-        // const childNodes = Array.from(shadow.childNodes);
-        // console.log(childNodes);
-        // console.log(this);
-        // console.log(this.shadowRoot);
-        // console.log(this.childNodes);
-        // setTimeout(() => {
-        //     childNodes.forEach((node, index) => {
-        //         // console.log(node);
-        //         // console.log(index);
-        //         if (typeof(node.id) !== "undefined" && node.id === "exchange-landing-page") {
-        //             let cN = node.children;
-        //             // console.log("Victory");
-        //             // console.log(cN);
-        //             Array.from(cN).forEach((childValue, index) => {
-        //                 // console.log(childValue);
-        //                 if (childValue.nodeName == "PROVIDER-CARD") {
-        //                     console.log("Victory 2");
-        //                 }
-        //                 // console.log("cN AEL")
-        //                 childValue.addEventListener('touchstart', (event) => {
-        //                     console.log("Touch start");
-        //                     console.log(event);
-        //                     this.handleAppleClick(event);
-        //                 })
-        //             });
-        //         }
-        //     })
-        // }, 600);
-        
     }
     
     handleAppleClick(event) {
@@ -84,15 +54,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
                 navigationType: "internalLink",
                 destination: "changenowBuyWithFiatView"
             },
-            // {
-            //     service_provider: "localmonero",
-            //     title: "Buy Monero using LocalMonero",
-            //     description: `
-            //         LocalMonero is a marketplace that allows you to buy and sell Monero person-to-person. They act as an escrow service, ensuring that deals between buyers and sellers are concluded safely`,
-                
-            //     navigationType: "externalUrl",
-            //     destination: "https://localmonero.co?rc=h2t1",
-            // }
         ];
     }
     
@@ -140,16 +101,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
             window.open(url, "_blank");
         }
     }
-
-    // handleTouchEvent(event) {
-    //     console.log("Handle click event");
-    //     console.log(event);
-    // }
-
-    // handleClickEvent(event) {
-    //     console.log("Handle click event");
-    //     console.log(event);
-    // }
 
     render() {
 
