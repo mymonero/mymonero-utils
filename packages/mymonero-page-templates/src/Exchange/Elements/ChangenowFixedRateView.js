@@ -170,10 +170,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
             #orderStatusPage {
                 min-height: 390px;
             }
-            /** TODO: Remove this style once we tweak the exchange module, since LocalMonero has its own provider card */
-            #localmonero {
-                display: none;
-            }
+
         </style>
         `;
     }
