@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-cryptor",
-  "version": "3.0.2-alpha.1",
+  "version": "3.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
