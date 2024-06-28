@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-lws-client",
-  "version": "3.0.1",
+  "version": "3.0.2-alpha.0",
   "description": "Connector for using a Monero compliant light wallet api",
   "main": "src/index.js",
   "scripts": {
