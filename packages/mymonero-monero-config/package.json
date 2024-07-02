@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-monero-config",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@mymonero/mymonero-bigint": "^3.0.0"
+    "@mymonero/mymonero-bigint": "^3.0.3"
   },
   "gitHead": "8b2fb278e4a5aa84e577c9985fbca332fca4f1b0"
 }

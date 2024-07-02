@@ -85,7 +85,7 @@ A drop-down based select input field. Pass a list of your values in the followin
 
 `<searchable-select .values=${fiatCurrencies}></searchable-select>`
 
-Emits the event `searchable-select-update` once a use selects a value
+Emits the event `searchable-select-update` once a user selects a value
 
 --- 
 ### Wallet selector

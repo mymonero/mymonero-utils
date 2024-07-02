@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/changenow-exchange-integration",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "This module is used by the desktop, web and Android versions of the MyMonero wallet to facilitate the exchange of XMR into other cryptocurrencies via ChangeNow.",
   "main": "index.js",
   "scripts": {
@@ -31,10 +31,10 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "axios": "^0.21.3"
+    "axios": "^1.6.8"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.19.0",
+    "axios-mock-adapter": "^1.22.0",
     "chai": "^4.3.4",
     "mocha": "^9.2.0"
   },

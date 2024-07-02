@@ -21,36 +21,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         this.renderStyles();
         
         this.addEventListener('provider-card-clicked', this.handleProviderCardClicked);
-        // const shadow = this.shadowRoot;
-        // const childNodes = Array.from(shadow.childNodes);
-        // console.log(childNodes);
-        // console.log(this);
-        // console.log(this.shadowRoot);
-        // console.log(this.childNodes);
-        // setTimeout(() => {
-        //     childNodes.forEach((node, index) => {
-        //         // console.log(node);
-        //         // console.log(index);
-        //         if (typeof(node.id) !== "undefined" && node.id === "exchange-landing-page") {
-        //             let cN = node.children;
-        //             // console.log("Victory");
-        //             // console.log(cN);
-        //             Array.from(cN).forEach((childValue, index) => {
-        //                 // console.log(childValue);
-        //                 if (childValue.nodeName == "PROVIDER-CARD") {
-        //                     console.log("Victory 2");
-        //                 }
-        //                 // console.log("cN AEL")
-        //                 childValue.addEventListener('touchstart', (event) => {
-        //                     console.log("Touch start");
-        //                     console.log(event);
-        //                     this.handleAppleClick(event);
-        //                 })
-        //             });
-        //         }
-        //     })
-        // }, 600);
-        
     }
     
     handleAppleClick(event) {
@@ -84,15 +54,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
                 navigationType: "internalLink",
                 destination: "changenowBuyWithFiatView"
             },
-            {
-                service_provider: "localmonero",
-                title: "Buy Monero using LocalMonero",
-                description: `
-                    LocalMonero is a marketplace that allows you to buy and sell Monero person-to-person. They act as an escrow service, ensuring that deals between buyers and sellers are concluded safely`,
-                
-                navigationType: "externalUrl",
-                destination: "https://localmonero.co?rc=h2t1",
-            }
         ];
     }
     
@@ -111,25 +72,26 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
     }
     
     openClickableLink(event, context) {
+        // TODO: This function seems to only apply to localmonero. Remove?
         // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
-        let referrer_id = event.srcElement.getAttribute("referrer_id");
-        let url = event.srcElement.getAttribute("url");
-        let paramStr = event.srcElement.getAttribute("param_str");
-        if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context
-            if (referrer_id.length > 0) {
-                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
-                context.shell.openExternal(urlToOpen);
-            } else {
-                context.shell.openExternal("https://localmonero.co");
-            }
-        } else { // Web (and Capacitor?) codebase
-            if (referrer_id.length > 0) {
-                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
-                window.open(urlToOpen);
-            } else {
-                window.open("https://localmonero.co");
-            }
-        }
+        // let referrer_id = event.srcElement.getAttribute("referrer_id");
+        // let url = event.srcElement.getAttribute("url");
+        // let paramStr = event.srcElement.getAttribute("param_str");
+        // if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context
+        //     if (referrer_id.length > 0) {
+        //         let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+        //         context.shell.openExternal(urlToOpen);
+        //     } else {
+        //         context.shell.openExternal("https://localmonero.co");
+        //     }
+        // } else { // Web (and Capacitor?) codebase
+        //     if (referrer_id.length > 0) {
+        //         let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+        //         window.open(urlToOpen);
+        //     } else {
+        //         window.open("https://localmonero.co");
+        //     }
+        // }
     }
 
     openExternal(url) {
@@ -140,16 +102,6 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
             window.open(url, "_blank");
         }
     }
-
-    // handleTouchEvent(event) {
-    //     console.log("Handle click event");
-    //     console.log(event);
-    // }
-
-    // handleClickEvent(event) {
-    //     console.log("Handle click event");
-    //     console.log(event);
-    // }
 
     render() {
 

@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-yat-lookup",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "A utility module to resolve monero addresses and subaddresses, and retrieve permitted emoji characters from Yat's EmojiID service",
   "main": "index.js",
   "scripts": {

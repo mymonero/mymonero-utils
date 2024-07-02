@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-sendfunds-utils",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "Utils for managing the send fund process for mymonero",
   "main": "index.js",
   "scripts": {

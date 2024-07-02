@@ -260,27 +260,27 @@ class ExchangeHelper {
     }
 
     // TODO: Pass this function parameters, use those parameters, determine runtime context, open based on runtime context (shell.openExternal for Electron, window.location for web, etc)
-    openClickableLink(event, context) {
-        // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
-        let referrer_id = event.srcElement.getAttribute("referrer_id");
-        let url = event.srcElement.getAttribute("url");
-        let paramStr = event.srcElement.getAttribute("param_str");
-        if (typeof(context.shell) !== "undefined") { // Electron passes the shell variable as part of context
-            if (referrer_id.length > 0) {
-                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
-                context.shell.openExternal(urlToOpen);
-            } else {
-                context.shell.openExternal("https://localmonero.co");
-            }
-        } else { // Web (and Capacitor?) codebase
-            if (referrer_id.length > 0) {
-                let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
-                window.open(urlToOpen);
-            } else {
-                window.open("https://localmonero.co");
-            }
-        }
-    }
+    // openClickableLink(event, context) {
+    //     // We need to determine whether we're invoking this via Electron or via a browser, and adjust accordingly
+    //     let referrer_id = event.srcElement.getAttribute("referrer_id");
+    //     let url = event.srcElement.getAttribute("url");
+    //     let paramStr = event.srcElement.getAttribute("param_str");
+    //     if (typeof(context.shell) !== "undefined") { // Electron passes the shell variable as part of context
+    //         if (referrer_id.length > 0) {
+    //             let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+    //             context.shell.openExternal(urlToOpen);
+    //         } else {
+    //             context.shell.openExternal("https://localmonero.co");
+    //         }
+    //     } else { // Web (and Capacitor?) codebase
+    //         if (referrer_id.length > 0) {
+    //             let urlToOpen = url + "?" + paramStr + "=" + referrer_id;
+    //             window.open(urlToOpen);
+    //         } else {
+    //             window.open("https://localmonero.co");
+    //         }
+    //     }
+    // }
 }
 
 module.exports = ExchangeHelper
