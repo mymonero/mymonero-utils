@@ -25,7 +25,7 @@ class Wallet {
     this.keyImageCache = []
     this.bridgeClass = bridge
     this.lwsClient = apiClient
-    this.url = options.url || 'https://api.mymonero.com'
+    this.url = options.url || 'localhost'
     this.feePerb = null
     this.feeMask = null
     this.address = options.address || null
