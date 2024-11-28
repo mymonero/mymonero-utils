@@ -2,6 +2,7 @@
 require("@mymonero/mymonero-web-components");
 
 /* Require various view elements */
+require("./src/Exchange/Elements/MajesticBankFloatingRateView");
 require("./src/Exchange/Elements/ChangenowBuyWithFiatView");
 require("./src/Exchange/Elements/ChangenowFixedRateView")
 require("./src/Exchange/Elements/ChangenowFloatingRateView");

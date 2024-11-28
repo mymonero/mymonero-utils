@@ -267,7 +267,7 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       }
 
       // Gets the initial minimum value
-      Utils.getMinimalExchangeAmount("XMR", "BTC").then(response => {
+      Utils.getMinimalExchangeAmount(exchangeHelper.exchange_name, "XMR", "BTC").then(response => {
         // let minimumAmount = parseFloat(response.minAmount);
         let minimumAmount = parseFloat(response.data.in_min);
         exchangeElements.minimumFeeText.innerText = `${minimumAmount} XMR minimum (excluding tx fee)`;
@@ -466,14 +466,23 @@ function initialiseExchangeHelper(context, exchangeHelper) {
       
       // We attempt to retrieve enabled currency pairs from the server
       exchangeHelper.exchangeFunctions.getCurrencyPairs().then((response) => {
-        
-        response = {"out_currencies":[
-          {"name":"Bitcoin","symbol":"BTC"},
-          {"name":"Ether","symbol":"ETH"},
-          {"name":"Litecoin","symbol":"LTC"},
-          {"name":"Bitcoin Cash","symbol":"BCH"},
-          {"name":"Polkadot","symbol":"DOT"}
-        ]}
+
+        if(exchangeHelper.exchangeFunctions.apiUrl.includes("majesticbank")){
+          // Majestic Bank supports different currencies than the other exchanges
+          // This isn't the ideal way of detecting the exchange
+          // For Majestic Bank we use the API to get the available currencies
+        }
+        else{
+          // For all other exchanges we use the default currencies
+          response = {"out_currencies":[
+              {"name":"Bitcoin","symbol":"BTC"},
+              {"name":"Ether","symbol":"ETH"},
+              {"name":"Litecoin","symbol":"LTC"},
+              {"name":"Bitcoin Cash","symbol":"BCH"},
+              {"name":"Polkadot","symbol":"DOT"}
+            ]}
+        }
+
         let outCurrencySelectList = document.getElementById('outCurrencySelectList')
         let length = outCurrencySelectList.length;
         for (let i = length - 1; i >= 0; i--) {
@@ -602,6 +611,11 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                 let e = document.getElementById('orderStatusPage');
                 e = document.getElementById('orderStatusPage');
                 // backBtn.innerHTML = `<div class="base-button hoverable-cell utility grey-menu-button disableable left-back-button" style="cursor: default; -webkit-app-region: no-drag; position: absolute; opacity: 1; left: 0px;"></div>`;
+
+                // Added a semaphore to prevent multiple order status checks from being fired simultaneously
+                // This is especially important for Majestic Bank servers as they are quite happy to send 429s (Too Many Requests)
+                let orderStatusCheckSemaphore = false
+
                 exchangeElements.orderTimer = setInterval(() => {
                   //exchangeElements.orderStatusPage.classList.add('active')
                   exchangeElements.exchangePageDiv.classList.add('active')
@@ -623,14 +637,17 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                       const xmr_dest_address_elem = document.getElementById('in_address')
                       xmr_dest_address_elem.value = response.receiving_subaddress
                     }
-                    
-                    if (orderStatusResponse.status == 'PAID' 
-                    || orderStatusResponse.status == 'TIMED_OUT' 
-                    || orderStatusResponse.status == 'DONE' 
-                    || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS' 
-                    || orderStatusResponse.status == 'PAYMENT_FAILED' 
-                    || orderStatusResponse.status == 'REJECTED' 
-                    || orderStatusResponse.status == 'EXPIRED') {
+
+                    if (orderStatusResponse.status == 'PAID'
+                        || orderStatusResponse.status == 'TIMED_OUT'
+                        || orderStatusResponse.status == 'DONE'
+                        || orderStatusResponse.status == 'FLAGGED_DESTINATION_ADDRESS'
+                        || orderStatusResponse.status == 'PAYMENT_FAILED'
+                        || orderStatusResponse.status == 'REJECTED'
+                        || orderStatusResponse.status == 'EXPIRED'
+                        || orderStatusResponse.status == 'Completed' //used by MajesticBank
+                        || orderStatusResponse.status == 'Not found' //used by MajesticBank
+                    ) {
                       clearInterval(exchangeElements.orderTimer)
                       document.getElementById("exchange-xmr").classList.remove("active");
                     }
@@ -642,15 +659,24 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                       document.getElementById("exchange-xmr").classList.remove("active");
                     }
                   }
-                  if ((orderStatusResponse.orderTick % 10) == 0) {
+                  if ((orderStatusResponse.orderTick % 10) === 0 && !orderStatusCheckSemaphore) {
+
+                    // Set the semaphore to true to prevent multiple order status checks from being fired simultaneously
+                    orderStatusCheckSemaphore = true
+
+
                     exchangeHelper.exchangeFunctions.getOrderStatus().then(function (response) {
+
+                      // Set the semaphore to false to allow the next order status check to be fired
+                      orderStatusCheckSemaphore = false
+
                       let elemArr = document.getElementsByClassName('provider-name')
                       if (firstTick == true || elemArr.length > 0) {
                         exchangeHelper.renderOrderStatus(response)
                         elemArr[0].innerHTML = response.provider_name
                         elemArr[1].innerHTML = response.provider_name
                         elemArr[2].innerHTML = response.provider_name
-  
+
                         elemArr = document.getElementsByClassName('outCurrencyTickerCode');
                         elemArr[0].innerHTML = out_currency;
                         elemArr[1].innerHTML = out_currency;
@@ -660,6 +686,22 @@ function initialiseExchangeHelper(context, exchangeHelper) {
                       orderTick++
                       response.orderTick = orderTick
                       orderStatusResponse = response
+                    }).catch((error) => {
+                      // Failed to get order status
+
+                      // Set the semaphore to false to allow the next order status check to be fired
+                      orderStatusCheckSemaphore = false
+
+                      // Axios errors have a status property, so we can check for a 429 (Too Many Requests) error
+                      // If we get a 429, we don't want to throw an error, we just want to wait for the next interval
+                      // Majestic Bank servers are quite happy to send 429s
+                      if (error.hasOwnProperty('status') && error.status == 429) {
+                          return
+                      }
+                      else{
+                        // We shouldn't get other errors that 429s, so if we do something is wrong and we pass throw the error
+                        throw error
+                      }
                     })
                   }
                 }, 1000)

@@ -1,34 +1,18 @@
 {
-  "name": "@mymonero/mymonero-exchange-helper",
+  "name": "@mymonero/mymonero-exchange-majesticbank",
   "version": "3.0.4",
-  "description": "A library of helper functions used for rendering the in-app exchange",
+  "description": "This module is used by the desktop and web versions of the MyMonero wallet to facilitate the exchange of XMR into other cryptocurrencies. It can be used to facilitate transactions where a user converts one cryptocurrency into another.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@mymonero/mymonero-bigint": "^3.0.3",
-    "@mymonero/mymonero-exchange": "^3.0.4",
-    "@mymonero/mymonero-exchange-majesticbank": "^3.0.4",
-    "@mymonero/mymonero-money-format": "^3.0.3",
-    "axios": "^0.21.3"
-  },
-  "exports": {
-    "require": "./index.js",
-    "import": "./index.esm.js"
   },
   "keywords": [
     "cryptocurrency-conversion",
     "cryptocurrency-exchange",
     "mymonero",
     "xmrtobtc",
-    "xmr-to-btc",
-    "xmr-to-ltc",
-    "xmr-to-eth",
     "monerotobitcoin",
-    "monero-to-bitcoin",
-    "monero-to-litecoin",
-    "monero-to-ethereum"
+    "monero-to-bitcoin"
   ],
   "author": "MyMonero",
   "repository": {
@@ -41,6 +25,10 @@
     "email": "info@mymonero.com"
   },
   "license": "BSD-3-Clause",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "process": "^0.11.10"
+  },
   "publishConfig": {
     "access": "public"
   }

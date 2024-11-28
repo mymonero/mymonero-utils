@@ -79,9 +79,18 @@ class ExchangeFunctions {
         self.offer_type = "out_amount";
         let endpoint = `${self.apiUrl}/get_offer`;
         return new Promise((resolve, reject) => {
+
+            //sample response
+            // {
+            // 	"offer_id": "d604-2-101",
+            // 	"expires_at": "2024-11-24T20:37:46.328Z",
+            // 	"in_amount": "60.75456303",
+            // 	"out_amount": "0.1"
+            // }
+
             axios.post(endpoint, data)
                 .then(function (response) {
-                    console.log('outAmount', response);
+                    console.log('response from MyMonero for getOfferWithOutAmount', response);
                     self.offer = response.data;
                     self.offer.out_amount = out_amount;
                     resolve(self.offer);
@@ -104,9 +113,18 @@ class ExchangeFunctions {
         self.offer_type = "in_amount";
         let endpoint = `${self.apiUrl}/get_offer`;
         return new Promise((resolve, reject) => {
+
+            //sample response
+            // {
+            // 	"offer_id": "d604-1-lZDUeP+JpbSTxZ8gOCHLwR7WL8ETr1Jbkji7NqVlFVXusF4oQ+e/3uL8/2jL2dfoCqjTf2X9NIrBg4QrrB2XHh9XmlLEL6i1IR9B72qDnZ0Dzamr9AlMJDcm4cxfxDA8BzYN8x2n7BjT+dZgUJszBVivKZwpHMaPWAVUso11QIda/0I/o2NsjjRGoolJ/46tVncCOJGi6PhO9H4qPwSHkg==",
+            // 	"expires_at": "2024-11-24T20:35:43.541Z",
+            // 	"in_amount": "1",
+            // 	"out_amount": "0.00162612"
+            // }
+
             axios.post(endpoint, data)
                 .then(function (response) {
-                    console.log('resp from getOfferwithtinamount', response);
+                    console.log('response from MyMonero for getOfferwithtinamount', response);
                     self.offer = response.data;
                     resolve(self.offer);
                 })
@@ -167,6 +185,24 @@ class ExchangeFunctions {
 
         let endpoint = `${self.apiUrl}/order_status`;
         return new Promise((resolve, reject) => {
+
+            // sample response
+            // {
+            // 	"order_id": "d604-662e2c5f78f8b2",
+            // 	"expires_at": "2024-11-24T21:52:15.460Z",
+            // 	"in_address": "8B96tmezmMhWVwUdaYe87oY9y7SP3YXND3HmGYZKACyYFJYh9wG4LaVKCzWrpQmUvHYQZxmsUERJaidhtRSRFKMmUQVQ7zm",
+            // 	"in_currency": "XMR",
+            // 	"in_amount": "0.5",
+            // 	"out_currency": "BTC",
+            // 	"out_amount": "0.00079765",
+            // 	"status": "NEW",
+            // 	"in_amount_remaining": "0.5",
+            // 	"out_address": "bc1pp83964w2q3nun33gd79gg54n3zfudmfzn6ar4spk8g9dc86mtv3s6me7lq",
+            // 	"provider_name": "ChangeNOW",
+            // 	"provider_url": "https://support.changenow.io",
+            // 	"provider_order_id": "662e2c5f78f8b2"
+            // }
+
             let data = {
                 "order_id": self.order.data.order_id
             }
@@ -209,6 +245,18 @@ class ExchangeFunctions {
             delete data.out_amount;
         }
         return new Promise((resolve, reject) => {
+
+            // sample response
+            // {
+            // 	"order_id": "d604-662e2c5f78f8b2",
+            // 	"expires_at": "2024-11-24T21:52:15.460Z",
+            // 	"in_address": "8B96tmezmMhWVwUdaYe87oY9y7SP3YXND3HmGYZKACyYFJYh9wG4LaVKCzWrpQmUvHYQZxmsUERJaidhtRSRFKMmUQVQ7zm",
+            // 	"in_currency": "XMR",
+            // 	"in_amount": "0.1",
+            // 	"out_currency": "BTC",
+            // 	"out_amount": "0.00079765"
+            // }
+
             try {
                 axios.post(endpoint, data)
                     .then(function (response) {

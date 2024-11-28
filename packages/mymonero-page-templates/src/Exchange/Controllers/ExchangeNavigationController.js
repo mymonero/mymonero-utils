@@ -5,6 +5,7 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
     /* class fields & methods to extend superClass with */
     navigateToPage(destination) {
         let routeMap = {
+            "majesticbankFloatingRateView": "majesticbank-floating-rate-view",
             "changenowBuyWithFiatView": "changenow-buy-with-fiat-view",
             "changenowFixedRateView": "changenow-fixed-rate-view",
             "changenowFloatingRateView": "changenow-floating-rate-view",
@@ -92,6 +93,7 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
 
     selfNavigate(page) {
         let routeMap = {
+            "majesticbankFloatingRateView": "majesticbank-floating-rate-view",
             "changenowBuyWithFiatView": "changenow-buy-with-fiat-view",
             "changenowFixedRateView": "changenow-fixed-rate-view",
             "changenowFloatingRateView": "changenow-floating-rate-view"

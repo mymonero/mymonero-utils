@@ -1,6 +1,6 @@
 {
   "name": "@mymonero/mymonero-exchange",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "This module is used by the desktop and web versions of the MyMonero wallet to facilitate the exchange of XMR into other cryptocurrencies. It can be used to facilitate transactions where a user converts one cryptocurrency into another.",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "8b2fb278e4a5aa84e577c9985fbca332fca4f1b0"
+  }
 }
