@@ -39,6 +39,16 @@ currencyMetadata = {
         symbol: "DOT",
         precision: 16
     },
+    "FIRO": {
+        name: "Firo",
+        symbol: "FIRO",
+        precision: 8
+    },
+    "WOW": {
+        name: "Wownero",
+        symbol: "WOW",
+        precision: 12
+    }
 }
 
 module.exports = currencyMetadata

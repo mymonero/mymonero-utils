@@ -37,6 +37,15 @@ export default class ExchangeLandingPage extends ExchangeNavigationController(Li
         this.context = {};
         this.providerServices = [
             {
+                service_provider: "majesticbank",
+                title: "Exchange Monero for other cryptocurrencies (floating rate)",
+                description: `
+                    Use a floating rate when you want to take advantage of the best exchange rate. 
+                    This exchange provides the best privacy.`,
+                navigationType: "internalLink",
+                destination: "majesticbankFloatingRateView"
+            },
+            {
                 service_provider: "changenow",
                 title: "Exchange Monero for other cryptocurrencies (fixed rate)",
                 description: `

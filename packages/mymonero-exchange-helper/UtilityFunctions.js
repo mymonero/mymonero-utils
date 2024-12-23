@@ -1,19 +1,35 @@
 const axios = require('axios');
 
-function getMinimalExchangeAmount(fromCurrency, toCurrency) {
+function getMinimalExchangeAmount(exchange_name, fromCurrency, toCurrency) {
+
+    if(exchange_name === "majesticbank") {
+        const ExchangeFunctionsMajesticBank = require("@mymonero/mymonero-exchange-majesticbank")
+        this.exchangeFunctions = new ExchangeFunctionsMajesticBank()
+
+       return new Promise((resolve, reject) => {
+            this.exchangeFunctions.getRatesAndLimits(fromCurrency, toCurrency)
+                .then((response) => {
+                    // emulating the response from ChangeNow
+                    resolve({"data": {"in_min": response.data["limits"][fromCurrency].min}})
+                }).catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+
   let self = this;
   return new Promise((resolve, reject) => {
     this.apiUrl = "https://api.mymonero.com:443/cx";
       let data = {
-          "in_currency": "XMR",
-          "out_currency": "BTC"
+          "in_currency": fromCurrency,
+          "out_currency": toCurrency
       }
       let endpoint = `${this.apiUrl}/get_info`;
       axios.post(endpoint, data)
           .then((response) => {
               self.currentRates = response.data;
-              self.in_currency = "XMR";
-              self.out_currency = "BTC";
+              self.in_currency = fromCurrency;
+              self.out_currency = toCurrency;
               self.currentRates.minimum_xmr = self.currentRates.in_min;
               self.currentRates.maximum_xmr = self.currentRates.in_max;
               resolve(response);
@@ -53,6 +69,46 @@ function getMinimalExchangeAmount(fromCurrency, toCurrency) {
 // }
 
 function validateOutAddress(currencyTickerCode, address) {
+
+    // This is the type of response ChangeNow provides
+    // For simplicity, we will use this response even when checks are done locally
+    const successfulResponse = {
+        "isActivated": null,
+        "result": true,
+        "message": "Valid address. (Local checks passed)."
+    }
+
+    const failedResponse = {
+        "isActivated": null,
+        "result": false,
+        "message": "Invalid address. (Failed local checks)."
+    }
+
+  // We use regex to validate the address locally for currencies unsupported by ChangeNow
+  if(currencyTickerCode === "WOW") {
+    return new Promise((resolve, reject) => {
+        // Wownero addresses are 97 characters long
+        // start with W followed by 96 base58 characters
+        regex = /^W[1-9A-HJ-NP-Za-km-z]{96}$/
+        if(regex.test(address)){
+            resolve(successfulResponse)
+        }
+        reject(failedResponse)
+    })
+  }
+  else if (currencyTickerCode === "FIRO"){
+    return new Promise((resolve, reject) => {
+        // Firo addresses either:
+        // start with a followed by 33 base58 characters (transparent address)
+        // or start with firos followed by 94 base58 characters (shielded address)
+        regex = /^(a[1-9A-HJ-NP-Za-km-z]{33}|firos[1-9A-HJ-NP-Za-km-z]{94})$/
+        if(regex.test(address)){
+            resolve(successfulResponse)
+        }
+        reject(failedResponse)
+    })
+  }
+
   return new Promise((resolve, reject) => {
       this.apiUrl = "https://api.changenow.io/v2/";  
       var axios = require('axios');
@@ -126,6 +182,7 @@ function sendFunds (wallet, xmr_amount, xmr_send_address, sweep_wallet, validati
 // end of functions to check Bitcoin address
 
 function renderOrderStatus (order) {
+    // TODO - MajesticBank - ensure order statuses match this schema
   /*
 
         "btc_amount",
