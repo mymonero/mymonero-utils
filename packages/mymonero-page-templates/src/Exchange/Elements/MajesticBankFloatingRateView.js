@@ -1,184 +1,272 @@
-
-
 import { html, css, LitElement } from 'lit';
+// import ExchangeNavigationController from "@mymonero/mymonero-page-templates/src/Exchange/Controllers/ExchangeNavigationController";
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
+import { FiatApi } from "@mymonero/changenow-exchange-integration";
+let fiatApi = new FiatApi({ apiKey: "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9" })
+console.log("Whassup!!!!!")
 
-// Legacy imports for fixed rate exchange
-const Utils = require("../Utils/ExchangeUtilityFunctions")
-const ExchangeUtils = require("../Utils/ExchangeUtilityFunctions")
-// const ValidationLibrary = require('wallet-address-validator')
-//const View = require('../../Views/View.web')
-// const commonComponents_navigationBarButtons = require('../../MMAppUICommonComponents/navigationBarButtons.web')
-// const commonComponents_activityIndicators = require('../../MMAppUICommonComponents/activityIndicators.web')
-const JSBigInt = require('@mymonero/mymonero-bigint').BigInteger // important: grab defined export
-const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
-const ExchangeHelperMajesticBank = require("@mymonero/mymonero-exchange-helper")
-
-// NB: because of legacy reasons, we don't want this to render inside a shadow dom. We override createRenderRoot to address this
-export class MajesticBankFloatingRateView extends ExchangeNavigationController(LitElement) {
-
+export default class MajesticBankFloatingRate extends ExchangeNavigationController(LitElement) {
     static get styles() {
-        return css`    
-        .submit-button-wrapper {
-            position: fixed;
-            top: -45px;
-            right: 16px;
-            width: 15%;
-            min-width: 41px;
-            height: 41px;
-            z-index: 12;
-        }
-        .submit-button {
-            z-index: 13;
-            position: fixed;
-            right: 16px;
-            font-weight: bold;
-            top: -40px;
-            z-index: 10000;
-        }
-        .submit-button, .confirmation-button {
-            cursor: default;
-            border-radius: 3px;
-            height: 24px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            text-align: center;
-            border: none;
-            text-decoration: none;
-            line-height: 24px;
-            box-sizing: border-box;
-            width: auto;
-            padding: 0px 8px;
-            background-color: rgb(0, 198, 255);
-            box-shadow: rgb(22 20 22) 0px 0.5px 1px 0px, rgb(255 255 255 / 20%) 0px 0.5px 0px 0px inset;
-            color: rgb(22, 20, 22);
+        console.log("Print those styles")
+        return css`
+        .form-field-title {
+            max-width: 100%;
+            margin: 15px 0 8px 0;
+            user-select: none;
+            display: block;
+            text-align: left;
+            color: #F8F7F8;
+            font-family: Native-Light, input, menlo, monospace;
             -webkit-font-smoothing: subpixel-antialiased;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 10px;
             letter-spacing: 0.5px;
-            float: right;
-            margin-top: 5px;
-            -webkit-app-region: no-drag;
+            font-weight: 300;
         }
-        `
+        div#currency-table {
+            padding: 0;
+        }
+        .full-width {
+            width: 100% !important;
+        }
+        #getOfferLoader {
+            float: left;
+            // min-height: 28px;
+            padding: 0px 24px 0 0;
+            display: none;
+        }
+        #getOffer {
+            font-family: Native-Light, input, menlo, monospace;
+            -webkit-font-smoothing: subpixel-antialiased;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+            color: rgb(158, 156, 158);
+            padding-left: 0px;
+        }
+        .activityIndicators.graphicAndLabel > div.loader {
+            display: inline-block;
+            position: relative;
+            top: 0px;
+        }
+        .activityIndicators.on-normal-background .loader > .block {
+            background-color: #383638;
+            animation: block-animate-normal-bg .75s infinite ease-in-out;
+        }
+        .activityIndicators .loader > .block1 {
+            animation-delay: -1.2s !important;
+        }
+        .activityIndicators .loader > .block2 {
+            animation-delay: -1.0s !important;
+        }
+        .activityIndicators .loader > .block3 {
+            animation-delay: -0.8s !important;
+        }
+        #tx-fee {
+            float: right;
+            padding: 0px 13px 7px 6px;
+        }
+        #minimum-fee-text, #tx-fee, #addressValidationLoaderText {
+            font-size: 10px;
+        }
+        #btc-address {
+            clear: both;
+            padding: 0px 13px 7px 0px;
+        }
+        #addressValidationLoader {
+            font-family: Native-Light, input, menlo, monospace;
+            -webkit-font-smoothing: subpixel-antialiased;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+            color: rgb(158, 156, 158);
+            padding-left: 0px;
+            padding: 0px 24px 0 0;
+            display: none;
+        }
+        #addressValidationLoader .loader {
+            float: left;
+        }
+        #addressValidationLoaderText {
+            float: left;
+            font-size: 10px;
+        }
+        .activityIndicators.graphicAndLabel > span {
+            display: inline-block;
+        }
+        #validation-messages, #address-messages, #server-messages {
+            max-width: fit-content;
+        }
+        .currencySelect {
+            right: 5px;
+            left: auto;
+        }
+        .currencySelect {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: subpixel-antialiased;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-indent: 10px;
+            color: rgb(223, 222, 223);
+            background-color: rgba(80, 74, 80, 0.55);
+            position: absolute;
+            left: 117.5px;
+            width: 56px;
+            height: 29.5px;
+            border: 0px;
+            padding: 0px;
+            border-radius: 0px 4px 4px 0px;
+            -webkit-appearance: none;
+            top: 24px;
+        }
+        #minimum-fee {
+            float: right;
+        }
+        #minimum-fee-text, #tx-fee, #addressValidationLoaderText {
+            font-size: 10px;
+            margin-top: 8px;
+            color: rgb(158, 156, 158);
+            display: inline-block;
+        }
+        .full-width td {
+            display: block;
+            width: 100%;
+            clear: both;
+        }
+        input#inCurrencyValue, input#outCurrencyValue {
+            width: calc(100% - 70px);
+            padding: 0px 0px;
+            text-indent: 148px;
+            position: relative;
+            right: 40px;
+            left: 0px;
+            padding: 0px 3px;
+            margin-right: 5px;
+            text-indent: 20px;
+            min-width: 104px;
+        }
+        .textInput {
+            display: inline-block;
+            height: 29px;
+            width: 80px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0);
+            text-align: right;
+            font-size: 13px;
+            font-weight: 200;
+            padding: 0px 63px 0px 7px;
+            font-family: Native-Light, input, menlo, monospace;
+            outline: none;
+            box-shadow: rgba(56, 54, 56, 0.5) 0px 0.5px 0px 0px, rgb(22, 20, 22) 0px 0.5px 0px 0px inset;
+            color: rgb(223, 222, 223);
+            background-color: rgb(29, 27, 29);
+        }
+        .currencySelect {
+            right: 5px;
+            left: auto;
+        }
+        .longTextInput {
+            display: block;
+            height: 29px;
+            width: calc((100% - 2px) - 14px);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0);
+            text-align: left;
+            font-size: 13px;
+            font-weight: 200;
+            padding: 0px 7px;
+            font-family: Native-Light, input, menlo, monospace;
+            outline: none;
+            box-shadow: rgba(56, 54, 56, 0.5) 0px 0.5px 0px 0px, rgb(22, 20, 22) 0px 0.5px 0px 0px inset;
+            color: rgb(223, 222, 223);
+            background-color: rgb(29, 27, 29);
+        }
+        `;
+        /*
+            #getOfferLoader {
+                float: left;
+                // min-height: 28px;
+            }
+            #getOfferLoader div { 
+                // display: none; 
+            }
+            #getOfferLoader {
+                padding: 0px 24px 0 0;
+                display: none;
+            }
+            #tx-fee {
+                float: right;
+            }
+            #btc-address {
+                clear: both;
+            }
+        
+        */
+    }
+    async connectedCallback() {
+        
+        super.connectedCallback();
+        this.renderStyles();
+        console.log("MajesticBankFloatingRateView connected to DOM");
     }
 
     createRenderRoot() {
-        return this;
-    }
-
-    static get properties() {
-        return {
-            context: Object,
-        }
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        this.exchangeHelper.doInit(this.context);
-    }
-
-    sendFunds() {
-        const in_amount = document.getElementById('in_amount_remaining').innerHTML
-        const send_address = document.getElementById('receiving_subaddress').innerHTML
-        const in_amount_str = '' + in_amount
-
-        const selectedWallet = document.getElementById('selected-wallet')
-        const selectorOffset = selectedWallet.dataset.walletoffset
-        const sweep_wallet = false // TODO: Add sweeping functionality
-        try {
-            if (this.context.walletsListController.hasOwnProperty('orderSent')) {
-                console.log('Order already sent previously')
-            } else {
-                this.context.walletsListController.orderSent = false
+        console.log("Created Render Root");
+        const root = super.createRenderRoot();
+        
+        root.addEventListener('click', (event) => { 
+            console.log('click from WS'); 
+            this.shadowName = event.target.localName 
+            //event.target.click();
+            if (event.target.localName === 'searchable-select') {
+                
             }
-
-            ExchangeUtils.default.sendFunds(this.context.walletsListController.records[selectorOffset], in_amount, send_address, sweep_wallet, this.exchangeHelper.sendFundsValidationStatusCallback, this.exchangeHelper.handleSendFundsResponseCallback, this.context)
-        } catch (error) {
-            console.log(error)
-        }
+        });
+        
+        root.addEventListener('touchend', (event) => { 
+            if (event.target.localName == "input") {
+                event.target.focus();
+            } else {
+                let inputs = this.querySelectorAll("input");
+                inputs.forEach((input) => {
+                    input.blur();
+                })
+            }
+            
+            if (event.target.id == "confirmation-button") {
+                this.redirectToURL();
+            }
+        });
+        return root;
     }
 
     constructor() {
         super();
-        this.clickHandler = this.clickHandler;
-        this.exchangeHelper = new ExchangeHelperMajesticBank("majesticbank");
     }
-
-    clickHandler(event) {
-        console.log(event);
-    }
-
+    
     render() {
-        let exchangeFormTemplate = this.exchangeHelper.htmlFormTemplate();
-        let exchangeFormHtml = exchangeFormTemplate.content.firstElementChild.cloneNode(true);
-
+        // We're going to use conditionals and classes to determine which elements to hide
         return html`
-        <div id="exchange-landing-page">
-            <div id="explanatory-message" style="color: #ffffff;">&nbsp;</div>
-            ${exchangeFormHtml}
+            <div id="majesticbank-floating-rate-view">
+                <div class="submit-button-wrapper">
+                    &nbsp;
+                </div>
+                <div class="content-container empty-page-content-container">
+                    <div class="exchangeScreen exchange-page-panel">
+                    <div class="content-container exchange-page-content-container" id="orderForm">
+                        <div class="form_field wallet-select-wrapper">
+                            We are LIVE
+                        </div>
+                </div>
             </div>
-        </div>
-        <div class="submit-button-wrapper">
-            <button id="order-button" class="button submit-button">Create Order</button>
-        </div>
-        <button id="exchange-xmr" class="button" @click=${this.sendFunds}>Exchange</button>
-        <style>
-            #explanatory-message {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-                color: #ffffff;
-                margin: 20px;
-                font-size: 13px;
-            }
-            .exchangeScreen {
-                border: none !important;
-            }
-            .exchange-page-panel {
-                margin: 42px 0px 42px 0px !important;
-            }
-            #order-button {
-                display: none;
-            }
-            #order-button, #exchange-xmr {
-                cursor: default;
-                border-radius: 3px;
-                height: 24px;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-                text-align: center;
-                border: none;
-                text-decoration: none;
-                line-height: 24px;
-                box-sizing: border-box;
-                width: auto;
-                padding: 0px 8px;
-                background-color: rgb(0, 198, 255);
-                box-shadow: rgb(22 20 22) 0px 0.5px 1px 0px, rgb(255 255 255 / 20%) 0px 0.5px 0px 0px inset;
-                color: rgb(22, 20, 22);
-                -webkit-font-smoothing: subpixel-antialiased;
-                font-size: 12px;
-                font-weight: bold;
-                letter-spacing: 0.5px;
-                float: right;
-                margin-top: 5px;
-                -webkit-app-region: no-drag;
-                right: 16px;
-                position: absolute;
-                bottom: 10px;
-            }
-            #exchangePage {
-                padding: 0px 0px 50px 0px;
-            }
-            #orderStatusPage {
-                min-height: 390px;
-            }
-
-        </style>
         `;
     }
 
 }
 
 try {
-    customElements.define('majesticbank-floating-rate-view', MajesticBankFloatingRateView);
+    customElements.define('majesticbank-floating-rate-view', MajesticBankFloatingRate);
+    console.log("We defined the MajesticBankFloatingRateView custom element");
 } catch (error) {
     // already defined
 }
