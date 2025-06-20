@@ -4,10 +4,10 @@
 //require("@mymonero/mymonero-web-components");
 
 /* Require various view elements */
-require("./Exchange/Elements/MajesticBankFloatingRateView");
 require("./Exchange/Elements/ChangenowBuyWithFiatView");
 require("./Exchange/Elements/ChangenowFixedRateView")
 require("./Exchange/Elements/ChangenowFloatingRateView");
+//require("./Exchange/Elements/MajesticBankFloatingRateView");
 require("./Yat/Elements/YatSettingsView");
 
 /* Import exchange landing page class */
