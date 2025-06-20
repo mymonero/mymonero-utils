@@ -12,7 +12,8 @@ const ExchangeUtils = require("../Utils/ExchangeUtilityFunctions")
 // const commonComponents_activityIndicators = require('../../MMAppUICommonComponents/activityIndicators.web')
 const JSBigInt = require('@mymonero/mymonero-bigint').BigInteger // important: grab defined export
 const monero_amount_format_utils = require('@mymonero/mymonero-money-format')
-const ExchangeHelperMyMonero = require("@mymonero/mymonero-exchange-helper")
+const ExchangeHelper = require("@mymonero/mymonero-exchange-helper")
+let exchangeHelper = new ExchangeHelper();
 
 // NB: because of legacy reasons, we don't want this to render inside a shadow dom. We override createRenderRoot to address this
 export class ChangenowFixedRateView extends ExchangeNavigationController(LitElement) {
@@ -74,7 +75,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
 
     connectedCallback() {
         super.connectedCallback();
-        this.exchangeHelper.doInit(this.context);
+        exchangeHelper.doInit(this.context);
     }
     
     sendFunds() {
@@ -92,7 +93,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
                 this.context.walletsListController.orderSent = false
             }
 
-            ExchangeUtils.default.sendFunds(this.context.walletsListController.records[selectorOffset], in_amount, send_address, sweep_wallet, this.exchangeHelper.sendFundsValidationStatusCallback, this.exchangeHelper.handleSendFundsResponseCallback, this.context)
+            ExchangeUtils.default.sendFunds(this.context.walletsListController.records[0], in_amount, send_address, sweep_wallet, exchangeHelper.sendFundsValidationStatusCallback, exchangeHelper.handleSendFundsResponseCallback, this.context)
         } catch (error) {
             console.log(error)
         } 
@@ -100,11 +101,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
 
     constructor() {
         super();
-        // Previously the exchangeHelper was initialized globally. This was causing some issues whenever this file was imported.
-        // To avoid those issues we are now initializing the exchangeHelper in the constructor.
-        // There seems to be no reason for the exchangeHelper to be global.
         this.clickHandler = this.clickHandler;
-        this.exchangeHelper = new ExchangeHelperMyMonero();
     }
     
     clickHandler(event) {
@@ -112,7 +109,7 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
     }
     
     render() {
-        let exchangeFormTemplate = this.exchangeHelper.htmlFormTemplate();
+        let exchangeFormTemplate = exchangeHelper.htmlFormTemplate();
         let exchangeFormHtml = exchangeFormTemplate.content.firstElementChild.cloneNode(true);
 
         return html`
@@ -173,7 +170,10 @@ export class ChangenowFixedRateView extends ExchangeNavigationController(LitElem
             #orderStatusPage {
                 min-height: 390px;
             }
-
+            /** TODO: Remove this style once we tweak the exchange module, since LocalMonero has its own provider card */
+            #localmonero {
+                display: none;
+            }
         </style>
         `;
     }
