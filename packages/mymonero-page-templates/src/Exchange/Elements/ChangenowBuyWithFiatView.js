@@ -1,7 +1,7 @@
 import { html, css, LitElement } from 'lit';
 import ExchangeNavigationController from "../Controllers/ExchangeNavigationController";
 import { FiatApi } from "@mymonero/changenow-exchange-integration";
-
+console.log("Whassup!!!!!")
 let fiatApi = new FiatApi({ apiKey: "b1c7ed0a20710e005b65e304b74dce3253cd9ac16009b57f4aa099f2707d64a9" })
 
 export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitElement) {
@@ -304,179 +304,9 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         }
         `;
     }
-
-    static get properties() {
-        return {
-            /* Display values */
-            displayLoadingScreen: { type: Boolean },
-            displayEstimateRetrieval: { type: Boolean },
-            displayOrderScreen: { type: Boolean },
-            displayPurchaseButton: { type: Boolean },
-            displayPurchaseRedirectIndicator: { type: Boolean },
-            displayErrorString: { type: Boolean },
-            displayEnterCurrencyPrompt: { type: Boolean },
-            errorString: { type: String },
-            fiatCurrencies: { 
-                type: Array,
-                reflect: true
-            },
-            estimatedFiatRange: {
-                type: Object
-            }, 
-            estimatedCryptoRange: {
-                type: Object
-            },
-            estimateDetails: {
-                type: Object
-            },
-            estimatedFiatRangeString: { type: String },
-            estimatedCryptoRangeString: { type: String },
-            inCurrencyCode: { type: String },
-            inCurrencyName: { type: String },
-            inCurrencyValue: { type: String },
-            outCurrencyCode: { type: String },
-            outCurrencyName: { type: String },
-            outCurrencyValue: { type: String },
-            estimateUsingFiat: { type: Boolean },
-            context: { type: Object },
-            redirectUrl: { type: String },
-            selectedWallet: { type: Object}
-        }
-    }
     
     // This function listens for a custom event dispatched from the select box. 
     // It uses the details to update the desired currency
-    async updateSelectedCurrency(event) {
-        this.clearEstimate();
-        let prepopulatedCurrencyValueExists = false;
-        // Handle case where the user has input the amount already
-        if ((this.inCurrencyCode !== "---") && (this.inCurrencyValue.length > 0)) {
-            prepopulatedCurrencyValueExists = true;
-        }
-        this.fiatMinMaxString = "";
-        this.inCurrencyCode = event.detail.selectValue;
-        this.inCurrencyName = event.detail.selectText;
-        this.displayMinMaxLoadingIndicator = true;
-        if (prepopulatedCurrencyValueExists) {
-            this.handleCurrencyInputResponse();
-        }
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
-        let [estimatedFiatRange] = await Promise.all(rangeQueryArray)
-            .catch(error => {
-                // console.error(error);
-                // console.error(error.message);
-                this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
-            });
-        this.displayMinMaxLoadingIndicator = false;
-        this.estimatedFiatRange = estimatedFiatRange;
-        //this.estimatedCryptoRange = estimatedCryptoRange;
-        //this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
-        let formatOptions = {
-            style: 'currency',
-            currency: this.inCurrencyCode
-        }
-        let currencyFormatter = new Intl.NumberFormat(undefined, formatOptions)
-        this.estimatedFiatRange.min = currencyFormatter.format(estimatedFiatRange.min);
-        this.estimatedFiatRange.max = currencyFormatter.format(estimatedFiatRange.max);
-        this.estimatedFiatRangeString = `${this.estimatedFiatRange.min} - ${this.estimatedFiatRange.max}`
-        this.fiatMinMaxString = `You can exchange between ${estimatedFiatRange.min} ${this.inCurrencyCode} and ${estimatedFiatRange.max} ${this.inCurrencyCode}`
-    }
-
-    /**
-     * This function initialises the selected currency and the input value
-     */
-    async initSelectedCurrency() {
-        this.fiatMinMaxString = "Busy loading minimum and maximum values for Euro";
-        this.inCurrencyCode = "EUR"
-        this.inCurrencyName = "Euro"
-        this.displayMinMaxLoadingIndicator = false;
-        let rangeQueryArray = [this.fiatApi.getMinMaxRange(this.inCurrencyCode, "XMR")]
-        let [estimatedFiatRange] = await Promise.all(rangeQueryArray)
-            .catch(error => {
-                // console.error(error);
-                // console.error(error.message);
-                this.fiatMinMaxString = "There was an error retrieving the minimum and maximum values for the specified currency";
-            });
-        this.displayMinMaxLoadingIndicator = false;
-        this.estimatedFiatRange = estimatedFiatRange;
-        // this.estimatedCryptoRange = estimatedCryptoRange;
-        // this.estimatedCryptoRangeString = `${estimatedCryptoRange.min} - ${estimatedCryptoRange.max}`
-        let formatOptions = {
-            style: 'currency',
-            currency: this.inCurrencyCode
-        }
-        let currencyFormatter = new Intl.NumberFormat(undefined, formatOptions)
-        this.estimatedFiatRange.min = currencyFormatter.format(estimatedFiatRange.min);
-        this.estimatedFiatRange.max = currencyFormatter.format(estimatedFiatRange.max);
-        this.estimatedFiatRangeString = `${this.estimatedFiatRange.min} - ${this.estimatedFiatRange.max}`
-        this.fiatMinMaxString = `You can exchange between ${estimatedFiatRange.min} ${this.inCurrencyCode} and ${estimatedFiatRange.max} ${this.inCurrencyCode}`
-    }
-
-    async fireEstimateEvent(event) {
-        let options = {
-            detail: { 
-                
-            },
-            bubbles: true,
-            composed: true
-        };
-        let estimatePostEvent = new CustomEvent("fire-estimate-event", options)
-        this.dispatchEvent(estimatePostEvent, options)
-        let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
-        // todo -- service fee can be array of multiple fees -- bank fee not always charged
-        const estimateDetails = {
-            convertedAmount: estimateResponse.convertedAmount,
-            expected_to_amount: estimateResponse.expected_to_amount,
-            estimatedExchangeRate: estimateResponse.estimate_breakdown.estimatedExchangeRate,
-            estimatedExchangeRateString: estimateResponse.estimate_breakdown.estimatedExchangeRate + " " + estimateResponse.to_currency,
-            id: estimateResponse.id,
-            initial_from_currency: estimateResponse.initial_from_currency,
-            initial_expected_from_amount: estimateResponse.expected_from_amount,
-            networkFee: estimateResponse.estimate_breakdown.networkFee,
-            redirected_amount: estimateResponse.redirected_amount,
-            serviceFees: estimateResponse.estimate_breakdown.serviceFees,
-            serviceFeeString: "N/A",
-            bankFeeString: "N/A",
-            to_currency: estimateResponse.to_currency,
-            networkFeeString: estimateResponse.estimate_breakdown.networkFee.amount + " " + estimateResponse.estimate_breakdown.networkFee.currency
-        }
-        const serviceFees = estimateResponse.serviceFees;
-        estimateResponse.estimate_breakdown.serviceFees.forEach((fee) => {
-            if (fee.name.toUpperCase() === "BANK FEE") {
-                estimateDetails.bankFeeString = fee.amount + " " + fee.currency
-            } else if (fee.name.toUpperCase() == "SERVICE FEE") {
-                estimateDetails.serviceFeeString = fee.amount + " " + fee.currency
-            }
-        })
-        this.redirectUrl = estimateResponse.redirect_url;
-        this.estimateDetails = estimateDetails;
-    }
-    
-    async redirectToURL() {
-        this.displayPurchaseButton = false;
-        this.displayPurchaseRedirectIndicator = true;
-        try {
-            let estimateResponse = await this.fiatApi.createExchangeTransaction(this.inCurrencyValue, this.inCurrencyCode, "XMR", this.selectedWallet.public_address);
-            this.openExternal(estimateResponse.redirect_url)
-            this.displayPurchaseRedirectIndicator = false;
-        } catch (error) {
-            console.error("Failure with redirect");
-            // Error communicating with server to retrieve response -- show error
-            this.errorString = error.message;
-        }
-    }
-
-    async openExternal(url) {
-        // Check whether we're on desktop, or web and Android
-        if (typeof(this.context.shell) !== "undefined") { // Electron passes the shell variable as part of context            
-            this.context.shell.openExternal(url);            
-        } else if (typeof(this.context.deviceInfo) !== "undefined" && this.context.deviceInfo.platform == "ios") {
-            await this.context.capacitorBrowser.open({ url: url });
-        } else { // Web and Android Capacitor codebase            
-            window.open(url, "_blank");
-        }
-    }
-
     renderStyles() {
         // These styles are necessary in instances where we have a top-right action button
         let styleElement = document.getElementById("lit-styles");
@@ -771,17 +601,11 @@ export class ChangenowBuyWithFiatView extends ExchangeNavigationController(LitEl
         const root = super.createRenderRoot();
         
         root.addEventListener('click', (event) => { 
-            if (event.target.localName == "input") {
-                event.target.focus();
-            } else {
-                let inputs = this.querySelectorAll("input");
-                inputs.forEach((input) => {
-                    input.blur();
-                })
-            }
-            
-            if (event.target.id == "confirmation-button") {
-                this.redirectToURL();
+            console.log('click from WS'); 
+            this.shadowName = event.target.localName 
+            //event.target.click();
+            if (event.target.localName === 'searchable-select') {
+                
             }
         });
         
