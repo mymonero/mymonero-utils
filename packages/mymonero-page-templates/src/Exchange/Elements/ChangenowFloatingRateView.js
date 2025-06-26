@@ -22,11 +22,12 @@ export class ChangenowFloatingRateView extends ExchangeNavigationController(LitE
         return html`
         <div id="exchange-landing-page">
             <div>Landing page</div>
-                Majestic Bank Floating Rate View  
+                Floating Rate  
             </div>
         </div>
         `;
     }
+
 }
 
 try {
