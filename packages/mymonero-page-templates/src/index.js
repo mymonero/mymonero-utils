@@ -2,12 +2,11 @@
 //require("@mymonero/mymonero-web-components");
 //require("./node_modules/@mymonero/mymonero-web-components");
 //require("@mymonero/mymonero-web-components");
-
+console.log("Loading LIT page templates...");
 /* Require various view elements */
 require("./Exchange/Elements/ChangenowBuyWithFiatView");
 require("./Exchange/Elements/ChangenowFixedRateView")
 require("./Exchange/Elements/ChangenowFloatingRateView");
-//require("./Exchange/Elements/MajesticBankFloatingRateView");
 require("./Yat/Elements/YatSettingsView");
 
 /* Import exchange landing page class */

@@ -14,7 +14,9 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
         console.log("We want to navigate to " + destination)
         let contentView = document.getElementById('exchange-content-container');
         contentView.innerHTML = "";
+        console.log("Cleared content view");
         let pageElement = document.createElement(routeMap[destination]);
+        console.log("pageElement created: ", pageElement);
         pageElement.context = this.context;
         contentView.appendChild(pageElement);
         if (destination !== "landingPageView") {
@@ -93,12 +95,10 @@ const ExchangeNavigationController = (superClass) => class extends superClass {
 
     selfNavigate(page) {
         let routeMap = {
+            "majesticbankFloatingRateView": "majesticbank-floating-rate-view",
             "changenowBuyWithFiatView": "changenow-buy-with-fiat-view",
             "changenowFixedRateView": "changenow-fixed-rate-view",
-            "changenowFloatingRateView": "changenow-floating-rate-view",
-            //"majesticbankFloatingRateView": "majesticbank-floating-rate-view",
-            "majesticbankFloatingRateView": "majesticbank-floating-rate-view",
-            "majesticbankFloatingRateView": "majesticbank-floating-rate-view",
+            "changenowFloatingRateView": "changenow-floating-rate-view"
         }
         let contentView = document.querySelector('content-view');
         contentView.innerHTML = "";
